@@ -1,4 +1,4 @@
-insert into users (id, name,email, phone,   role)
+insert into users (user_id, name,email, phone,   role)
 values  (1,"Hans Schmidt",  "h.schmidt@example.com", "+49 30 1234567", "CLIENT"),
         (2, "Anna Müller",  "a.mueller@example.com", "+49 89 7654321", "CLIENT"),
         (3, "Peter Klein",  "p.klein@example.com", "+49 40 6789012", "CLIENT"),
@@ -9,3 +9,9 @@ values  (1,"Hans Schmidt",  "h.schmidt@example.com", "+49 30 1234567", "CLIENT")
         (8, "Julia Wagner",  "j.wagner@example.com", "+49 351 8765432", "CLIENT"),
         (9, "Anna Becker",  "p.becker@example.com", "+49 341 7654321", "CLIENT"),
         (10, "Clara Hoffmann",  "c.hoffmann@example.com", "+49 421 1234567", "ADMIN");
+
+insert into cart(cart_id, user_id)
+values (1, 1),
+       (2, 8),
+       (3, 5),
+       (4, 1)
