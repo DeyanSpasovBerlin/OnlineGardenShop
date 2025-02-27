@@ -17,7 +17,16 @@ values (1, 1),
        (4, 1)
 
 insert into cartItems (id, cart_id, products_id, quontity)
-values(1, 1, 8, 2),
+values (1, 1, 8, 2),
         (2, 1, 6, 1),
         (3, 1, 5, 3),
         (4, 1, 9, 1)
+
+insert into orders(order_id, user_id, delivery_adress, contact_phone, order_status, delivery_method)
+values (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDING_PAYMENT", "COURIER_DELIVERY"),
+       (2, 8, "Musterstraße 12, 10115 Berlin, Germany", "++49 351 8765432", "IN_TRANSIT", "SELF_DELIVERY"),
+       (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "DELIVERED", "COURIER_DELIVERY"),
+       (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY")
+
+insert into products(product_id, name, description, price, category_id, image_url, discount_price)
+values ( 1,"", "", 0, 0,"", 0,0)
