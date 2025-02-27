@@ -15,3 +15,9 @@ values (1, 1),
        (2, 8),
        (3, 5),
        (4, 1)
+
+insert into cartItems (id, cart_id, products_id, quontity)
+values(1, 1, 8, 2),
+        (2, 1, 6, 1),
+        (3, 1, 5, 3),
+        (4, 1, 9, 1)
