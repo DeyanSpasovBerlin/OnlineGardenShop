@@ -8,4 +8,4 @@ values  (1,"Hans Schmidt",  "h.schmidt@example.com", "+49 30 1234567", "CLIENT")
         (7, "Max Meyer",  "m.meyer@example.com", "+49 211 2345678", "CLIENT"),
         (8, "Julia Wagner",  "j.wagner@example.com", "+49 351 8765432", "CLIENT"),
         (9, "Anna Becker",  "p.becker@example.com", "+49 341 7654321", "CLIENT"),
-        (10, "Clara Hoffmann",  "DE012345678", "c.hoffmann@example.com", "+49 421 1234567", "ADMIN");
+        (10, "Clara Hoffmann",  "c.hoffmann@example.com", "+49 421 1234567", "ADMIN");
