@@ -23,6 +23,7 @@ public class Orders {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "int")
     private Users user;
+//    private Integer userId;
 
     private String deliveryAdress;
 
