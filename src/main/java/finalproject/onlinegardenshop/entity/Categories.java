@@ -14,8 +14,8 @@ import lombok.Setter;
 public class Categories {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "int")
+    @Column(unique = true, nullable = false)
     private Integer id;
+    private String name;
 
 }
