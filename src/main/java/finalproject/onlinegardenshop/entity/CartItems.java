@@ -25,10 +25,6 @@ public class CartItems {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", columnDefinition = "int")
     private Products product;
-
+  
     private Integer quantity;
-
-
-
-
 }

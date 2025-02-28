@@ -50,7 +50,6 @@ values (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDIN
        (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "DELIVERED", "COURIER_DELIVERY"),
        (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY");
 
-
 INSERT INTO order_items (id,order_id, product_id, quantity, price_at_purchase)
 VALUES
     (1, 1, 8, 2, 35.00),

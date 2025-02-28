@@ -21,5 +21,6 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "int")
     private Users  user;
+//    private Integer userId;
 
 }
