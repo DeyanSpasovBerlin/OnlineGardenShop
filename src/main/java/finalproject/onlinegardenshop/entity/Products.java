@@ -1,5 +1,6 @@
 package finalproject.onlinegardenshop.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,8 @@ public class Products {
     private String name;
     private String description;
     private double price;
-    private double discountPrice;
+    @Nullable
+    private Double discountPrice;
     private String imageUrl;
     private Instant createdAt;
     private Instant updatedAt;

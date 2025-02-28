@@ -11,11 +11,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class OrderItems {
+@Table(name="order_items")
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "int")
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Orders order;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Products product;
+    private int quantity;
+    private double priceAtPurchase;
 }
