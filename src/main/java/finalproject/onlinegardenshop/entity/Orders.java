@@ -20,9 +20,9 @@ public class Orders {
     @Column(columnDefinition = "int")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", columnDefinition = "int")
-    private Users user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", columnDefinition = "int")
+//    private Users user;
 //    private Integer userId;
 
     private String deliveryAdress;

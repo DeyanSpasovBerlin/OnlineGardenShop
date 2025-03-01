@@ -18,14 +18,14 @@ public class CartItems {
     @Column(columnDefinition = "int")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", columnDefinition = "int")
-    private Cart cart;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "cart_id", columnDefinition = "int")
+//    private Cart cart;
 //    private Integer cartId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", columnDefinition = "int")
-    private Products product;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "product_id", columnDefinition = "int")
+//    private Products product;
 //private Integer productId;
     private Integer quantity;
 
