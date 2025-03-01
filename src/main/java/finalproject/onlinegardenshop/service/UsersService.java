@@ -1,0 +1,51 @@
+package finalproject.onlinegardenshop.service;
+
+
+import finalproject.onlinegardenshop.dto.UsersDto;
+import finalproject.onlinegardenshop.entity.Users;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
+import finalproject.onlinegardenshop.mapper.UsersMapper;
+import finalproject.onlinegardenshop.repository.UsersRepository;
+import org.apache.catalina.Manager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Transactional(readOnly = true)
+public class UsersService {
+
+    private static Logger logger = LogManager.getLogger(UsersService.class);
+
+    private final UsersRepository repository;
+    private final UsersRepository clientRepository;
+    private final UsersMapper mapper;
+
+    @Autowired
+    public UsersService(UsersRepository repository, UsersRepository clientRepository, UsersMapper mapper) {
+        this.repository = repository;
+        this.clientRepository = clientRepository;
+        this.mapper = mapper;
+    }
+
+    public List<UsersDto> getAll(){
+        List<Users> managers = repository.findAll();
+        logger.debug("Managers retrieved from db");
+        logger.debug("manager ids: {}", () -> managers.stream().map(Users::getId).toList());
+        return mapper.entityListToDto(managers);
+    }
+
+    public UsersDto getUsersById(Integer id) {
+        Optional<Users> optional = repository.findById(id);
+        if (optional.isPresent()) {
+            UsersDto found = mapper.entityToDto(optional.get()) ;
+            return found;
+        }
+        throw new OnlineGardenShopResourceNotFoundException("User with id = " + id + " not found in database");
+    }
+}
