@@ -18,9 +18,9 @@ public class Cart {
     @Column(columnDefinition = "int")
     private Integer id;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", columnDefinition = "int")
-//    private Users  user;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", columnDefinition = "int")
+    private Users  user;
 //    private Integer userId;
 
 }
