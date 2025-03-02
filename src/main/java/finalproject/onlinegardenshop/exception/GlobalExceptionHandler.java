@@ -1,4 +1,4 @@
-package finalproject.onlinegardenshop.exeption;
+package finalproject.onlinegardenshop.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.apache.logging.log4j.LogManager;

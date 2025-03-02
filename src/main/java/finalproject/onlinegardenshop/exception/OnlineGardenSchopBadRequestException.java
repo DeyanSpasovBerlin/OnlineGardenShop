@@ -1,4 +1,4 @@
-package finalproject.onlinegardenshop.exeption;
+package finalproject.onlinegardenshop.exception;
 
 public class OnlineGardenSchopBadRequestException  extends RuntimeException{
 
