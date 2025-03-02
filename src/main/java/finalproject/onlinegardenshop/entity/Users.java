@@ -21,7 +21,9 @@ public class Users {
     @Column(columnDefinition = "int")
     private Integer id;
 
-    private String name;
+    private String lastName;
+
+    private String firstName;
 
     private String email;
 

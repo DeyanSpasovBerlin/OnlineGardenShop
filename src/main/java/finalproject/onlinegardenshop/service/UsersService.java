@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,13 +25,13 @@ public class UsersService {
     private static Logger logger = LogManager.getLogger(UsersService.class);
 
     private final UsersRepository repository;
-    private final UsersRepository clientRepository;
+//    private final UsersRepository clientRepository;
     private final UsersMapper mapper;
 
     @Autowired
     public UsersService(UsersRepository repository, UsersRepository clientRepository, UsersMapper mapper) {
         this.repository = repository;
-        this.clientRepository = clientRepository;
+//        this.clientRepository = clientRepository;
         this.mapper = mapper;
     }
 
@@ -48,4 +50,11 @@ public class UsersService {
         }
         throw new OnlineGardenShopResourceNotFoundException("User with id = " + id + " not found in database");
     }
+
+    public List<UsersDto> findByName(String firstName){
+        List<Users> users = repository.findByFirstName(firstName);
+        return mapper.entityListToDto(users);
+    }
+
+
 }
