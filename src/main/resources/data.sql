@@ -20,17 +20,17 @@ values
     (10, 'Mineral Fertilizer', 'Comprehensive fertilizer for plant growth.', 10.00, 'images/mineral_fertilizer.jpg', NULL, NOW(), NULL, 3);
 
 
-insert into users (id, name,email, phone,   role)
-values  (1,"Hans Schmidt",  "h.schmidt@example.com", "+49 30 1234567", "CLIENT"),
-        (2, "Anna Müller",  "a.mueller@example.com", "+49 89 7654321", "CLIENT"),
-        (3, "Peter Klein",  "p.klein@example.com", "+49 40 6789012", "CLIENT"),
-        (4, "Maria Schneider",  "m.schneider@example.com", "+49 69 1234567", "ADMIN"),
-        (5, "Lukas Fischer",  "l.fischer@example.com", "+49 711 9876543", "CLIENT"),
-        (6, "Sophie Weber",  "s.weber@example.com", "+49 221 4567890", "CLIENT"),
-        (7, "Max Meyer",  "m.meyer@example.com", "+49 211 2345678", "CLIENT"),
-        (8, "Julia Wagner",  "j.wagner@example.com", "+49 351 8765432", "CLIENT"),
-        (9, "Anna Becker",  "p.becker@example.com", "+49 341 7654321", "CLIENT"),
-        (10, "Clara Hoffmann",  "c.hoffmann@example.com", "+49 421 1234567", "ADMIN");
+INSERT INTO users (id, last_name, first_name, email, phone, password, role) VALUES
+        (1, 'Johnson', 'Alice', 'alice@example.com', '1234567890', 'password123', 'ADMIN'),
+        (2, 'Smith', 'Bob', 'bob@example.com', '2345678901', 'securePass1', 'CLIENT'),
+        (3, 'Brown', 'Charlie', 'charlie@example.com', '3456789012', 'charliePass', 'CLIENT'),
+        (4, 'White', 'David', 'david@example.com', '4567890123', 'davidSecure', 'ADMIN'),
+        (5, 'Black', 'Emma', 'emma@example.com', '5678901234', 'emma123', 'CLIENT'),
+        (6, 'Green', 'Frank', 'frank@example.com', '6789012345', 'frankPass', 'CLIENT'),
+        (7, 'Miller', 'Grace', 'grace@example.com', '7890123456', 'graceSecure', 'CLIENT'),
+        (8, 'Wilson', 'Hannah', 'hannah@example.com', '8901234567', 'hannahPass', 'CLIENT'),
+        (9, 'Thomas', 'Ian', 'ian@example.com', '9012345678', 'ianSecure', 'CLIENT'),
+        (10, 'Davis', 'Jack', 'jack@example.com', '0123456789', 'jackPass', 'CLIENT');
 
 insert into cart(id, user_id)
 values (1, 1),
