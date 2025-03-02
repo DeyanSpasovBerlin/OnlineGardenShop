@@ -35,4 +35,15 @@ public class UsersControler {
     public List<UsersDto> findByFirstName(@RequestParam String firstName){
         return userService.findByName(firstName);
     }
+
+    @GetMapping("/searchByFirstAndLastName")
+    public List<UsersDto> findByFirstNameAndLastName(@RequestParam String firstName, @RequestParam String lastName){
+        return userService.findByFirstNameAndLastName(firstName,lastName);
+    }
+
+    @GetMapping("/searchByFirstLetterFromFirstNameAndFirstLetterFromLastName")
+    public List<UsersDto> findFirstLetterFromFirstNameAndFirstLetterFromLastName(
+            @RequestParam String firstName, @RequestParam String lastName){
+        return userService.findFirstLetterFromFirstNameAndFirstLetterFromLastName(firstName,lastName);
+    }
 }

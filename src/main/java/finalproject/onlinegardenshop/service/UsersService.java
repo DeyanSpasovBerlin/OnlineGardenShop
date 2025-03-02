@@ -56,5 +56,16 @@ public class UsersService {
         return mapper.entityListToDto(users);
     }
 
+    public  List<UsersDto> findByFirstNameAndLastName(String firstName,String lastName){
+        List<Users> managers = repository.findByFirstNameAndLastName(firstName,lastName);
+        return mapper.entityListToDto(managers);
+    }
+
+    public List<UsersDto> findFirstLetterFromFirstNameAndFirstLetterFromLastName(
+            String firstName,String lastName){
+        List<Users> users = repository.findByFirstLetterFromFirstNameAndFirstLetterFromLastName(
+                firstName,lastName);
+        return mapper.entityListToDto(users);
+    }
 
 }
