@@ -35,10 +35,10 @@ public class UsersService {
     }
 
     public List<UsersDto> getAll(){
-        List<Users> managers = repository.findAll();
-        logger.debug("Managers retrieved from db");
-        logger.debug("manager ids: {}", () -> managers.stream().map(Users::getId).toList());
-        return mapper.entityListToDto(managers);
+        List<Users> users = repository.findAll();
+        logger.debug("Users retrieved from db");
+        logger.debug("user ids: {}", () -> users.stream().map(Users::getId).toList());
+        return mapper.entityListToDto(users);
     }
 
     public UsersDto getUsersById(Integer id) {
