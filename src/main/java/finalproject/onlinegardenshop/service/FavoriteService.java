@@ -11,21 +11,23 @@ import java.util.stream.Collectors;
 @Service
 public class FavoriteService {
     private final FavoriteRepository repository;
+    private final FavoriteMapper mapper;
 
-    public FavoriteService(FavoriteRepository repository) {
+    public FavoriteService(FavoriteRepository repository, FavoriteMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public List<FavoriteDto> getAllFavorites() {
-        return repository.findAll().stream().map(FavoriteMapper::toDto).collect(Collectors.toList());
+        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public FavoriteDto getFavoriteById(Integer id) {
-        return repository.findById(id).map(FavoriteMapper::toDto).orElse(null);
+        return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public FavoriteDto saveFavorite(FavoriteDto dto) {
-        Favorite entity = FavoriteMapper.toEntity(dto);
-        return FavoriteMapper.toDto(repository.save(entity));
+        Favorite entity = mapper.toEntity(dto);
+        return mapper.toDto(repository.save(entity));
     }
 }

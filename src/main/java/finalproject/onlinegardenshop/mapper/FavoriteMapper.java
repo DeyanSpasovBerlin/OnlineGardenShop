@@ -2,19 +2,17 @@ package finalproject.onlinegardenshop.mapper;
 
 import finalproject.onlinegardenshop.dto.FavoriteDto;
 import finalproject.onlinegardenshop.entity.Favorite;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-public class FavoriteMapper {
-    public static FavoriteDto toDto(Favorite favorite) {
-        return new FavoriteDto(
-                favorite.getId(),
-                favorite.getUser().getId(),
-                favorite.getProduct().getId()
-        );
-    }
+@Mapper(componentModel = "spring")
+public interface FavoriteMapper {
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "product.id", target = "productId")
+    FavoriteDto toDto(Favorite favorite);
 
-    public static Favorite toEntity(FavoriteDto dto) {
-        Favorite favorite = new Favorite();
-        favorite.setId(dto.getId());
-        return favorite;
-    }
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    Favorite toEntity(FavoriteDto dto);
 }
+

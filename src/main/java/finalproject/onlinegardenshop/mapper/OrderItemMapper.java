@@ -2,23 +2,19 @@ package finalproject.onlinegardenshop.mapper;
 
 import finalproject.onlinegardenshop.dto.OrderItemsDto;
 import finalproject.onlinegardenshop.entity.OrderItem;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-public class OrderItemMapper {
-    public static OrderItemsDto toDto(OrderItem orderItem) {
-        return new OrderItemsDto(
-                orderItem.getId(),
-                orderItem.getOrder().getId(),
-                orderItem.getProduct().getId(),
-                orderItem.getQuantity(),
-                orderItem.getPriceAtPurchase()
-        );
-    }
+@Mapper(componentModel = "spring")
+public interface OrderItemMapper {
+    OrderItemMapper INSTANCE = Mappers.getMapper(OrderItemMapper.class);
 
-    public static OrderItem toEntity(OrderItemsDto dto) {
-        OrderItem orderItem = new OrderItem();
-        orderItem.setId(dto.getId());
-        orderItem.setQuantity(dto.getQuantity());
-        orderItem.setPriceAtPurchase(dto.getPriceAtPurchase());
-        return orderItem;
-    }
+    @Mapping(source = "order.id", target = "orderId")
+    @Mapping(source = "product.id", target = "productId")
+    OrderItemsDto toDto(OrderItem orderItem);
+
+    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    OrderItem toEntity(OrderItemsDto dto);
 }

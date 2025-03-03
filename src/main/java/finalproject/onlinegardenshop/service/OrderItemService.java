@@ -11,22 +11,24 @@ import java.util.stream.Collectors;
 @Service
 public class OrderItemService {
     private final OrderItemRepository repository;
+    private final OrderItemMapper mapper;
 
-    public OrderItemService(OrderItemRepository repository) {
+    public OrderItemService(OrderItemRepository repository, OrderItemMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public List<OrderItemsDto> getAllOrderItems() {
-        return repository.findAll().stream().map(OrderItemMapper::toDto).collect(Collectors.toList());
+        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public OrderItemsDto getOrderItemById(Integer id) {
-        return repository.findById(id).map(OrderItemMapper::toDto).orElse(null);
+        return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public OrderItemsDto saveOrderItem(OrderItemsDto dto) {
-        OrderItem entity = OrderItemMapper.toEntity(dto);
-        return OrderItemMapper.toDto(repository.save(entity));
+        OrderItem entity = mapper.toEntity(dto);
+        return mapper.toDto(repository.save(entity));
     }
 }
 
