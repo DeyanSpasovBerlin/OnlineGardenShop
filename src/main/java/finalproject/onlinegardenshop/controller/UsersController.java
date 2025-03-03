@@ -12,11 +12,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 @Validated
-public class UsersControler {
+public class UsersController {
     private UsersService userService;
 
     @Autowired
-    public UsersControler(UsersService userService) {
+    public UsersController(UsersService userService) {
         this.userService = userService;
     }
 

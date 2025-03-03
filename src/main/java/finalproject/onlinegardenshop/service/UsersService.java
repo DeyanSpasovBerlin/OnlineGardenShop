@@ -9,6 +9,7 @@ import org.apache.catalina.Manager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,21 +25,19 @@ public class UsersService {
     private static Logger logger = LogManager.getLogger(UsersService.class);
 
     private final UsersRepository repository;
-    //    private final UsersRepository clientRepository;
     private final UsersMapper mapper;
 
     @Autowired
-    public UsersService(UsersRepository repository, UsersRepository clientRepository, UsersMapper mapper) {
+    public UsersService(UsersRepository repository,  UsersMapper mapper) {
         this.repository = repository;
-//        this.clientRepository = clientRepository;
         this.mapper = mapper;
     }
 
     public List<UsersDto> getAll(){
-        List<Users> managers = repository.findAll();
-        logger.debug("Managers retrieved from db");
-        logger.debug("manager ids: {}", () -> managers.stream().map(Users::getId).toList());
-        return mapper.entityListToDto(managers);
+        List<Users> users = repository.findAll();
+        logger.debug("Users retrieved from db");
+        logger.debug("user ids: {}", () -> users.stream().map(Users::getId).toList());
+        return mapper.entityListToDto(users);
     }
 
     public UsersDto getUsersById(Integer id) {
