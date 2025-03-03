@@ -1,11 +1,12 @@
 package finalproject.onlinegardenshop.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 
@@ -17,16 +18,20 @@ import java.time.Instant;
 public class Products {
 
     @Id
-    @Column(unique = true, nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false, columnDefinition = "int")
+    private int id;
     private String name;
     private String description;
     private double price;
-    @Nullable
-    private Double discountPrice;
+    private double discountPrice;
     private String imageUrl;
     private Instant createdAt;
     private Instant updatedAt;
-    private int categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", columnDefinition = "int")
+    private Categories category;
+
 
 }

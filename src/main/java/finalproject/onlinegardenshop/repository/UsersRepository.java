@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface UsersRepository extends JpaRepository<Users,Integer> {
+
     List<Users> findByFirstName(String name);
 
     List<Users> findByFirstNameAndLastName(String firstName,String lastname);

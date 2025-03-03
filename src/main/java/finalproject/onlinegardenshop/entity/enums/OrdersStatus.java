@@ -1,9 +1,10 @@
 package finalproject.onlinegardenshop.entity.enums;
 
 public enum OrdersStatus {
+    CREATED,
     PENDING_PAYMENT,
     PAID,
-    IN_TRANSIT,
+    SHIPPED,
     DELIVERED,
     CANCELED
 }
