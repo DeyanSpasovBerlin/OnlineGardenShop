@@ -18,15 +18,15 @@ public class CartItems {
     @Column(columnDefinition = "int")
     private Integer id;
 
-    private Integer quantity; //quontity - неправильно, правильно - quantity
+    private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", columnDefinition = "int")
     private Cart cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", columnDefinition = "int")
-    private Products product;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "products_id", columnDefinition = "int")
+    private Products products;
 
 
 

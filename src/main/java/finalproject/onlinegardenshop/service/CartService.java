@@ -2,11 +2,9 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.CartDto;
 import finalproject.onlinegardenshop.entity.Cart;
-import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.CartMapper;
 import finalproject.onlinegardenshop.repository.CartRepository;
-import org.apache.catalina.Manager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
