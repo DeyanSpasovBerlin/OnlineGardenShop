@@ -14,7 +14,7 @@ public class FavoriteController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<FavoriteDto> getAllFavorites() {
         return service.getAllFavorites();
     }
