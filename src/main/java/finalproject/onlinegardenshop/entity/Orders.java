@@ -25,7 +25,7 @@ public class Orders {
     private Users user;
 //    private Integer userId;
 
-    private String deliveryAdress;
+    private String deliveryAddress;
 
     private String contactPhone;
 
