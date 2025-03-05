@@ -1,15 +1,3 @@
--- insert into users (id, first_name, last_name, email, phone, role)
--- values  (1,"Hans",  "Schmidt", "h.schmidt@example.com", "+49 30 1234567", "CLIENT"),
---         (2, "Anna",  "Müller","a.mueller@example.com", "+49 89 7654321", "CLIENT"),
---         (3, "Peter",  "Klein", "p.klein@example.com", "+49 40 6789012", "CLIENT"),
---         (4, "Maria",  "Schneider","m.schneider@example.com", "+49 69 1234567", "ADMIN"),
---         (5, "Lukas",  "Fischer", "l.fischer@example.com", "+49 711 9876543", "CLIENT"),
---         (6, "Sophie",  "Weber", "s.weber@example.com", "+49 221 4567890", "CLIENT"),
---         (7, "Max",  "Meyer", "m.meyer@example.com", "+49 211 2345678", "CLIENT"),
---         (8, "Julia",  "Wagner", "j.wagner@example.com", "+49 351 8765432", "CLIENT"),
---         (9, "Anna",  "Becker", "p.becker@example.com", "+49 341 7654321", "CLIENT"),
---         (10, "Clara",  "Hoffmann", "c.hoffmann@example.com", "+49 421 1234567", "ADMIN");
-
 INSERT INTO users (id, last_name, first_name, email, phone, password, role)
 VALUES
        (1, 'Johnson', 'Alice', 'alice@example.com', '1234567890', 'password123', 'ADMIN'),
@@ -57,8 +45,34 @@ values (1, 1, 8, 2),
         (3, 1, 5, 3),
         (4, 1, 9, 1);
 
-insert into orders(id, user_id, delivery_address, contact_phone, status, delivery_method)
-values (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDING_PAYMENT", "COURIER_DELIVERY"),
-       (2, 8, "Musterstraße 12, 10115 Berlin, Germany", "++49 351 8765432", "DELIVERED", "SELF_DELIVERY"),
-       (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "SHIPPED", "COURIER_DELIVERY"),
-       (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY");
+insert into orders(id, user_id, delivery_address, contact_phone, status, delivery_method, created_at, updated_at)
+values (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDING_PAYMENT", "COURIER_DELIVERY", NOW(), NULL),
+       (2, 8, "Musterstraße 12, 10115 Berlin, Germany", "+49 351 8765432", "DELIVERED", "SELF_DELIVERY", NOW(), NULL),
+       (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "SHIPPED", "COURIER_DELIVERY", NOW(), NULL),
+       (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY", NOW(), NULL);
+
+INSERT INTO order_items (id,order_id, product_id, quantity, price_at_purchase)
+VALUES
+    (1, 1, 8, 2, 35.00),
+    (2, 1, 6, 1, 15.00),
+    (3, 1, 5, 3, 8.00),
+    (4, 1, 9, 1, 10.50),
+    (5, 2, 3, 5, 2.50),
+    (6, 2, 7, 1, 300.00),
+    (7, 3, 2, 1, 150.00),
+    (8, 3, 4, 2, 5.00),
+    (9, 4, 10, 4, 10.00);
+
+
+INSERT INTO favorites (id, user_id, product_id)
+VALUES
+    (1, 1, 2),
+    (2, 1, 5),
+    (3, 2, 7),
+    (4, 3, 8),
+    (5, 4, 3),
+    (6, 5, 6),
+    (7, 6, 9),
+    (8, 7, 4),
+    (9, 8, 1),
+    (10, 9, 10);

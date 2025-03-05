@@ -24,6 +24,6 @@ private Integer id;
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY) // Many items can refer to one product
-    @JoinColumn(name = "products_id", nullable = false) // Foreign Key
+    @JoinColumn(name = "product_id", nullable = false) // Foreign Key
     private Products products;
 }
