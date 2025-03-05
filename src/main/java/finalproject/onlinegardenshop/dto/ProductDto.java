@@ -24,7 +24,6 @@ public class ProductDto {
     @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{1,100}$", message = "{validation.products.name}")
     private String name;
 
-    //@Pattern(regexp = "^[a-zA-Züäö]{1,255}$", message = "{validation.products.description}")
     private String description;
 
     @Digits(integer = 5, fraction = 2)
@@ -33,7 +32,6 @@ public class ProductDto {
     @Digits(integer = 5, fraction = 2)
     private double discountPrice;
 
-    //@Pattern(regexp = "^https?://[^\\s]+(\\.jpg|\\.jpeg|\\.png|\\.gif|\\.webp)$", message = "{validation.products.image_url}")
     private String imageUrl;
 
     private Instant createdAt;
