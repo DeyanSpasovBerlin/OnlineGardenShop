@@ -15,7 +15,6 @@ insert into cart(id, user_id)
 values (1, 1),
        (2, 8),
        (3, 5),
-       -- У нас для cart и user установлено отношение "1 к 1", т.е. у одного пользователя не может быть более 1 корзины.
        (4, 2);
 
 insert into categories (id, name)
@@ -39,11 +38,11 @@ values
     (9, 'Hanging Planter', 4, 'Elegant hanging planter for flowers.', 10.50, 'images/hanging_pot.jpg', 1100.00, NOW(), NULL),
     (10, 'Mineral Fertilizer', 3, 'Comprehensive fertilizer for plant growth.', 10.00, 'images/mineral_fertilizer.jpg', 0.00, NOW(), NULL);
 
-insert into cart_items (id, cart_id, product_id, quantity)
-values (1, 1, 8, 2),
-       (2, 1, 6, 1),
-       (3, 1, 5, 3),
-       (4, 1, 9, 1);
+insert into cart_items (id, cart_id, products_id, quantity)
+values ( 1,1, 8, 2),
+       ( 2,1, 6, 1),
+       ( 3,1, 5, 3),
+       ( 4,1, 9, 1);
 
 insert into orders(id, user_id, delivery_address, contact_phone, status, delivery_method)
 values (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDING_PAYMENT", "COURIER_DELIVERY"),
