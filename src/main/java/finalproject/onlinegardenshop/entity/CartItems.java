@@ -13,23 +13,17 @@ import lombok.Setter;
 @Entity
 public class CartItems {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "int")
-    private Integer id;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Integer id;
 
-    private Integer quantity; //quontity - неправильно, правильно - quantity
+    private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id", columnDefinition = "int")
+    @ManyToOne(fetch = FetchType.LAZY) // Many items can belong to one cart
+    @JoinColumn(name = "cart_id", nullable = false) // Foreign Key
     private Cart cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", columnDefinition = "int")
-    private Products product;
-
-
-
-
-
+    @ManyToOne(fetch = FetchType.LAZY) // Many items can refer to one product
+    @JoinColumn(name = "products_id", nullable = false) // Foreign Key
+    private Products products;
 }
