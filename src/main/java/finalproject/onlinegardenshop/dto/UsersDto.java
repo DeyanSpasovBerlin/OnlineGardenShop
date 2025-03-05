@@ -16,15 +16,16 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 public class UsersDto {
+
     private Integer id;
 
-    @NotNull(message="{validation.manager.lastName}")
-    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{0,44}$",message = "{validation.users.lastName}")
-    @Length(max = 45, message ="{validation.users.lastName}")
+    @NotNull(message="{validation.Users.lastName}")
+    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{0,44}$",message = "{validation.Users.lastName}")
+    @Length(max = 45, message ="{validation.Users.lastName}")
     private String lastName;
 
     @NotNull(message = "{validation.users.firstName}")
-    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{0,44}$",message = "{validation.users.firstName}")
+    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{0,44}$",message = "{validation.Users.firstName}")
     private String firstName;
 
     private String email;
