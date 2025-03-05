@@ -1,8 +1,6 @@
 package finalproject.onlinegardenshop.service;
 
-import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.entity.CartItems;
-import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.CartItemsMapper;
 import finalproject.onlinegardenshop.repository.CartItemsRepository;

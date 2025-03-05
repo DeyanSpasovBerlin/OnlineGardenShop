@@ -1,6 +1,5 @@
 package finalproject.onlinegardenshop.controller;
 
-import finalproject.onlinegardenshop.dto.CartItemsDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;

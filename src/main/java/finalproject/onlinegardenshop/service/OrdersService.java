@@ -1,9 +1,7 @@
 package finalproject.onlinegardenshop.service;
 
 
-import finalproject.onlinegardenshop.dto.CartItemsDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
-import finalproject.onlinegardenshop.entity.CartItems;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
