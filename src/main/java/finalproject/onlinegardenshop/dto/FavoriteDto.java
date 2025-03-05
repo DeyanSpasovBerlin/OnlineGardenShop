@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FavoriteDto {
     private Integer id;
-    private Integer userId;
+    private Integer usersId;
     private Integer productId;
 }

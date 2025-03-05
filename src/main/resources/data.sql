@@ -11,7 +11,7 @@ VALUES
     (9, 'Thomas', 'Ian', 'ian@example.com', '9012345678', 'ianSecure', 'CLIENT'),
     (10, 'Davis', 'Jack', 'jack@example.com', '0123456789', 'jackPass', 'CLIENT');
 
-insert into cart(id, user_id)
+insert into cart(id, users_id)
 values (1, 1),
        (2, 8),
        (3, 5),
@@ -25,7 +25,7 @@ values
     (4, 'Pots and planters'),
     (5, 'Tools and Equipment');
 
-insert into products (id, name, category_id, description, price, image_url, discount_price, created_at, updated_at)
+insert into products (id, name, categories_id, description, price, image_url, discount_price, created_at, updated_at)
 values
     (1, 'Shovel', 5, 'Durable shovel for garden and yard work.', 30.00, 'images/shovel.jpg', 0.00, NOW(), NULL),
     (2, 'Electric Lawn Mower', 5, 'Compact lawn mower for easy lawn care.', 150.00, 'images/lawnmower.jpg', 7990.00, NOW(), NULL),
@@ -44,14 +44,14 @@ values ( 1,1, 8, 2),
        ( 3,1, 5, 3),
        ( 4,1, 9, 1);
 
-INSERT INTO orders(id, user_id, delivery_address, contact_phone, status, delivery_method, created_at, updated_at)
+INSERT INTO orders(id, users_id, delivery_address, contact_phone, status, delivery_method, created_at, updated_at)
 VALUES
     (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDING_PAYMENT", "COURIER_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (2, 8, "Musterstraße 12, 10115 Berlin, Germany", "+49 351 8765432", "DELIVERED", "SELF_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "SHIPPED", "COURIER_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO order_items (id, order_id, product_id, quantity, price_at_purchase)
+INSERT INTO order_items (id, orders_id, products_id, quantity, price_at_purchase)
 VALUES
     (1, 1, 8, 2, 35.00),
     (2, 1, 6, 1, 15.00),
@@ -63,7 +63,7 @@ VALUES
     (8, 3, 4, 2, 5.00),
     (9, 4, 10, 4, 10.00);
 
-INSERT INTO favorites (id, user_id, product_id)
+INSERT INTO favorites (id, users_id, products_id)
 VALUES
     (1, 1, 2),
     (2, 1, 5),

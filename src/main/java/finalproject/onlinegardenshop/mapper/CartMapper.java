@@ -10,10 +10,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartMapper {
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "users", ignore = true)//"user" . old
     Cart dtoToEntity(CartDto cartDto);
 
-    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "usersId", source = "users.id")//target = "userId", source = "user.id" . old
     CartDto entityToDto(Cart entity);
 
     List<CartDto> entityListToDto(List<Cart> entities);

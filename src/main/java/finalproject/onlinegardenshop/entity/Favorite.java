@@ -19,11 +19,11 @@ public class Favorite {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
+    @JoinColumn(name = "users_id")
+    private Users users;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "products_id")
     private Products product;
 
 }

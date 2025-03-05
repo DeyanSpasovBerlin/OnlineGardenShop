@@ -37,7 +37,7 @@ public class Products {
     private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", columnDefinition = "int")
+    @JoinColumn(name = "categories_id", columnDefinition = "int")
     private Categories category;
 
 }

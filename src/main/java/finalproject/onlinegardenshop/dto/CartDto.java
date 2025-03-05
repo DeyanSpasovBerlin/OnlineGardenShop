@@ -14,5 +14,5 @@ public class CartDto {
 
     private Integer id;
 
-    private Integer userId;
+    private Integer usersId;//userId - old
 }

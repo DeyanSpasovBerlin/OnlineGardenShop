@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Table(name = "cart")
 public class Cart {
 
     @Id
@@ -19,7 +20,7 @@ public class Cart {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", columnDefinition = "int")
-    private Users user;
+    @JoinColumn(name = "users_id", columnDefinition = "int")// "user_id" - old
+    private Users users;//user -old
 
 }

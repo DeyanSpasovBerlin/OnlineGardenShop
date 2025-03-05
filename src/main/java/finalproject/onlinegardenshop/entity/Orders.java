@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Table(name = "orders")
 public class Orders {
 
     @Id
@@ -24,7 +25,7 @@ public class Orders {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", columnDefinition = "int")
+    @JoinColumn(name = "users_id", columnDefinition = "int")
     private Users users;
 
     private String deliveryAddress;
