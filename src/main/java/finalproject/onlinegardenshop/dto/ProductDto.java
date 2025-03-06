@@ -21,7 +21,7 @@ public class ProductDto {
     private int id;
 
     @NotNull(message = "{validation.products.name}")
-    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{1,100}$", message = "{validation.products.name}")
+    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö ]{0,255}$", message = "{validation.products.name}")
     private String name;
 
     private String description;
