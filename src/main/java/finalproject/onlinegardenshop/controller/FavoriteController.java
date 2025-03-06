@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.FavoriteDto;
 import finalproject.onlinegardenshop.service.FavoriteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,18 +16,15 @@ public class FavoriteController {
     }
 
     @GetMapping("/all")
-    public List<FavoriteDto> getAllFavorites() {
-        return service.getAllFavorites();
-    }
-
-    @GetMapping("/{id}")
-    public FavoriteDto getFavoriteById(@PathVariable Integer id) {
-        return service.getFavoriteById(id);
+    public ResponseEntity<List<FavoriteDto>> getAllFavorites() {
+        return ResponseEntity.ok(service.getAllFavorites());
     }
 
     @PostMapping
-    public FavoriteDto saveFavorite(@RequestBody FavoriteDto dto) {
-        return service.saveFavorite(dto);
+    public ResponseEntity<FavoriteDto> saveFavorite(@RequestBody FavoriteDto dto) {
+        return ResponseEntity.ok(service.saveFavorite(dto));
     }
+
+    //delete добавить
 }
 

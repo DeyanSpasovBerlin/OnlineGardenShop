@@ -1,5 +1,6 @@
 package finalproject.onlinegardenshop.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FavoriteDto {
     private Integer id;
-    private Integer usersId;
+//    @NotNull(message = "{validation.users.userId}")
+//    private Integer usersId;
+
+    @NotNull(message = "{validation.favorites.productId}")
     private Integer productId;
 }

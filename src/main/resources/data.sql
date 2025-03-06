@@ -51,7 +51,7 @@ VALUES
     (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "SHIPPED", "COURIER_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO order_items (id, orders_id, products_id, quantity, price_at_purchase)
+INSERT INTO order_items (id, order_id, product_id, quantity, price_at_purchase)
 VALUES
     (1, 1, 8, 2, 35.00),
     (2, 1, 6, 1, 15.00),
@@ -63,7 +63,7 @@ VALUES
     (8, 3, 4, 2, 5.00),
     (9, 4, 10, 4, 10.00);
 
-INSERT INTO favorites (id, users_id, products_id)
+INSERT INTO favorites (id, user_id, product_id)
 VALUES
     (1, 1, 2),
     (2, 1, 5),

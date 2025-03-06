@@ -30,4 +30,5 @@ public class FavoriteService {
         Favorite entity = mapper.toEntity(dto);
         return mapper.toDto(repository.save(entity));
     }
+//    надо добавить метод удаление
 }
