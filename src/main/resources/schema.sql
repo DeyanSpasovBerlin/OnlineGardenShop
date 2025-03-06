@@ -23,7 +23,7 @@ USE `onlineGardenShop` ;
 DROP TABLE IF EXISTS `onlineGardenShop`.`users` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`users` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `last_name` VARCHAR(150) NULL,
   `first_name` VARCHAR(150) NULL,
   `email` VARCHAR(45) NULL,
@@ -41,7 +41,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`cart` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`cart` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `users_id` INT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
@@ -60,7 +60,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`categories` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`categories` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)
@@ -73,7 +73,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`products` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`products` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(150) NULL,
   `categories_id` INT NULL,
   `description` VARCHAR(250) NULL,
@@ -99,7 +99,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`FAVORITES` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`FAVORITES` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `users_id` INT NULL,
   `products_id` INT NULL,
   PRIMARY KEY (`id`),
@@ -125,7 +125,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`cart_items` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`cart_items` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL  AUTO_INCREMENT,
   `quantity` INT NULL,
   `cart_id` INT NULL,
   `products_id` INT NULL,
@@ -152,7 +152,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`orders` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`orders` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `delivery_address` VARCHAR(150) NULL,
@@ -177,7 +177,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `onlineGardenShop`.`order_items` ;
 
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`order_items` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `quantity` INT NULL,
   `purchase_price` DECIMAL(15,2) NULL,
   `orders_id` INT NULL,
