@@ -10,6 +10,7 @@ import java.util.List;
 @RequestMapping("/orders/{orderId}/order-items")
 public class OrderItemController {
     private final OrderItemService service;
+    private Integer orderId;
 
     public OrderItemController(OrderItemService service) {
         this.service = service;
@@ -17,6 +18,7 @@ public class OrderItemController {
 
     @GetMapping("/all")
     public ResponseEntity<List<OrderItemsDto>> getAllOrderItems(@PathVariable Integer orderId) {
+        this.orderId = orderId;
         return ResponseEntity.ok(service.getAllOrderItems());
     }
 }

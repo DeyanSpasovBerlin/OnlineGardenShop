@@ -20,10 +20,10 @@ public class OrderItem {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "orders_id")
     private Orders order;
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "products_id")
     private Products product;
     private int quantity;
     private double priceAtPurchase;
