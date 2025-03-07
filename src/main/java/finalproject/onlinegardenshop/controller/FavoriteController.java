@@ -25,6 +25,10 @@ public class FavoriteController {
         return ResponseEntity.ok(service.saveFavorite(dto));
     }
 
-    //delete добавить
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavorite(@PathVariable Integer id) {
+        service.deleteFavorite(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 

@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.FavoriteDto;
 import finalproject.onlinegardenshop.entity.Favorite;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.repository.FavoriteRepository;
 import finalproject.onlinegardenshop.mapper.FavoriteMapper;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,10 @@ public class FavoriteService {
         Favorite entity = mapper.toEntity(dto);
         return mapper.toDto(repository.save(entity));
     }
-//    надо добавить метод удаление
+
+    public void deleteFavorite(Integer id) {
+        Favorite favorite = repository.findById(id)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Favorite not found with id " + id));
+        repository.delete(favorite);
+    }
 }
