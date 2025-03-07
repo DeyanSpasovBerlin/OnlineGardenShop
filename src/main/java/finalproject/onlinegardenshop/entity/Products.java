@@ -31,6 +31,7 @@ public class Products {
     private String imageUrl;
 
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     @UpdateTimestamp

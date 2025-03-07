@@ -50,16 +50,17 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDto updateProduct(ProductDto dto){
-        int id = dto.getId();
+    public ProductDto updateProduct(int id, ProductDto dto) { // Принимаем id как параметр
         Optional<Products> optional = repository.findById(id);
-        if(optional.isPresent()){
-            Products product = mapper.dtoToEntity(dto);
-            Products savedProduct = repository.save(product);
-            return mapper.entityToDto(savedProduct);
+        if (optional.isPresent()) {
+            Products product = mapper.dtoToEntity(dto); // Маппинг DTO в сущность
+            product.setId(id); // Убедитесь, что id сохраняется (если нужно)
+            Products savedProduct = repository.save(product); // Сохраняем обновленную сущность
+            return mapper.entityToDto(savedProduct); // Возвращаем DTO
         }
         throw new OnlineGardenShopResourceNotFoundException(String.format("Product with id %s not found", id));
     }
+
 
     @Transactional
     public void deleteProduct(int id){
