@@ -5,7 +5,6 @@ import finalproject.onlinegardenshop.dto.CategoryDto;
 import finalproject.onlinegardenshop.entity.Categories;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
