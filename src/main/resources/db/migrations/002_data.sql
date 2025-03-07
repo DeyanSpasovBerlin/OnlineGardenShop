@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset DeyanSpasov:002
+
 INSERT INTO users (id, last_name, first_name, email, phone, password, role)
 VALUES
     (1, 'Johnson', 'Alice', 'alice@example.com', '1234567890', 'password123', 'ADMIN'),
