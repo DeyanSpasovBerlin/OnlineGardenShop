@@ -1,6 +1,7 @@
 package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
+import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
 import finalproject.onlinegardenshop.service.UsersService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,25 @@ public class UsersController {
               "phone": "1234567890",
               "password": "securePass123"
             } -> "email": "Email is required"  400 Bad Request
+     */
+
+    //2.  •	Аутентификация пользователя conrtoller
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody UsersDto loginRequestDto) {//? смотри наверх; arg -> email+ pass
+        try {
+            String token = userService.authenticateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+            return ResponseEntity.ok(token); // Return 200 OK if successful
+        } catch (OnlineGardenSchopBadRequestException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");//Return 401 Unauthorized
+        }
+    }
+    /*
+    in Postman:
+    POST /users/login
+    {
+    "email": "alice@example.com",
+    "password": "password123"
+    } -> 200 OK or -> 401 Unauthorized "Invalid credentials"
      */
 
 

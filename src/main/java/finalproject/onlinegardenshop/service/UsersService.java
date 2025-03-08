@@ -84,6 +84,16 @@ public class UsersService {
         return mapper.entityToDto(savedUser);
     }
 
+    //2.  • Аутентификация пользователя Service
+    public String authenticateUser(String email, String password) {
+        Users user = repository.findByEmail(email)
+                .orElseThrow(() -> new OnlineGardenSchopBadRequestException("Invalid credentials"));// Find the user by email
+        if (!password.equals(user.getPassword())) {// Compare input password with stored password (plain-text comparison)
+            throw new OnlineGardenSchopBadRequestException("Invalid credentials");
+        }
+        System.out.println("User " + email + " successfully authenticated.");// Log successful authentication
+        return "User authenticated successfully!";// Return success message after authentication
+    }
 
 }
 
