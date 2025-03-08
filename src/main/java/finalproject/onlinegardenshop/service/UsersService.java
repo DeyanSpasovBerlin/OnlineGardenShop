@@ -107,13 +107,10 @@ public class UsersService {
         Optional<Users> optional = repository.findById(usersDto.getId());
         if (optional.isPresent()) {
             Users existingUser = optional.get();
-// если какаое-то поле не задано, задаем его вручную от старого ентити
+// если какаое-то поле не задано, задаем его вручную от старого ентити manualy set existing fields
             if (usersDto.getFirstName() != null) existingUser.setFirstName(usersDto.getFirstName());
             if (usersDto.getLastName() != null) existingUser.setLastName(usersDto.getLastName());
             if (usersDto.getPhone() != null) existingUser.setPhone(usersDto.getPhone());
-//            if (usersDto.getEmail() != null) existingUser.setEmail(usersDto.getEmail());
-//            if (usersDto.getPassword() != null) existingUser.setPassword(usersDto.getPassword());
-//            if (usersDto.getRole() != null) existingUser.setRole(usersDto.getRole());
             Users savedUser = repository.save(existingUser);
             return mapper.entityToDto(savedUser);
         }
