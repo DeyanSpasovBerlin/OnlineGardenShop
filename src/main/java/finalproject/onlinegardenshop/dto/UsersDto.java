@@ -1,5 +1,6 @@
 package finalproject.onlinegardenshop.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

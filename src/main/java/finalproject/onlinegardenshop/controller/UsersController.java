@@ -1,27 +1,33 @@
 package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
+import finalproject.onlinegardenshop.dto.UsersUpdateDto;
 import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
 import finalproject.onlinegardenshop.service.UsersService;
 import jakarta.validation.Valid;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import org.springframework.context.MessageSource;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/users")
 @Validated
 public class UsersController {
-    private UsersService userService;
+    private final UsersService userService;
+    private final Validator validator;//this is need in updatedUsersController
 
     @Autowired
-    public UsersController(UsersService userService) {
+    public UsersController(UsersService userService, Validator validator, MessageSource messageSource) {
         this.userService = userService;
+        this.validator = validator;
     }
 
     @GetMapping("/all")
@@ -96,7 +102,48 @@ public class UsersController {
     } -> 200 OK or -> 401 Unauthorized "Invalid credentials"
      */
 
-    //update User
-    
+    //3. update Users  200 OK, 400 Bad Request, 404 Not Found
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> updatedUsers(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto user) {
+//        user.setId(id);
+//        UsersDto newUser = userService.updatedUsers(user);
+//        return new ResponseEntity<>(newUser, HttpStatus.ACCEPTED);
+//    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody Map<String, Object> requestBody) {
+        // проверяем для наличии в query запретные поля check for not allowed field
+        if (requestBody.containsKey("password") || requestBody.containsKey("email") || requestBody.containsKey("role")) {
+            throw new OnlineGardenSchopBadRequestException("Updating password, email, or role is not allowed.");
+        }
+        // Convert request body to DTO
+        UsersUpdateDto user = new UsersUpdateDto();
+        user.setId(id);
+        user.setFirstName((String) requestBody.get("firstName"));
+        user.setLastName((String) requestBody.get("lastName"));
+        user.setPhone((String) requestBody.get("phone"));
+        // @Valid work only on dto object. Here we use  Map<String, Object> and firstName,... is not validated with regexp.
+        //When manualy add validator we say javac to validate Map
+        Set<ConstraintViolation<UsersUpdateDto>> violations = validator.validate(user);
+        if (!violations.isEmpty()) {
+            StringBuilder errorMessages = new StringBuilder();
+            for (ConstraintViolation<UsersUpdateDto> violation : violations) {
+                errorMessages.append(violation.getMessage()).append(" ");
+            }
+            throw new OnlineGardenSchopBadRequestException(errorMessages.toString().trim());
+        }
+        //здесь меняем UsersUpdateDto -> UsersDto потому что в Service
+        // возвращаеться UsersDto, потому что mapper работает только с UsersDto
+        UsersDto updatedUser = userService.updatedUsersService(user);
+        return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
+    }
+         /*
+    corect query in Postman:
+    put: http://localhost:8080/users/{id}
+    {
+    "lastName": "string",
+    "firstName": "string",
+    "phone": "string"
+      */
 
 }

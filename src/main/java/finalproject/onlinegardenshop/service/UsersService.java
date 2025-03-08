@@ -1,17 +1,23 @@
 package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
+import finalproject.onlinegardenshop.dto.UsersUpdateDto;
 import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.UsersMapper;
 import finalproject.onlinegardenshop.repository.UsersRepository;
+import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,6 +99,25 @@ public class UsersService {
         }
         System.out.println("User " + email + " successfully authenticated.");// Log successful authentication
         return "User authenticated successfully!";// Return success message after authentication
+    }
+
+    //3. update Users  200 OK, 400 Bad Request, 404 Not Found
+    @Transactional
+    public UsersDto updatedUsersService(@Valid UsersUpdateDto usersDto) {
+        Optional<Users> optional = repository.findById(usersDto.getId());
+        if (optional.isPresent()) {
+            Users existingUser = optional.get();
+// если какаое-то поле не задано, задаем его вручную от старого ентити
+            if (usersDto.getFirstName() != null) existingUser.setFirstName(usersDto.getFirstName());
+            if (usersDto.getLastName() != null) existingUser.setLastName(usersDto.getLastName());
+            if (usersDto.getPhone() != null) existingUser.setPhone(usersDto.getPhone());
+//            if (usersDto.getEmail() != null) existingUser.setEmail(usersDto.getEmail());
+//            if (usersDto.getPassword() != null) existingUser.setPassword(usersDto.getPassword());
+//            if (usersDto.getRole() != null) existingUser.setRole(usersDto.getRole());
+            Users savedUser = repository.save(existingUser);
+            return mapper.entityToDto(savedUser);
+        }
+        throw new OnlineGardenShopResourceNotFoundException("User with id = " + usersDto.getId() + " not found in database");
     }
 
 }
