@@ -33,7 +33,11 @@ public class UsersDto {
     @Email(regexp = "^[a-zA-Z][\\w.-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "{validation.users.email}")
     private String email;
 
-
+    @NotNull//phone must present
+    @Pattern(
+            regexp = "^\\+?[0-9 ]{7,15}$",
+            message = "{validation.users.phone}"
+    )
     private String phone;
 
     @NotNull(message = "{validation.users.password}")

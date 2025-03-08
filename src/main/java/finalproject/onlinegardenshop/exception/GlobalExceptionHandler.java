@@ -81,11 +81,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Some error on the server. Please try again later", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    //2.  •	Аутентификация пользователя
-    @ExceptionHandler(OnlineGardenSchopBadRequestException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<String> handleUnauthorizedException(OnlineGardenSchopBadRequestException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
+//    //2.  •	Аутентификация пользователя
+//    @ExceptionHandler(OnlineGardenSchopBadRequestException.class)
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    public ResponseEntity<String> handleUnauthorizedException(OnlineGardenSchopBadRequestException e) {
+//        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+//    }
 
     }
