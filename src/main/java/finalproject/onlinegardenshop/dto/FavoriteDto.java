@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FavoriteDto {
     private Integer id;
-    
+
     @NotNull(message = "{validation.favorites.productId}")
-    private Integer productId;
+    private Integer productsId;
 }
