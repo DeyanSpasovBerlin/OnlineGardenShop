@@ -98,18 +98,11 @@ public class UsersController {
     POST /users/login
     {
     "email": "alice@example.com",
-    "password": "password123"
+    "password": "password123A!"
     } -> 200 OK or -> 401 Unauthorized "Invalid credentials"
      */
 
     //3. update Users  200 OK, 400 Bad Request, 404 Not Found
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> updatedUsers(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto user) {
-//        user.setId(id);
-//        UsersDto newUser = userService.updatedUsers(user);
-//        return new ResponseEntity<>(newUser, HttpStatus.ACCEPTED);
-//    }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody Map<String, Object> requestBody) {
         // проверяем для наличии в query запретные поля check for not allowed field
