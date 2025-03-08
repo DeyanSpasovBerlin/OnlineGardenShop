@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.entity.Users;
+import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.UsersMapper;
 import finalproject.onlinegardenshop.repository.UsersRepository;
@@ -61,6 +62,27 @@ public class UsersService {
                 firstName,lastName);
         return mapper.entityListToDto(users);
     }
+
+    // REST API from tex docs:
+    //    1 •	Регистрация пользователя ->   service
+
+    @Transactional
+    public UsersDto registerUser(UsersDto usersDto) {
+        logger.debug("Registering new user with email: {}", usersDto.getEmail());
+        // Check if email already exists
+        Optional<Users> existingUser = repository.findByEmail(usersDto.getEmail());
+        if (existingUser.isPresent()) {
+            throw new OnlineGardenSchopBadRequestException("Email is already in use");//400 Bad Request
+            // or if Invalid input (missing fields, wrong format) -> "email": "Email is required"
+        }
+        // Convert DTO to entity and save to DB
+        Users user = mapper.dtoToEntity(usersDto);
+        user.setRole(UserRole.CLIENT); // Default role
+        Users savedUser = repository.save(user);
+        logger.info("User registered successfully: {}", savedUser.getEmail());//201 Created
+        return mapper.entityToDto(savedUser);
+    }
+
 
 }
 
