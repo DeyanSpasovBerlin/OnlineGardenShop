@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.OrderItemsDto;
 import finalproject.onlinegardenshop.entity.OrderItem;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.repository.OrderItemRepository;
 import finalproject.onlinegardenshop.mapper.OrderItemMapper;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,8 @@ public class OrderItemService {
     }
 
     public OrderItemsDto getOrderItemById(Integer id) {
-        return repository.findById(id).map(mapper::toDto).orElse(null);
-    }
-
-    public OrderItemsDto saveOrderItem(OrderItemsDto dto) {
-        OrderItem entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
+        OrderItem orderItem = repository.findById(id)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("OrderItem not found with id " + id));
+        return mapper.toDto(orderItem);
     }
 }
-

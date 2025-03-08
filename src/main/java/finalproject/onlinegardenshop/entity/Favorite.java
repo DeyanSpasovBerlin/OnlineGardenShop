@@ -20,7 +20,7 @@ public class Favorite {
 
     @ManyToOne
     @JoinColumn(name = "users_id")
-    private Users users;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "products_id")
