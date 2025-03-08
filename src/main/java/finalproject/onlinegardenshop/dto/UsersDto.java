@@ -43,7 +43,7 @@ public class UsersDto {
     @NotNull(message = "{validation.users.password}")
     @Length(min = 8, message = "{validation.users.password}")
     @Pattern(
-            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&\\-_])[A-Za-z\\d@$!%*?&\\-_]{8,}$",
             message = "{validation.users.password}"
     )
     private String password;
