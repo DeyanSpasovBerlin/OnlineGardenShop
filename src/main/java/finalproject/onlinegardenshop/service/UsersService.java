@@ -3,6 +3,7 @@ package finalproject.onlinegardenshop.service;
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
+import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.UsersMapper;
 import finalproject.onlinegardenshop.repository.UsersRepository;
