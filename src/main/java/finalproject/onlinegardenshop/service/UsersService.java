@@ -131,22 +131,4 @@ public class UsersService {
     }
 
 }
-/*
-    all query for testing Users:
-    http://localhost:8080/users/all
-    http://localhost:8080/users/9
-    POST http://localhost:8080/users/register
-        {
-            "lastName": "LastFinalProbe",
-            "firstName": "FirstFinalProbe",
-            "email": "FirstFinalProbe@example.com",
-            "phone": "909876543218",
-            "password": "FirstFinalProbeSecure_1"
-    }
-    POST http://localhost:8080/users/login
-        {
-            "email": "FirstFinalProbe@example.com",
-            "password": "FirstFinalProbeSecure_1"
-    }
-    DELETE http://localhost:8080/users/17
- */
+

@@ -139,6 +139,7 @@ public class UsersController {
     "firstName": "string",
     "phone": "string"
       */
+
     // REST API from tex docs:
     //4 •	Удаление учетной записи
     @DeleteMapping("{id}")
@@ -151,11 +152,23 @@ public class UsersController {
     delete: http://localhost:8080/users/{id}
       */
 
-//     @DeleteMapping("{id}")
-//    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-//        userService.deleteUser(id);
-//        return ResponseEntity.accepted().build();
-//    }
-
-
 }
+/*
+    all query for testing Users:
+    http://localhost:8080/users/all
+    http://localhost:8080/users/9
+    POST http://localhost:8080/users/register
+        {
+            "lastName": "LastFinalProbe",
+            "firstName": "FirstFinalProbe",
+            "email": "FirstFinalProbe@example.com",
+            "phone": "909876543218",
+            "password": "FirstFinalProbeSecure_1"
+    }
+    POST http://localhost:8080/users/login
+        {
+            "email": "FirstFinalProbe@example.com",
+            "password": "FirstFinalProbeSecure_1"
+    }
+    DELETE http://localhost:8080/users/17
+ */
