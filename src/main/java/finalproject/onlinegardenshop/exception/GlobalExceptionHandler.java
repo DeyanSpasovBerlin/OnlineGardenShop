@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OnlineGardenShopResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleBankAppResourceNotFoundException(OnlineGardenShopResourceNotFoundException e) {
+    public ResponseEntity<String> handleOnlineGardenShopResourceNotFoundException(OnlineGardenShopResourceNotFoundException e) {
         logger.debug("OnlineGardenShopResourceNotFoundException", e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OnlineGardenSchopBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleBankAppBadRequestException(OnlineGardenSchopBadRequestException e) {
+    public ResponseEntity<String> handleOnlineGardenSchopBadRequestException(OnlineGardenSchopBadRequestException e) {
         logger.debug("BankAppBadRequestException", e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
@@ -81,6 +81,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Some error on the server. Please try again later", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+//    //2.  •	Аутентификация пользователя
+//    @ExceptionHandler(OnlineGardenSchopBadRequestException.class)
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    public ResponseEntity<String> handleUnauthorizedException(OnlineGardenSchopBadRequestException e) {
+//        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+//    }
 
-
-}
+    }

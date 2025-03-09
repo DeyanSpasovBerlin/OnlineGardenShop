@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UsersRepository extends JpaRepository<Users,Integer> {
 
@@ -20,5 +21,9 @@ public interface UsersRepository extends JpaRepository<Users,Integer> {
     @Query("update Users u set u.role = :status where u.id = :id")
     @Modifying
     int updateStatus(Long id, UserRole status);
+
+    // REST API from tex docs:
+    // 1 •	Регистрация пользователя repository
+    Optional<Users> findByEmail(String email);
 
 }
