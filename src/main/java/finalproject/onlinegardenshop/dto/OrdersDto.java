@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -36,4 +38,6 @@ public class OrdersDto {
     private DeliveryMethod deliveryMethod;
 
     private Integer usersId;
+
+    private List<DeyanOrderItemsDto> items;//ето позволяет когда создаю order  записать  и создать orderItems
 }

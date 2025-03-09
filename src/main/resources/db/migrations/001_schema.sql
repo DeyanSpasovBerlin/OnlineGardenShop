@@ -94,12 +94,6 @@ CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`cart_items` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `onlineGardenShop`.`orders`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `onlineGardenShop`.`orders` ;
-
 CREATE TABLE IF NOT EXISTS `onlineGardenShop`.`orders` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
