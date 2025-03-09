@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.dto.UsersUpdateDto;
+import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
 import finalproject.onlinegardenshop.service.UsersService;
 import jakarta.validation.Valid;
@@ -138,5 +139,23 @@ public class UsersController {
     "firstName": "string",
     "phone": "string"
       */
+    // REST API from tex docs:
+    //4 •	Удаление учетной записи
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
+        userService.deleteUser(id);
+        return ResponseEntity.accepted().build();
+    }
+             /*
+    corect query in Postman:
+    delete: http://localhost:8080/users/{id}
+      */
+
+//     @DeleteMapping("{id}")
+//    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+//        userService.deleteUser(id);
+//        return ResponseEntity.accepted().build();
+//    }
+
 
 }

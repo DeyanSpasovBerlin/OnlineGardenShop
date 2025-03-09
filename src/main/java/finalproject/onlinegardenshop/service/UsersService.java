@@ -117,5 +117,36 @@ public class UsersService {
         throw new OnlineGardenShopResourceNotFoundException("User with id = " + usersDto.getId() + " not found in database");
     }
 
-}
+    // REST API from tex docs:
+    //4 •	Удаление учетной записи
+//    public void deleteUser(Integer id){repository.deleteById(id);} ето не работает- спросить почему!?
+ @Transactional
+    public void deleteUser(Integer id){//ето работает- почему - в чем разница?
+        Optional<Users> userForDelete = repository.findById(id);
+        if (userForDelete.isPresent()) {;
+            repository.deleteById(id);
+        } else {
+            throw new OnlineGardenShopResourceNotFoundException("User with id = " + id + " not found in database");
+        }
+    }
 
+}
+/*
+    all query for testing Users:
+    http://localhost:8080/users/all
+    http://localhost:8080/users/9
+    POST http://localhost:8080/users/register
+        {
+            "lastName": "LastFinalProbe",
+            "firstName": "FirstFinalProbe",
+            "email": "FirstFinalProbe@example.com",
+            "phone": "909876543218",
+            "password": "FirstFinalProbeSecure_1"
+    }
+    POST http://localhost:8080/users/login
+        {
+            "email": "FirstFinalProbe@example.com",
+            "password": "FirstFinalProbeSecure_1"
+    }
+    DELETE http://localhost:8080/users/17
+ */
