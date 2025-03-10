@@ -2,7 +2,7 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.ProductCreateDto;
 import finalproject.onlinegardenshop.dto.ProductsDto;
-import finalproject.onlinegardenshop.service.ProductService;
+import finalproject.onlinegardenshop.service.ProductsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ import java.util.Optional;
 @Validated
 public class ProductsController {
 
-    private final ProductService service;
+    private final ProductsService service;
 
     @Autowired
-    public ProductsController(ProductService service) {
+    public ProductsController(ProductsService service) {
         this.service = service;
     }
 

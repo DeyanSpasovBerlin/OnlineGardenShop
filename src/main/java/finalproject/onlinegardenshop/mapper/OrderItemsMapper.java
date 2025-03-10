@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.mapper;
 
 import finalproject.onlinegardenshop.dto.OrderItemsDto;
-import finalproject.onlinegardenshop.entity.OrderItem;
+import finalproject.onlinegardenshop.entity.OrderItems;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -12,9 +12,9 @@ public interface OrderItemsMapper {
 
     @Mapping(source = "order.id", target = "orderId")
     @Mapping(source = "product.id", target = "productId")
-    OrderItemsDto toDto(OrderItem orderItem);
+    OrderItemsDto toDto(OrderItems orderItem);
 
     @Mapping(target = "order", ignore = true)
     @Mapping(target = "product", ignore = true)
-    OrderItem toEntity(OrderItemsDto dto);
+    OrderItems toEntity(OrderItemsDto dto);
 }

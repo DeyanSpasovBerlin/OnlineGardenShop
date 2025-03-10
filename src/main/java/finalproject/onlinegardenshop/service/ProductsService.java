@@ -17,14 +17,14 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class ProductService {
+public class ProductsService {
 
     private final ProductsRepository repository;
-    private static final Logger logger = LogManager.getLogger(ProductService.class);
+    private static final Logger logger = LogManager.getLogger(ProductsService.class);
     private final ProductsMapper mapper;
 
     @Autowired
-    public ProductService(ProductsRepository repository, ProductsMapper mapper) {
+    public ProductsService(ProductsRepository repository, ProductsMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
