@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.mapper;
 
-import finalproject.onlinegardenshop.dto.CategoryCreateDto;
 import finalproject.onlinegardenshop.dto.CategoriesDto;
+import finalproject.onlinegardenshop.dto.CategoryCreateDto;
 import finalproject.onlinegardenshop.entity.Categories;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
