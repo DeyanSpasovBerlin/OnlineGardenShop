@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.mapper;
 
+import finalproject.onlinegardenshop.dto.CategoriesDto;
 import finalproject.onlinegardenshop.dto.CategoryCreateDto;
-import finalproject.onlinegardenshop.dto.CategoryDto;
 import finalproject.onlinegardenshop.entity.Categories;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,13 +9,13 @@ import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface CategoryMapper {
+public interface CategoriesMapper {
 
-    Categories dtoToEntity(CategoryDto dto);
+    Categories dtoToEntity(CategoriesDto dto);
 
-    CategoryDto entityToDto(Categories entity);
+    CategoriesDto entityToDto(Categories entity);
 
-    List<CategoryDto> entityListToDto(List<Categories> categories);
+    List<CategoriesDto> entityListToDto(List<Categories> categories);
 
     @Mapping(target = "id", ignore = true)
     Categories createDtoToEntity(CategoryCreateDto dto);

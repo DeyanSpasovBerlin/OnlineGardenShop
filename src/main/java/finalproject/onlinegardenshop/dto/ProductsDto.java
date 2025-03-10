@@ -14,7 +14,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductDto {
+public class ProductsDto {
 
     private int id;
 

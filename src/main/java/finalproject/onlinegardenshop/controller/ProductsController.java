@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.ProductCreateDto;
-import finalproject.onlinegardenshop.dto.ProductDto;
+import finalproject.onlinegardenshop.dto.ProductsDto;
 import finalproject.onlinegardenshop.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ public class ProductsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDto>> getAll(){
-        List<ProductDto> products = service.getAll();
+    public ResponseEntity<List<ProductsDto>> getAll(){
+        List<ProductsDto> products = service.getAll();
         if(!products.isEmpty()){
             return new ResponseEntity<>(products, HttpStatus.OK);
         }
@@ -35,8 +35,8 @@ public class ProductsController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getById(@PathVariable int id){
-        Optional<ProductDto> product = service.getById(id);
+    public ResponseEntity<ProductsDto> getById(@PathVariable int id){
+        Optional<ProductsDto> product = service.getById(id);
         if(product.isPresent()){
             return new ResponseEntity<>(product.get(), HttpStatus.OK);
         }
@@ -44,14 +44,14 @@ public class ProductsController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductDto> add(@RequestBody @Valid ProductCreateDto product){
-        ProductDto created = service.addProduct(product);
+    public ResponseEntity<ProductsDto> add(@RequestBody @Valid ProductCreateDto product){
+        ProductsDto created = service.addProduct(product);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDto> update(@PathVariable int id, @RequestBody @Valid ProductDto product){
-        ProductDto updated = service.updateProduct(id, product);
+    public ResponseEntity<ProductsDto> update(@PathVariable int id, @RequestBody @Valid ProductsDto product){
+        ProductsDto updated = service.updateProduct(id, product);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 

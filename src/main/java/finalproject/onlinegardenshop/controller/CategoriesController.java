@@ -1,8 +1,8 @@
 package finalproject.onlinegardenshop.controller;
 
+import finalproject.onlinegardenshop.dto.CategoriesDto;
 import finalproject.onlinegardenshop.dto.CategoryCreateDto;
-import finalproject.onlinegardenshop.dto.CategoryDto;
-import finalproject.onlinegardenshop.service.CategoryService;
+import finalproject.onlinegardenshop.service.CategoriesService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +17,18 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/categories")
 @Validated
-public class CategoryController {
+public class CategoriesController {
 
-    private final CategoryService service;
+    private final CategoriesService service;
 
     @Autowired
-    public CategoryController(CategoryService service) {
+    public CategoriesController(CategoriesService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> getAll(){
-        List<CategoryDto> categories = service.getAll();
+    public ResponseEntity<List<CategoriesDto>> getAll(){
+        List<CategoriesDto> categories = service.getAll();
         if(!categories.isEmpty()){
             return new ResponseEntity<>(categories, HttpStatus.OK);
         }
@@ -36,8 +36,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getById(@PathVariable int id){
-        Optional<CategoryDto> category = service.getById(id);
+    public ResponseEntity<CategoriesDto> getById(@PathVariable int id){
+        Optional<CategoriesDto> category = service.getById(id);
         if(category.isPresent()){
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         }
@@ -45,18 +45,18 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDto> add(@RequestBody @Valid CategoryCreateDto category){
-        CategoryDto created = service.addCategory(category);
+    public ResponseEntity<CategoriesDto> add(@RequestBody @Valid CategoryCreateDto category){
+        CategoriesDto created = service.addCategory(category);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> update(@PathVariable int id, @RequestParam
+    public ResponseEntity<CategoriesDto> update(@PathVariable int id, @RequestParam
     @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö'\\- ]{0,254}$",
             message = "{validation.categories.name}")
     String name)
     {
-        CategoryDto updated = service.changeCategory(id, name);
+        CategoriesDto updated = service.changeCategory(id, name);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
