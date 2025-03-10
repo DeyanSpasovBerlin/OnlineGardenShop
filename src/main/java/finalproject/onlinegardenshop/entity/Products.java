@@ -26,6 +26,7 @@ public class Products {
     private int id;
     private String name;
     private String description;
+    @Column(nullable = false)
     private double price;
     private double discountPrice;
     private String imageUrl;

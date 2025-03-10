@@ -3,23 +3,19 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
-import finalproject.onlinegardenshop.entity.OrderItems;
-import finalproject.onlinegardenshop.entity.Orders;
-import finalproject.onlinegardenshop.entity.Products;
-import finalproject.onlinegardenshop.entity.Users;
+import finalproject.onlinegardenshop.entity.*;
 import finalproject.onlinegardenshop.entity.enums.DeliveryMethod;
 import finalproject.onlinegardenshop.entity.enums.OrdersStatus;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
-import finalproject.onlinegardenshop.repository.OrdersRepository;
-import finalproject.onlinegardenshop.repository.ProductsRepository;
-import finalproject.onlinegardenshop.repository.UsersRepository;
+import finalproject.onlinegardenshop.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,23 +29,23 @@ public class OrdersService {
     private final OrdersRepository ordersRepository;
     private final UsersRepository usersRepository;
     private final ProductsRepository productsRepository;
+    private final CartRepository cartRepository;
+    private final CartItemsRepository cartItemsRepository;
 
     @Autowired
-    public OrdersService(OrdersMapper ordersMapper, OrdersRepository ordersRepository, UsersRepository usersRepository, ProductsRepository productsRepository) {
+    public OrdersService(OrdersMapper ordersMapper,
+                         OrdersRepository ordersRepository,
+                         UsersRepository usersRepository,
+                         ProductsRepository productsRepository,
+                         CartRepository cartRepository,
+                         CartItemsRepository cartItemsRepository) {
         this.ordersMapper = ordersMapper;
         this.ordersRepository = ordersRepository;
         this.usersRepository = usersRepository;
         this.productsRepository = productsRepository;
+        this.cartRepository = cartRepository;
+        this.cartItemsRepository = cartItemsRepository;
     }
-
-
-
-
-
-
-
-
-
 
     public List<OrdersDto> getAll(){
         List<Orders> orders = ordersRepository.findAll();
@@ -100,7 +96,55 @@ public class OrdersService {
         logger.info("Created new order with ID: {}", savedOrder.getId());
         return ordersMapper.entityToDto(savedOrder);
     }
+
+    @Transactional
+    public void checkout(Integer userId) {
+//        Double sum = (double) 0;
+        Cart cart = cartRepository.findByUsersId(userId)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
+        if (cart.getCartItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty. Cannot checkout.");
+        }
+        Orders order = new Orders();
+        order.setUsers(cart.getUsers());
+        order.setUpdatedAt(LocalDateTime.now());
+        order.setStatus(OrdersStatus.PENDING_PAYMENT);
+        order.setTotalPrice(calculateTotal(cart)); // This should calculate the total of cart items
+        // Loop through the cart items and create order items
+        for (CartItems cartItem : cart.getCartItems()) {
+            OrderItems orderItem = new OrderItems();
+            orderItem.setProduct(cartItem.getProducts());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPriceAtPurchase(cartItem.getProducts().getPrice());  // Store price at the time of purchase
+//            sum = sum + cartItem.getProducts().getPrice();
+            orderItem.setOrder(order);  // Set the order reference
+            order.getOrderItems().add(orderItem);
+        }
+//        order.setTotalPrice(sum);
+        // Save the order to the database
+        ordersRepository.save(order);
+        // Optionally, clear the cart
+        cartItemsRepository.deleteAll(cart.getCartItems());//уничтожаем картб плохо для статистики
+        // Or just set a "completed" flag on the cart - сохраняем для статистики
+//        // Mark cart as completed //ето правильной вариант, но надо добавить колумн в карт!
+//        cart.setCompleted(true);
+        cartRepository.save(cart);
+    }
+
+    private Double calculateTotal(Cart cart) {
+        return cart.getCartItems().stream()
+                .mapToDouble(cartItem -> cartItem.getProducts().getPrice() * cartItem.getQuantity())
+                .sum();
+    }
+
 }
+
+
+
+
+
+
+
 /*
 List<OrderItem> orderItems = request.getItems().stream().map(itemDto -> {
             OrderItem orderItem = new OrderItem();
