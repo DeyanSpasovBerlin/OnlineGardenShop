@@ -1,17 +1,17 @@
 package finalproject.onlinegardenshop.mapper;
 
-import finalproject.onlinegardenshop.dto.FavoriteDto;
-import finalproject.onlinegardenshop.entity.Favorite;
+import finalproject.onlinegardenshop.dto.FavoritesDto;
+import finalproject.onlinegardenshop.entity.Favorites;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface FavoriteMapper {
+public interface FavoritesMapper {
     @Mapping(source = "product.id", target = "productsId")
-    FavoriteDto toDto(Favorite favorite);
+    FavoritesDto toDto(Favorites favorite);
 
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "product", ignore = true)
-    Favorite toEntity(FavoriteDto dto);
+    Favorites toEntity(FavoritesDto dto);
 }
 

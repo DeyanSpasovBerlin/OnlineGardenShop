@@ -1,39 +1,39 @@
 package finalproject.onlinegardenshop.service;
 
-import finalproject.onlinegardenshop.dto.FavoriteDto;
-import finalproject.onlinegardenshop.entity.Favorite;
+import finalproject.onlinegardenshop.dto.FavoritesDto;
+import finalproject.onlinegardenshop.entity.Favorites;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
-import finalproject.onlinegardenshop.repository.FavoriteRepository;
-import finalproject.onlinegardenshop.mapper.FavoriteMapper;
+import finalproject.onlinegardenshop.repository.FavoritesRepository;
+import finalproject.onlinegardenshop.mapper.FavoritesMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FavoriteService {
-    private final FavoriteRepository repository;
-    private final FavoriteMapper mapper;
+public class FavoritesService {
+    private final FavoritesRepository repository;
+    private final FavoritesMapper mapper;
 
-    public FavoriteService(FavoriteRepository repository, FavoriteMapper mapper) {
+    public FavoritesService(FavoritesRepository repository, FavoritesMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
 
-    public List<FavoriteDto> getAllFavorites() {
+    public List<FavoritesDto> getAllFavorites() {
         return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
-    public FavoriteDto getFavoriteById(Integer id) {
+    public FavoritesDto getFavoriteById(Integer id) {
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
-    public FavoriteDto saveFavorite(FavoriteDto dto) {
-        Favorite entity = mapper.toEntity(dto);
+    public FavoritesDto saveFavorite(FavoritesDto dto) {
+        Favorites entity = mapper.toEntity(dto);
         return mapper.toDto(repository.save(entity));
     }
 
     public void deleteFavorite(Integer id) {
-        Favorite favorite = repository.findById(id)
+        Favorites favorite = repository.findById(id)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Favorite not found with id " + id));
         repository.delete(favorite);
     }

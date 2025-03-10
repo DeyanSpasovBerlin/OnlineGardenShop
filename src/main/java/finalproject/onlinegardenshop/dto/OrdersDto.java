@@ -39,5 +39,5 @@ public class OrdersDto {
 
     private Integer usersId;
 
-    private List<DeyanOrderItemsDto> items;//ето позволяет когда создаю order  записать  и создать orderItems
+    private List<CreateOrderRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order  записать  и создать orderItems
 }

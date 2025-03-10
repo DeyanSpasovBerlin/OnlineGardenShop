@@ -7,8 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface OrderItemMapper {
-    OrderItemMapper INSTANCE = Mappers.getMapper(OrderItemMapper.class);
+public interface OrderItemsMapper {
+    OrderItemsMapper INSTANCE = Mappers.getMapper(OrderItemsMapper.class);
 
     @Mapping(source = "order.id", target = "orderId")
     @Mapping(source = "product.id", target = "productId")

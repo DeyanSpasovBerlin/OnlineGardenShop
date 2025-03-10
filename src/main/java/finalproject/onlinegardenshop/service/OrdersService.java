@@ -12,7 +12,7 @@ import finalproject.onlinegardenshop.entity.enums.OrdersStatus;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.repository.OrdersRepository;
-import finalproject.onlinegardenshop.repository.ProductRepository;
+import finalproject.onlinegardenshop.repository.ProductsRepository;
 import finalproject.onlinegardenshop.repository.UsersRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,10 +32,10 @@ public class OrdersService {
     private final OrdersMapper ordersMapper;
     private final OrdersRepository ordersRepository;
     private final UsersRepository usersRepository;
-    private final ProductRepository productsRepository;
+    private final ProductsRepository productsRepository;
 
     @Autowired
-    public OrdersService(OrdersMapper ordersMapper, OrdersRepository ordersRepository, UsersRepository usersRepository, ProductRepository productsRepository) {
+    public OrdersService(OrdersMapper ordersMapper, OrdersRepository ordersRepository, UsersRepository usersRepository, ProductsRepository productsRepository) {
         this.ordersMapper = ordersMapper;
         this.ordersRepository = ordersRepository;
         this.usersRepository = usersRepository;

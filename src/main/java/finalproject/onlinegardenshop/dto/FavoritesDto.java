@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FavoriteDto {
+public class FavoritesDto {
     private Integer id;
 
     @NotNull(message = "{validation.favorites.productId}")

@@ -3,18 +3,18 @@ package finalproject.onlinegardenshop.service;
 import finalproject.onlinegardenshop.dto.OrderItemsDto;
 import finalproject.onlinegardenshop.entity.OrderItem;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
-import finalproject.onlinegardenshop.repository.OrderItemRepository;
-import finalproject.onlinegardenshop.mapper.OrderItemMapper;
+import finalproject.onlinegardenshop.repository.OrderItemsRepository;
+import finalproject.onlinegardenshop.mapper.OrderItemsMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class OrderItemService {
-    private final OrderItemRepository repository;
-    private final OrderItemMapper mapper;
+public class OrderItemsService {
+    private final OrderItemsRepository repository;
+    private final OrderItemsMapper mapper;
 
-    public OrderItemService(OrderItemRepository repository, OrderItemMapper mapper) {
+    public OrderItemsService(OrderItemsRepository repository, OrderItemsMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
