@@ -3,7 +3,7 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
-import finalproject.onlinegardenshop.entity.OrderItem;
+import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Products;
 import finalproject.onlinegardenshop.entity.Users;
@@ -85,8 +85,8 @@ public class OrdersService {
             order.setContactPhone(user.getPhone()); // Set contact phone from user
         }
         // Create OrderItems
-        List<OrderItem> orderItems = request.getItems().stream().map(itemDto -> {
-            OrderItem orderItem = new OrderItem();
+        List<OrderItems> orderItems = request.getItems().stream().map(itemDto -> {
+            OrderItems orderItem = new OrderItems();
             Products product = productsRepository.findById(Integer.parseInt(itemDto.getProductId()))
                     .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product not found"));
             orderItem.setOrder(order);

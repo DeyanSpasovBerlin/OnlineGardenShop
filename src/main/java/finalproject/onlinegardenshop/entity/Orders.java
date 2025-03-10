@@ -49,6 +49,6 @@ public class Orders {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)//cascade = CascadeType.ALL
     // ->сохраняю одновременно Orders and OrderItems; orphanRemoval = true  если уберу какой нибудь товар, то он delete in DB
-    private List<OrderItem> orderItems = new ArrayList<>();
+    private List<OrderItems> orderItems = new ArrayList<>();
 
 }

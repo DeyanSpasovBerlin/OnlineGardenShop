@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.repository;
 
-import finalproject.onlinegardenshop.entity.OrderItem;
+import finalproject.onlinegardenshop.entity.OrderItems;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderItemsRepository extends JpaRepository<OrderItem, Integer> {
+public interface OrderItemsRepository extends JpaRepository<OrderItems, Integer> {
 }

@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.OrderItemsDto;
-import finalproject.onlinegardenshop.entity.OrderItem;
+import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.repository.OrderItemsRepository;
 import finalproject.onlinegardenshop.mapper.OrderItemsMapper;
@@ -24,7 +24,7 @@ public class OrderItemsService {
     }
 
     public OrderItemsDto getOrderItemById(Integer id) {
-        OrderItem orderItem = repository.findById(id)
+        OrderItems orderItem = repository.findById(id)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("OrderItem not found with id " + id));
         return mapper.toDto(orderItem);
     }

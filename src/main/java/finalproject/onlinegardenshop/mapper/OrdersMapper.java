@@ -3,7 +3,7 @@ package finalproject.onlinegardenshop.mapper;
 import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
 import finalproject.onlinegardenshop.dto.CreateOrderRequestSaveOrderItemsDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
-import finalproject.onlinegardenshop.entity.OrderItem;
+import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
 import org.mapstruct.Mapper;
@@ -25,7 +25,7 @@ public interface OrdersMapper {
     OrdersDto entityToDto(Orders entity);
 
     @Mapping(target = "productId", source = "product.id") // FIXED!
-    CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItem orderItem);
+    CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
 
     List<OrdersDto> entityListToDto(List<Orders> entities);
 
