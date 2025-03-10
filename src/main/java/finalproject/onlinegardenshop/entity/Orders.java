@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,5 +46,9 @@ public class Orders {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)//cascade = CascadeType.ALL
+    // ->сохраняю одновременно Orders and OrderItems; orphanRemoval = true  если уберу какой нибудь товар, то он delete in DB
+    private List<OrderItems> orderItems = new ArrayList<>();
 
 }
