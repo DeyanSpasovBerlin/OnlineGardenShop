@@ -42,4 +42,23 @@ public class OrdersController {
         OrdersDto createdOrder = ordersService.createOrder(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<String> checkout(@RequestHeader("userId") Integer userId) {
+        ordersService.checkout(userId);
+
+        return ResponseEntity.ok("Order placed successfully!");
+    }
+    /*
+    POST: URL: http://localhost:8080/orders/checkout
+    Headers: userId: 1
+    BODY: {empty}
+     */
+    //•	История покупок пользователя
+    //o	URL: /orders/history
+    //o	Метод: GET
+    @GetMapping("/history")
+    public List<OrdersDto> getOrdersByUser(@RequestHeader("userId") Integer userId) {
+        return ordersService.getOrdersByUser(userId);
+    }
 }

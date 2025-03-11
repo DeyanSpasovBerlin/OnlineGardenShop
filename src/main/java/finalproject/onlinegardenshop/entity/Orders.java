@@ -51,4 +51,5 @@ public class Orders {
     // ->сохраняю одновременно Orders and OrderItems; orphanRemoval = true  если уберу какой нибудь товар, то он delete in DB
     private List<OrderItems> orderItems = new ArrayList<>();
 
+    private Double totalPrice;//final sum to pay
 }

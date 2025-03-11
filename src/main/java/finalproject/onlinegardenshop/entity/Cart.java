@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,6 +23,14 @@ public class Cart {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", columnDefinition = "int")// "user_id" - old
-    private Users users;//user -old
+    private Users users;
+
+    @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // Add CascadeType.ALL here
+    private List<CartItems> cartItems;
+
+//    @Column(name = "completed", nullable = false)// add to cart table!
+//    private boolean completed = false;
+
+
 
 }
