@@ -1,6 +1,7 @@
 package finalproject.onlinegardenshop.mapper;
 
 import finalproject.onlinegardenshop.dto.CartDto;
+import finalproject.onlinegardenshop.dto.CartFullDto;
 import finalproject.onlinegardenshop.entity.Cart;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,5 +19,11 @@ public interface CartMapper {
 
     List<CartDto> entityListToDto(List<Cart> entities);
 
+    List<CartFullDto> entityFullListToDto(List<Cart> entities);
 
+    @Mapping(target = "users", ignore = true)//"user" . old
+    Cart dtoFullToEntity(CartFullDto cartDto);
+
+    @Mapping(target = "usersId", source = "users.id")
+    CartFullDto entityToFullDto(Cart entity);
 }

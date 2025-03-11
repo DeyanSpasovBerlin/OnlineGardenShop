@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.AddToCartRequestDto;
 import finalproject.onlinegardenshop.dto.CartDto;
+import finalproject.onlinegardenshop.dto.CartFullDto;
 import finalproject.onlinegardenshop.dto.CartItemsDto;
 import finalproject.onlinegardenshop.service.CartService;
 import jakarta.validation.Valid;
@@ -27,6 +28,11 @@ public class CartController {
     @GetMapping("/all")
     public List<CartDto> gerAllCarts(){
         return cartService.getAll();
+    }
+
+    @GetMapping("/full")
+    public List<CartFullDto> getFullCart(){
+        return cartService.getAllCartWithItemsAndUsers();
     }
 
     @GetMapping("{id}")

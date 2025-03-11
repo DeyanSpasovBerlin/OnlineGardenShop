@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.AddToCartRequestDto;
 import finalproject.onlinegardenshop.dto.CartDto;
+import finalproject.onlinegardenshop.dto.CartFullDto;
 import finalproject.onlinegardenshop.dto.CartItemsDto;
 import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.CartItems;
@@ -110,6 +111,11 @@ public class CartService {
         Cart cart = cartRepository.findByUsersId(userId)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
         return cartItemsMapper.entityListToDto(cart.getCartItems());
+    }
+
+    public List<CartFullDto> getAllCartWithItemsAndUsers(){
+        List<Cart> carts = cartRepository.findAll();
+        return cartMapper.entityFullListToDto(carts);
     }
 
 }
