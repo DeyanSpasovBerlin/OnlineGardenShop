@@ -9,6 +9,7 @@ import finalproject.onlinegardenshop.entity.enums.OrdersStatus;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.repository.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,7 @@ public class OrdersService {
 
     @Transactional
     public void checkout(Integer userId) {
-//        Double sum = (double) 0;
+        logger.info("Checkout initiated for user: {}", userId);
         Cart cart = cartRepository.findByUsersId(userId)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
         if (cart.getCartItems().isEmpty()) {
@@ -112,29 +113,43 @@ public class OrdersService {
         order.setTotalPrice(calculateTotal(cart)); // This should calculate the total of cart items
         // Loop through the cart items and create order items
         for (CartItems cartItem : cart.getCartItems()) {
+            logger.info("Processing cart item: Product ID = {}, Quantity = {}",
+                    cartItem.getProducts().getId(), cartItem.getQuantity());
             OrderItems orderItem = new OrderItems();
             orderItem.setProduct(cartItem.getProducts());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPriceAtPurchase(cartItem.getProducts().getPrice());  // Store price at the time of purchase
-//            sum = sum + cartItem.getProducts().getPrice();
             orderItem.setOrder(order);  // Set the order reference
             order.getOrderItems().add(orderItem);
         }
-//        order.setTotalPrice(sum);
+        logger.info("Saving order for user: {}", userId);
         // Save the order to the database
         ordersRepository.save(order);
-        // Optionally, clear the cart
-        cartItemsRepository.deleteAll(cart.getCartItems());//уничтожаем картб плохо для статистики
-        // Or just set a "completed" flag on the cart - сохраняем для статистики
-//        // Mark cart as completed //ето правильной вариант, но надо добавить колумн в карт!
-//        cart.setCompleted(true);
+        logger.info("Clearing cart for user: {}", userId);
+        //set a "completed" flag on the cart - сохраняем для статистики
+       //Mark cart as completed //ето правильной вариант, но надо добавить колумн в карт!
+        //cart.setCompleted(true);
+        cart.setCartItems(null);//ето ненаучны вариант, но рабочий
         cartRepository.save(cart);
+        logger.info("Checkout completed successfully for user: {}", userId);
     }
 
     private Double calculateTotal(Cart cart) {
         return cart.getCartItems().stream()
                 .mapToDouble(cartItem -> cartItem.getProducts().getPrice() * cartItem.getQuantity())
                 .sum();
+    }
+
+    //•	История покупок пользователя
+    //o	URL: /orders/history
+    //o	Метод: GET
+    @Transactional
+    public List<OrdersDto> getOrdersByUser(Integer userId){
+        List<Orders> orders = ordersRepository.findByUsersId(userId);
+        if(orders.size() == 0){
+            throw new OnlineGardenShopResourceNotFoundException("Orders for user with id = " + userId + " not found in database");
+        }
+        return ordersMapper.entityListToDto(orders);
     }
 
 }
@@ -173,23 +188,30 @@ Products product = productsRepository.findById(Integer.parseInt(itemDto.getProdu
     productsRepository.findById(...) looks for the product in the database.
     .orElseThrow(...) throws an error if the product does not exist.
 ****************
-Why Do We Do This?
+
 
 We need to convert the productId (which is just a number in JSON) into a full Products object so we can store it in OrderItem.
 ****************
 Example Request
-🔹 JSON Request Body
+ JSON Request Body
 
 {
-  "items": [
-    {
-      "productId": "1",
-      "quantity": 2
-    }
-  ]
-}
-
-🔹 What Happens?
+	  "items": [
+	    {"productId": "1",
+	      "quantity": 1
+	    },
+	    {
+	      "productId": "2",
+	      "quantity": 2
+	    },
+	    {
+	      "productId": "3",
+	      "quantity": 3
+	    }
+	  ],
+	  "deliveryAddress": "Musterstraße 12, 10115 Berlin, Germany",
+	  "deliveryMethod": "SELF_DELIVERY"
+	}
 
     The system reads productId = "1".
     It converts "1" into an Integer.
@@ -197,8 +219,6 @@ Example Request
     If the product exists, it continues.
     If the product does not exist, it throws "Product not found" error.
 *******************
-Final Thoughts
-
     This ensures that the product exists before adding it to the order.
     It prevents errors when someone tries to order a non-existent product.
     It links OrderItem correctly to the actual product in the database.

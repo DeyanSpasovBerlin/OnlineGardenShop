@@ -46,6 +46,7 @@ public class OrdersController {
     @PostMapping("/checkout")
     public ResponseEntity<String> checkout(@RequestHeader("userId") Integer userId) {
         ordersService.checkout(userId);
+
         return ResponseEntity.ok("Order placed successfully!");
     }
     /*
@@ -53,4 +54,11 @@ public class OrdersController {
     Headers: userId: 1
     BODY: {empty}
      */
+    //•	История покупок пользователя
+    //o	URL: /orders/history
+    //o	Метод: GET
+    @GetMapping("/history")
+    public List<OrdersDto> getOrdersByUser(@RequestHeader("userId") Integer userId) {
+        return ordersService.getOrdersByUser(userId);
+    }
 }
