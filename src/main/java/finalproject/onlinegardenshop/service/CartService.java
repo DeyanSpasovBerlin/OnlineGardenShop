@@ -118,4 +118,13 @@ public class CartService {
         return cartMapper.entityFullListToDto(carts);
     }
 
+    public CartFullDto getFullCartById(Integer id) {
+        Optional<Cart> optional = cartRepository.findById(id);
+        if (optional.isPresent()) {
+            CartFullDto found = cartMapper.entityToFullDto(optional.get());
+            return found;
+        }
+        throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + id + " not found in database");
+    }
+
 }

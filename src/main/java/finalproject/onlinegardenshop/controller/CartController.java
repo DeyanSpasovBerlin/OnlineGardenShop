@@ -66,4 +66,10 @@ public class CartController {
     GET request: http://localhost:8080/cart/items
     Header:userId: 1
      */
+
+    @GetMapping("/fullId")
+    public Optional<CartFullDto> getFullCartById(@RequestHeader("cartId") Integer cartId) {
+        return Optional.ofNullable(cartService.getFullCartById(cartId));
+    }
+
 }
