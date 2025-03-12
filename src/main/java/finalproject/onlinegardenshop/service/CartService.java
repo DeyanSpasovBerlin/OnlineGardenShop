@@ -118,4 +118,42 @@ public class CartService {
         return cartMapper.entityFullListToDto(carts);
     }
 
+    public CartFullDto getFullCartById(Integer id) {
+        Optional<Cart> optional = cartRepository.findById(id);
+        if (optional.isPresent()) {
+            CartFullDto found = cartMapper.entityToFullDto(optional.get());
+            return found;
+        }
+        throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + id + " not found in database");
+    }
+
+
+    @Transactional
+    public CartFullDto changeCartItem(Integer cartId, Integer itemId, Integer quantity) {
+        Optional<Cart> optional = cartRepository.findById(cartId);
+        if (optional.isEmpty()) {
+            throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + cartId +
+                    " hasn’t CartItems with id: " + itemId);
+        }
+        Cart cart = optional.get(); // Work directly with the entity
+        boolean itemFound = false;
+        for (CartItems item : cart.getCartItems()) {
+            if (item.getId().equals(itemId)) {
+                item.setQuantity(quantity);
+                cartItemsRepository.save(item); // Persist changes to CartItems
+                itemFound = true;
+                break;
+            }
+        }
+        if (!itemFound) {
+            throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + cartId +
+                    " hasn’t CartItems with id: " + itemId);
+        }
+        // Save cart to persist changes
+        cartRepository.save(cart);
+
+        return cartMapper.entityToFullDto(cart); // Convert back to DTO after changes are saved
+    }
+
+
 }

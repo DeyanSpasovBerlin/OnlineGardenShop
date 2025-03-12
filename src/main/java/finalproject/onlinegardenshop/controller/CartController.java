@@ -49,13 +49,15 @@ public class CartController {
 //    public ResponseEntity<String> addToCart(@RequestParam("userId") Integer userId,//url is faster and ligter
 //                                            @Valid @RequestBody AddToCartRequestDto request) {
 //        cartService.addToCart(userId, request);
-//        return ResponseEntity.ok("Product added to cart successfully");
+//        return ResponseEntity.ok("Product added to cart successfully");// ето тоже работает, но 1 вариант более науны
 //    }
     /*query
+    POST  http://localhost:8080/cart
+    BODY:
     {
-  "productId": 5,
-  "quantity": 2
-}
+      "productId": 5,
+      "quantity": 2
+    }
      */
 
     @GetMapping("/items")
@@ -66,4 +68,24 @@ public class CartController {
     GET request: http://localhost:8080/cart/items
     Header:userId: 1
      */
+
+    @GetMapping("/fullId")
+    public Optional<CartFullDto> getFullCartById(@RequestHeader("cartId") Integer cartId) {
+        return Optional.ofNullable(cartService.getFullCartById(cartId));
+    }
+    /*
+    query:  GET   http://localhost:8080/cart/fullId
+            HEADER  cartId  1
+     */
+
+    @PatchMapping("/changeQuantity")
+    public CartFullDto changeCartItemsQuantity(@RequestParam Integer cartId,
+                                               @RequestParam Integer cartItemsId,
+                                               @RequestParam Integer cartItemsQuantity){
+        return cartService.changeCartItem(cartId, cartItemsId, cartItemsQuantity);
+    }
+    /*
+    PATCH http://localhost:8080/cart/changeQuantity?cartId=5&cartItemsId=5&cartItemsQuantity=1
+     */
+
 }
