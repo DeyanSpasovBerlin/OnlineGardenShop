@@ -26,12 +26,12 @@ public class CartController {
     }
 
     @GetMapping("/all")
-    public List<CartDto> gerAllCarts(){
+    public List<CartDto> gerAllCarts() {
         return cartService.getAll();
     }
 
     @GetMapping("/full")
-    public List<CartFullDto> getFullCart(){
+    public List<CartFullDto> getFullCart() {
         return cartService.getAllCartWithItemsAndUsers();
     }
 
@@ -81,11 +81,11 @@ public class CartController {
     @PatchMapping("/changeQuantity")
     public CartFullDto changeCartItemsQuantity(@RequestParam Integer cartId,
                                                @RequestParam Integer cartItemsId,
-                                               @RequestParam Integer cartItemsQuantity){
+                                               @RequestParam Integer cartItemsQuantity) {
         return cartService.changeCartItem(cartId, cartItemsId, cartItemsQuantity);
     }
     /*
     PATCH http://localhost:8080/cart/changeQuantity?cartId=5&cartItemsId=5&cartItemsQuantity=1
      */
-
 }
+
