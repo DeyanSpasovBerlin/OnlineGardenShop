@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = CartItemsMapper.class)
 public interface CartMapper {
 
     @Mapping(target = "users", ignore = true)//"user" . old

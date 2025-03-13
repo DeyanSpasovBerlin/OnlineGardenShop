@@ -41,9 +41,6 @@ public interface OrdersMapper {
     @Mapping(target = "usersId", source = "users.id")
     CreateOrderRequestDto entityToDtopost(Orders entity);
 
-//    @Mapping(target = "items", source = "orderItems")
-//    OrdersDto entityToDto(Orders entity);
-
     @Named("usersFromId")
     default Users usersFromId(Integer id){
         if(id ==0){
@@ -53,7 +50,5 @@ public interface OrdersMapper {
         users.setId(id);
         return users;
     }
-
-
 
 }

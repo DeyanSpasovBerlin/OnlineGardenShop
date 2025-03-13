@@ -2,18 +2,16 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.dto.UsersUpdateDto;
-import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
+import finalproject.onlinegardenshop.repository.UsersRepository;
 import finalproject.onlinegardenshop.service.UsersService;
 import jakarta.validation.Valid;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -24,11 +22,13 @@ import java.util.*;
 public class UsersController {
     private final UsersService userService;
     private final Validator validator;//this is need in updatedUsersController
+    private final UsersRepository usersRepository;
 
     @Autowired
-    public UsersController(UsersService userService, Validator validator, MessageSource messageSource) {
+    public UsersController(UsersService userService, Validator validator, UsersRepository usersRepository) {
         this.userService = userService;
         this.validator = validator;
+        this.usersRepository = usersRepository;
     }
 
     @GetMapping("/all")
@@ -171,4 +171,15 @@ public class UsersController {
             "password": "FirstFinalProbeSecure_1"
     }
     DELETE http://localhost:8080/users/17
+ */
+/*
+{
+        "id": 2,
+        "lastName": "Smith",
+        "firstName": "Bob",
+        "email": "bob@example.com",
+        "phone": "2345678901",
+        "password": "securePass1",
+        "role": "CLIENT"
+    },
  */

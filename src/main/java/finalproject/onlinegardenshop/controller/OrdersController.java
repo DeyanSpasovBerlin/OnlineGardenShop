@@ -61,4 +61,17 @@ public class OrdersController {
     public List<OrdersDto> getOrdersByUser(@RequestHeader("userId") Integer userId) {
         return ordersService.getOrdersByUser(userId);
     }
+    /*
+    GET  http://localhost:8080/orders/history
+    HEADERS  userId 1
+     */
+
+    @PatchMapping("/canceled")
+    public ResponseEntity<Void> cancelOrder(@RequestParam Integer orderId){
+        ordersService.cancelOrdersStatus(orderId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+    /*
+    PATCH  http://localhost:8080/orders/canceled?orderId=2
+     */
 }

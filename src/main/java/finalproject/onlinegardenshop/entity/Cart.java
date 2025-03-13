@@ -22,13 +22,15 @@ public class Cart {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", columnDefinition = "int")// "user_id" - old
+    @JoinColumn(name = "users_id", columnDefinition = "int", nullable = true)//-> , nullable = true- alow delete.user
     private Users users;
 
     @OneToMany(mappedBy = "cart", cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // Add CascadeType.ALL here
     private List<CartItems> cartItems;
 
-//    @Column(name = "completed", nullable = false)// add to cart table!
+//    @Column(name = "completed", nullable = false)// add to cart table!ето для более научное отношение к Cart
+    //мы не только del CartItems, но и ставим falg completed на Cart, что бы указать, что ее содержание через
+    //checkout(Integer userId) записано в Orders. Более простой вариант которой я сделал CartItems del-> Cart empty
 //    private boolean completed = false;
 
 

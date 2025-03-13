@@ -9,7 +9,6 @@ import finalproject.onlinegardenshop.entity.enums.OrdersStatus;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.repository.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,10 +145,29 @@ public class OrdersService {
     @Transactional
     public List<OrdersDto> getOrdersByUser(Integer userId){
         List<Orders> orders = ordersRepository.findByUsersId(userId);
-        if(orders.size() == 0){
+        if(orders.isEmpty()){//order.size == 0
             throw new OnlineGardenShopResourceNotFoundException("Orders for user with id = " + userId + " not found in database");
         }
         return ordersMapper.entityListToDto(orders);
+    }
+
+    @Transactional
+    public void cancelOrdersStatus(Integer id) {
+        OrdersStatus canceled = OrdersStatus.valueOf("CANCELED");
+        Optional<Orders> optional = ordersRepository.findById(id);
+        if (optional.isPresent()) {
+            Orders find = optional.get();
+            OrdersStatus findStatus = find.getStatus();
+            if (findStatus == OrdersStatus.CREATED || findStatus == OrdersStatus.PENDING_PAYMENT) {
+                find.setStatus(canceled);
+                Orders saved = ordersRepository.save(find);
+                ordersMapper.entityToDto(saved);
+            } else {
+                throw new OnlineGardenShopResourceNotFoundException("Order with id = " + id + " can not be canceled!");
+            }
+        }else{
+            throw new OnlineGardenShopResourceNotFoundException("Order with id = " + id + " not found in database");
+        }
     }
 
 }

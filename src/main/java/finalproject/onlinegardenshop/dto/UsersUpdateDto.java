@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = false)
-public class UsersUpdateDto {//ето dto сделано только на те поля,по которые разрешаем update
+public class UsersUpdateDto {//✅ето dto сделано только на те поля,по которые разрешаем update
     private Integer id;
 
     @NotNull(message = "{validation.users.lastName}")

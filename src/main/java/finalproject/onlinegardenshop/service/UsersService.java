@@ -1,23 +1,26 @@
 package finalproject.onlinegardenshop.service;
 
+import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.dto.UsersUpdateDto;
+import finalproject.onlinegardenshop.entity.Cart;
+import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
+import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.mapper.UsersMapper;
+import finalproject.onlinegardenshop.repository.CartItemsRepository;
+import finalproject.onlinegardenshop.repository.CartRepository;
+import finalproject.onlinegardenshop.repository.OrdersRepository;
 import finalproject.onlinegardenshop.repository.UsersRepository;
 import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +33,24 @@ public class UsersService {
 
     private final UsersRepository repository;
     private final UsersMapper mapper;
+    private final CartRepository cartRepository;
+    private final OrdersRepository ordersRepository;
+    private final OrdersMapper ordersMapper;
+    private final CartItemsRepository cartItemsRepository;
 
     @Autowired
-    public UsersService(UsersRepository repository,  UsersMapper mapper) {
+    public UsersService(UsersRepository repository,
+                        UsersMapper mapper,
+                        CartRepository cartRepository,
+                        OrdersRepository ordersRepository,
+                        OrdersMapper ordersMapper,
+                        CartItemsRepository cartItemsRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.cartRepository = cartRepository;
+        this.ordersRepository = ordersRepository;
+        this.ordersMapper = ordersMapper;
+        this.cartItemsRepository = cartItemsRepository;
     }
 
     public List<UsersDto> getAll(){
@@ -72,7 +88,6 @@ public class UsersService {
 
     // REST API from tex docs:
     //    1 •	Регистрация пользователя ->   service
-
     @Transactional
     public UsersDto registerUser(UsersDto usersDto) {
         logger.debug("Registering new user with email: {}", usersDto.getEmail());
@@ -119,14 +134,35 @@ public class UsersService {
 
     // REST API from tex docs:
     //4 •	Удаление учетной записи
-//    public void deleteUser(Integer id){repository.deleteById(id);} ето не работает- спросить почему!?
- @Transactional
-    public void deleteUser(Integer id){//ето работает- почему - в чем разница?
-        Optional<Users> userForDelete = repository.findById(id);
-        if (userForDelete.isPresent()) {;
-            repository.deleteById(id);
-        } else {
-            throw new OnlineGardenShopResourceNotFoundException("User with id = " + id + " not found in database");
+        @Transactional
+    public void deleteUser(Integer userId){
+        //✅ Общая идея: Users<-oneToOne<-Cart->oneToMany->CartItems;
+        // Начинаем в обратном порядки: впервые del CartItemsр потом Cart и наконец Users
+        //Users <- onetoMany<-Orders: впервые во всеф Orders которые делал етот User всавим userId=null.
+        //Не del Orders  как вверхо del Cart and CartItems, потому что мы хотим что бы все Orders хранилис,
+        // даже если User del для статистики и судебных разбирательств. А Cart and CartItemsпривязанные к User
+        // и их можно удалить вместе с ним. Здесь принцип таков- идем в обратную сторону по цепи relations преди да
+        //стигнем до User  and del
+        Optional<Users> userForDelete = repository.findById(userId);
+        if (userForDelete.isPresent()) {
+            // ✅ Step 1: Delete Cart Items first
+            Optional<Cart> cart = cartRepository.findByUsersId(userId);
+            if (cart.isPresent()) {
+                cartItemsRepository.deleteByCartId(cart.get().getId()); // Delete cart items first
+                cartRepository.delete(cart.get()); // Then delete the cart
+            }
+            // ✅ Step 2: Detach User from Orders
+            List<Orders> orders = ordersRepository.findByUsersId(userId);
+            if(!orders.isEmpty()){
+                for (Orders o : orders){
+                    o.setUsers(null);// Nullify the user reference
+                    ordersRepository.save(o);
+                }
+            }
+            // ✅ Step 3: Finally, delete the User
+            repository.deleteById(userId);
+        }else {
+            throw new OnlineGardenShopResourceNotFoundException("Manager with id = " + userId + " not found in database!");
         }
     }
 
