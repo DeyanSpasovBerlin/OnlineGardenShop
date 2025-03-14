@@ -128,7 +128,13 @@ public class OrdersService {
         //set a "completed" flag on the cart - сохраняем для статистики
        //Mark cart as completed //ето правильной вариант, но надо добавить колумн в карт!
         //cart.setCompleted(true);
-        cart.setCartItems(null);//ето ненаучны вариант, но рабочий
+//        cart.setCartItems(null);//ето ненаучны вариант, но рабочий
+        // **Explicitly delete all cart items**
+                cartItemsRepository.deleteAll(cart.getCartItems());
+        cart.getCartItems().clear(); // Clear from the object to avoid issues
+
+        // Optionally mark the cart as completed
+        // cart.setCompleted(true);  // Uncomment if you add a 'completed' column
         cartRepository.save(cart);
         logger.info("Checkout completed successfully for user: {}", userId);
     }
