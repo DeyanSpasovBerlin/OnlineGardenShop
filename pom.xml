@@ -115,6 +115,21 @@
             <version>2.7.0</version>
         </dependency>
 
+
+        <!--        		        XML REST data format-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.fasterxml.jackson.dataformat</groupId>-->
+        <!--            <artifactId>jackson-dataformat-xml</artifactId>-->
+        <!--        </dependency>-->
+
+<!--        10-->
+        <!--        Library for RSS feed support -->
+        <dependency>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
