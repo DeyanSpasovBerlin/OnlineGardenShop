@@ -7,5 +7,6 @@
     <include file="db/migrations/001_schema.sql"/>
     <include file="db/migrations/002_data.sql"/>
     <include file="db/migrations/003_add_total_price.sql"/>
+    <include file="db/migrations/005_last_updated_cart.sql"/>
 
 </databaseChangeLog>

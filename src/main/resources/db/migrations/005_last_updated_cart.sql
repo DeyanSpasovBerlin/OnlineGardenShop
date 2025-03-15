@@ -1,0 +1,9 @@
+-- liquibase formatted sql
+-- changeset DeyanSpasov:005
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+ALTER TABLE cart
+    ADD COLUMN last_updated DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+SET FOREIGN_KEY_CHECKS = 1;
