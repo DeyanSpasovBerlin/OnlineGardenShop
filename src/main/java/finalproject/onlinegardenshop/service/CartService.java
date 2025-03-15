@@ -155,5 +155,15 @@ public class CartService {
         return cartMapper.entityToFullDto(cart); // Convert back to DTO after changes are saved
     }
 
+    public CartFullDto getCartByUserId(Integer userId){
+         Optional<Cart> optional = cartRepository.findByUsersId(userId);
+         if(optional.isPresent()){
+             CartFullDto find = cartMapper.entityToFullDto(optional.get());
+             return find;
+         }else {
+             throw new OnlineGardenShopResourceNotFoundException("Cart fot User with id = " + userId + " not found in database");
+         }
+
+    }
 
 }

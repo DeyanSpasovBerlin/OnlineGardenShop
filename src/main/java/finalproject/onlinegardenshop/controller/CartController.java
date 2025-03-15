@@ -87,5 +87,11 @@ public class CartController {
     /*
     PATCH http://localhost:8080/cart/changeQuantity?cartId=5&cartItemsId=5&cartItemsQuantity=1
      */
+
+    @GetMapping("/userId")
+    public Optional<CartFullDto> findCartForUser(@RequestHeader("userId") Integer userId){
+        Optional<CartFullDto> find = Optional.ofNullable(cartService.getCartByUserId(userId));
+        return find;
+    }
 }
 
