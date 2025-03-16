@@ -139,8 +139,8 @@ public class UsersService {
         //✅ Общая идея: Users<-oneToOne<-Cart->oneToMany->CartItems;
         // Начинаем в обратном порядки: впервые del CartItemsр потом Cart и наконец Users
         //Users <- onetoMany<-Orders: впервые во всеф Orders которые делал етот User всавим userId=null.
-        //Не del Orders  как вверхо del Cart and CartItems, потому что мы хотим что бы все Orders хранилис,
-        // даже если User del для статистики и судебных разбирательств. А Cart and CartItemsпривязанные к User
+        //Не del Orders  как вверх del Cart and CartItems, потому что мы хотим что бы все Orders хранилис,
+        // даже если User del для статистики и судебных разбирательств. А Cart and CartItems привязанные к User
         // и их можно удалить вместе с ним. Здесь принцип таков- идем в обратную сторону по цепи relations преди да
         //стигнем до User  and del
         Optional<Users> userForDelete = repository.findById(userId);
@@ -156,6 +156,7 @@ public class UsersService {
             if(!orders.isEmpty()){
                 for (Orders o : orders){
                     o.setUsers(null);// Nullify the user reference
+                    o.setDeletedUserId(-userId); // Store deleted user's ID as negative
                     ordersRepository.save(o);
                 }
             }

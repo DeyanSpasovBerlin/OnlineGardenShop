@@ -48,7 +48,7 @@ public class ScheduledTask {
     если ето да  то делаем  delete CartItems
     что бы ето работало в liquibase добавляем 005_data.sql
      */
-    @Scheduled(fixedRate = 10, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedRate = 50, timeUnit = TimeUnit.MINUTES, initialDelay = 50)
     @Transactional
     public void emptyCartAfterTenMinutes() {
 
@@ -70,7 +70,7 @@ public class ScheduledTask {
         }
     }
 
-    @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS) // Runs every 30 seconds
+    @Scheduled(fixedRate = 30, timeUnit = TimeUnit.SECONDS, initialDelay = 120) // Runs every 30 seconds
     @Transactional
     public void updateOrderStatuses() {
         log.info("Running order status update task...");

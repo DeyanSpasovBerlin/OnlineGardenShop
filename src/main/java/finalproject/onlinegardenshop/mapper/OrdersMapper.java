@@ -8,6 +8,7 @@ import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 import java.util.List;
@@ -20,11 +21,12 @@ public interface OrdersMapper {
     @Mapping(target = "users", source = "usersId", qualifiedByName = "usersFromId")
     Orders dtoToEntity(OrdersDto dto);
 
-    @Mapping(target = "usersId", source = "users.id")
+    @Mapping(target = "usersId", source = "users.id")//this show userId=null
+    // and deletedUserId=-userId in Orders for deleted user
     @Mapping(target = "items", source = "orderItems")
     OrdersDto entityToDto(Orders entity);
 
-    @Mapping(target = "productId", source = "product.id") // FIXED!
+    @Mapping(target = "productId", source = "product.id")
     CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
 
     List<OrdersDto> entityListToDto(List<Orders> entities);
@@ -50,5 +52,6 @@ public interface OrdersMapper {
         users.setId(id);
         return users;
     }
+
 
 }
