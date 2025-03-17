@@ -30,6 +30,9 @@ public class Orders {
     @JoinColumn(name = "users_id", columnDefinition = "int")
     private Users users;
 
+    @Column(name = "deleted_user_id", nullable = true)
+    private Integer deletedUserId; // Store the deleted user's ID; used in deleteUser controller
+
     private String deliveryAddress;
 
     private String contactPhone;

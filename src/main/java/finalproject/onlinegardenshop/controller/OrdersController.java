@@ -2,6 +2,7 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
+import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.service.OrdersService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,12 @@ public class OrdersController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<String> checkout(@RequestHeader("userId") Integer userId) {
-        ordersService.checkout(userId);
-
+    public ResponseEntity<String> checkout(@RequestHeader("userId") Integer userId,
+                                           @Valid @RequestBody OrdersDto request) {
+        ordersService.checkout(userId,
+                request.getDeliveryAddress()
+                , request.getContactPhone(),
+                String.valueOf(request.getDeliveryMethod()));
         return ResponseEntity.ok("Order placed successfully!");
     }
     /*
@@ -74,4 +78,23 @@ public class OrdersController {
     /*
     PATCH  http://localhost:8080/orders/canceled?orderId=2
      */
+
+    // Get orders for a specific deleted user
+    @GetMapping("/deleted/{userId}")
+    public List<Orders> getOrdersByDeletedUser(@PathVariable Integer userId) {
+        return ordersService.getOrdersByDeletedUser(userId);
+    }
+    /*
+    GET http://localhost:8080/orders/deleted/15
+     */
+
+    // Get all orders from deleted users
+    @GetMapping("/deleted")
+    public List<Orders> getAllDeletedUsersOrders() {
+        return ordersService.getAllDeletedUsersOrders();
+    }
+    /*
+    GET http://localhost:8080/orders/deleted
+     */
+
 }
