@@ -55,4 +55,7 @@ public class Orders {
     private List<OrderItems> orderItems = new ArrayList<>();
 
     private Double totalPrice;//final sum to pay
+
+    @Column(name = "email_sent", nullable = false)
+    private boolean emailSent = false;
 }
