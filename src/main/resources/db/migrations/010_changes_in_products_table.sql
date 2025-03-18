@@ -1,5 +1,5 @@
 -- liquibase formatted sql
--- changeset dmitrii.shkolnyi:008
+-- changeset dmitrii.shkolnyi:010
 
 -- Обновление значений discount_price в таблице products
 UPDATE products SET discount_price = NULL WHERE id IN (1, 3, 5, 6, 8, 9, 10);

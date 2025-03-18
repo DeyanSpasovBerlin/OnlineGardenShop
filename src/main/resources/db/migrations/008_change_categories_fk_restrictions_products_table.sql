@@ -1,5 +1,5 @@
 -- liquibase formatted sql
--- changeset dmitrii.shkolnyi:007
+-- changeset dmitrii.shkolnyi:008
 
 ALTER TABLE products
 DROP FOREIGN KEY fk_products_categories1;

@@ -121,9 +121,10 @@ public class CategoriesServiceTest {
         categoryDto.setId(1);
         categoryDto.setName("New Category");
 
-        // Мокируем поведение репозитория и маппера
+        // Мокируем поведение репозитория
         when(categoriesRepository.findById(1)).thenReturn(Optional.of(category));
-        when(categoriesMapper.entityToDto(category)).thenReturn(categoryDto);
+        when(categoriesRepository.save(any(Categories.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(categoriesMapper.entityToDto(any(Categories.class))).thenReturn(categoryDto);
 
         // Вызов метода
         CategoriesDto result = categoriesService.changeCategory(1, "New Category");
@@ -131,6 +132,9 @@ public class CategoriesServiceTest {
         // Проверки
         assertNotNull(result);
         assertEquals("New Category", result.getName());
+
+        // Проверяем, что категория действительно обновилась
+        verify(categoriesRepository, times(1)).save(category);
     }
 
     @Test
