@@ -52,8 +52,8 @@ public class CategoriesController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoriesDto> update(@PathVariable int id, @RequestParam
-    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö'\\- ]{0,254}$",
-            message = "{validation.categories.name}")
+    @Pattern(regexp = "^[A-Za-zÜÄÖüäö'\\-., ]{1,255}$",
+             message = "{validation.categories.name}")
     String name)
     {
         CategoriesDto updated = service.changeCategory(id, name);

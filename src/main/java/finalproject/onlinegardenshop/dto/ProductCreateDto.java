@@ -15,19 +15,20 @@ import lombok.Setter;
 public class ProductCreateDto {
 
     @NotNull(message = "{validation.products.name}")
-    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö ]{0,255}$", message = "{validation.products.name}")
+    @Pattern(regexp = "^[A-Za-zÜÄÖüäö'\\-., ]{1,255}$", message = "{validation.products.name}")
     private String name;
 
-    //@Pattern(regexp = "^[a-zA-Züäö]{1,255}$", message = "{validation.products.description}")
+    private String category; // Приходит как String (название категории)
+
     private String description;
 
     @Digits(integer = 5, fraction = 2)
-    private double price;
+    private Double price;
 
     @Digits(integer = 5, fraction = 2)
-    private double discountPrice;
+    private Double discountPrice;
 
-    //@Pattern(regexp = "^https?://[^\\s]+(\\.jpg|\\.jpeg|\\.png|\\.gif|\\.webp)$", message = "{validation.products.image_url}")
     private String imageUrl;
 
 }
+

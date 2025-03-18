@@ -18,4 +18,8 @@ public interface CartItemsRepository extends JpaRepository<CartItems,Integer> {
     @Modifying
     @Query("DELETE FROM CartItems c WHERE c.cart.id = :cartId")
     void deleteByCartId(@Param("cartId") Integer cartId);//✅-> delete user!
+
+    //Добавлено для обеспечения работы метода удаления продукта в ProductsService
+    //При удалении продукта, удаляется и CartItem продукта с соответствующим id
+    void deleteByProductsId(Integer id);
 }
