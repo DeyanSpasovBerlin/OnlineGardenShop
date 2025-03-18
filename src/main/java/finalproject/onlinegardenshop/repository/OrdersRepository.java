@@ -26,4 +26,7 @@ public interface OrdersRepository extends JpaRepository<Orders,Integer> {
     // Find all orders that belong to deleted users
     List<Orders> findAllByDeletedUserIdIsNotNull();
 
+    //Find all Orders which sendMail=false
+    List<Orders> findByStatusAndEmailSentFalse(OrdersStatus status);
+
 }

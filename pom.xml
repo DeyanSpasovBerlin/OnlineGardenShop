@@ -130,6 +130,14 @@
             <version>2.1.0</version>
         </dependency>
 
+<!--        11-->
+        <!--This is dependency to send email to users-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>3.1.5</version>
+        </dependency>
+
     </dependencies>
 
     <build>

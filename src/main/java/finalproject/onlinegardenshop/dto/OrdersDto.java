@@ -46,7 +46,11 @@ public class OrdersDto {
     @Enumerated(EnumType.STRING)
     private DeliveryMethod deliveryMethod;
 
+    private boolean emailSent;//this show if email is sent to user
+
     private Integer usersId;
 
     private List<CreateOrderRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order  записать  и создать orderItems
+
+
 }
