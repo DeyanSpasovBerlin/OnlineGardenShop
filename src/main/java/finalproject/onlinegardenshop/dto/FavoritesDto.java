@@ -13,4 +13,7 @@ public class FavoritesDto {
 
     @NotNull(message = "{validation.favorites.productId}")
     private Integer productsId;
+
+    private String status;
+
 }
