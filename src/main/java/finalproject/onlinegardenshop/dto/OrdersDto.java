@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -46,11 +47,16 @@ public class OrdersDto {
     @Enumerated(EnumType.STRING)
     private DeliveryMethod deliveryMethod;
 
+    // Add createdAt field to DTO to map the created timestamp
+    private LocalDateTime createdAt;
+
+    private Double totalPrice;//final sum to pay
+
     private boolean emailSent;//this show if email is sent to user
 
     private Integer usersId;
 
-    private List<CreateOrderRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order  записать  и создать orderItems
+    private List<CreateOrderRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order записать и создать orderItems
 
 
 }

@@ -87,7 +87,7 @@ public class UsersService {
     }
 
     // REST API from tex docs:
-    //    1 •	Регистрация пользователя ->   service
+    //    1 •	Регистрация пользователя -> service
     @Transactional
     public UsersDto registerUser(UsersDto usersDto) {
         logger.debug("Registering new user with email: {}", usersDto.getEmail());
@@ -156,7 +156,9 @@ public class UsersService {
             if(!orders.isEmpty()){
                 for (Orders o : orders){
                     o.setUsers(null);// Nullify the user reference
-                    o.setDeletedUserId(-userId); // Store deleted user's ID as negative
+                    o.setDeletedUserId(-userId);// Store deleted user's ID as negative
+                    o.setDeliveryAddress(null);//No personal data for deleted user
+                    o.setContactPhone(null);//No personal data for deleted user
                     ordersRepository.save(o);
                 }
             }

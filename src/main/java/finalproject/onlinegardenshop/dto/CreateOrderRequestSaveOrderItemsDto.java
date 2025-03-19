@@ -11,7 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateOrderRequestSaveOrderItemsDto {
 
-    private Integer productId;//
+    private Integer productId;
+    private String productName;
     private int quantity;
     private double priceAtPurchase;
+
 }

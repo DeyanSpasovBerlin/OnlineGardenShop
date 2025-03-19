@@ -4,6 +4,10 @@ import finalproject.onlinegardenshop.dto.ProductCreateDto;
 import finalproject.onlinegardenshop.dto.ProductsDto;
 import finalproject.onlinegardenshop.entity.Categories;
 import finalproject.onlinegardenshop.entity.Products;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -35,5 +39,6 @@ public interface ProductsMapper {
     default String categoryEntityToName(Categories category) {
         return (category != null) ? category.getName() : null;
     }
+
 }
 

@@ -6,6 +6,7 @@ import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
+import finalproject.onlinegardenshop.service.ProductHelper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -13,7 +14,7 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",  uses = {ProductHelper.class})//inject ProductHelper
 public interface OrdersMapper {
 
     @Mapping(target = "updatedAt", ignore = true)
@@ -27,6 +28,7 @@ public interface OrdersMapper {
     OrdersDto entityToDto(Orders entity);
 
     @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "productName", source = "product.id", qualifiedByName = "productNameFromId")//ето инжекция product name from ProductHelper
     CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
 
     List<OrdersDto> entityListToDto(List<Orders> entities);
