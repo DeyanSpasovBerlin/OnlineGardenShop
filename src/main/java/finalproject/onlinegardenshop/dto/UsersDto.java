@@ -5,6 +5,7 @@ import finalproject.onlinegardenshop.entity.enums.UserRole;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class UsersDto {
 
     private Integer id;
 
-    @NotNull(message="{validation.Users.lastName}")
+    @NotNull(message="{validation.users.lastName}")
     @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{0,44}$",message = "{validation.Users.lastName}")
     @Length(max = 45, message ="{validation.Users.lastName}")
     private String lastName;
@@ -30,7 +31,7 @@ public class UsersDto {
     @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö]{0,44}$",message = "{validation.Users.firstName}")
     private String firstName;
 
-    @NotNull//email must present
+    @NotBlank(message = "{validation.users.emailNotNull}")//email must present
     @Email(regexp = "^[a-zA-Z][\\w.-]*@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "{validation.users.email}")
     private String email;
 

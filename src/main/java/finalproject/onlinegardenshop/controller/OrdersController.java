@@ -81,7 +81,7 @@ public class OrdersController {
 
     // Get orders for a specific deleted user
     @GetMapping("/deleted/{userId}")
-    public List<Orders> getOrdersByDeletedUser(@PathVariable Integer userId) {
+    public List<OrdersDto> getOrdersByDeletedUser(@PathVariable Integer userId) {
         return ordersService.getOrdersByDeletedUser(userId);
     }
     /*
@@ -90,7 +90,7 @@ public class OrdersController {
 
     // Get all orders from deleted users
     @GetMapping("/deleted")
-    public List<Orders> getAllDeletedUsersOrders() {
+    public List<OrdersDto> getAllDeletedUsersOrders() {
         return ordersService.getAllDeletedUsersOrders();
     }
     /*

@@ -58,4 +58,5 @@ public class Orders {
 
     @Column(name = "email_sent", nullable = false)
     private boolean emailSent = false;
+
 }

@@ -175,12 +175,17 @@ public class OrdersService {
         }
     }
 
-    public List<Orders> getOrdersByDeletedUser(Integer userId) {
-        return ordersRepository.findByDeletedUserId(-userId);
+    public List<OrdersDto> getOrdersByDeletedUser(Integer userId) {
+        List<Orders> orders = ordersRepository.findByDeletedUserId(-userId);
+        List<OrdersDto> ordersDtos = ordersMapper.entityListToDto(orders);
+        return ordersDtos;
     }
 
-    public List<Orders> getAllDeletedUsersOrders() {
-        return ordersRepository.findAllByDeletedUserIdIsNotNull();
+
+    public List<OrdersDto> getAllDeletedUsersOrders() {
+        List<Orders> orders = ordersRepository.findAllByDeletedUserIdIsNotNull();
+        List<OrdersDto> ordersDtos = ordersMapper.entityListToDto(orders);
+        return ordersDtos;
     }
 
 }
