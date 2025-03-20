@@ -50,6 +50,10 @@ public class OrdersDto {
     // Add createdAt field to DTO to map the created timestamp
     private LocalDateTime createdAt;
 
+    private String firstName;//***********
+
+    private String lastName;//************
+
     private Double totalPrice;//final sum to pay
 
     private boolean emailSent;//this show if email is sent to user

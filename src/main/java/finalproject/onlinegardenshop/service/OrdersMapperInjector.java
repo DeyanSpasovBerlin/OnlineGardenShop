@@ -1,18 +1,18 @@
 package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.entity.Products;
+import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
-import finalproject.onlinegardenshop.mapper.ProductsMapper;
 import finalproject.onlinegardenshop.repository.ProductsRepository;
+import finalproject.onlinegardenshop.repository.UsersRepository;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class ProductHelper {
+public class OrdersMapperInjector {
     /*
     идея делаем спомогательной клас, которой инжектируем в OrdersMaper. OrdersMaper не может директно достать product namе.
      productId можно взять директно из OrderItem,но product namе там нету. Поетому инжектируем с анотации @Named("productNameFromId")
@@ -20,9 +20,12 @@ public class ProductHelper {
      */
 
     private ProductsRepository productsRepository;
+    private UsersRepository usersRepository;
+
     @Autowired
-    public ProductHelper(ProductsRepository productsRepository) {
+    public OrdersMapperInjector(ProductsRepository productsRepository, UsersRepository usersRepository) {
         this.productsRepository = productsRepository;
+        this.usersRepository = usersRepository;
     }
 
     @Named("productNameFromId")
@@ -32,6 +35,31 @@ public class ProductHelper {
             return product != null ? product.get().getName() : null;
         }
         throw new OnlineGardenShopResourceNotFoundException("No product with "+productId+" in data base");
+
     }
+
+//    @Named("userFirstName")
+//    public String userFirstName(Integer userId){
+////        Optional<Users> user = usersRepository.findById(userId);
+////        if(user.isPresent()){
+////            return user != null ? user.get().getFirstName() : null;
+////        }
+////        throw new OnlineGardenShopResourceNotFoundException("No user with "+userId+" in data base");
+//        if (userId == null) {
+//            throw new IllegalArgumentException("User ID must not be null");
+//        }
+//        return usersRepository.findById(userId)
+//                .map(Users::getFirstName)
+//                .orElse("Unknown");
+//    }
+//
+//    @Named("userLasttName")
+//    public String userLasttName(Integer userId){
+//        Optional<Users> user = usersRepository.findById(userId);
+//        if(user.isPresent()){
+//            return user != null ? user.get().getLastName() : null;
+//        }
+//        throw new OnlineGardenShopResourceNotFoundException("No user with "+userId+" in data base");
+//    }
 
 }
