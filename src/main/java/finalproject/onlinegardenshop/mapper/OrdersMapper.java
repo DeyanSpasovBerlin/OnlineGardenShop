@@ -13,6 +13,7 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
+
 @Mapper(componentModel = "spring",  uses = {OrdersMapperInjector.class})//inject ProductHelper
 public interface OrdersMapper {
 
@@ -23,12 +24,15 @@ public interface OrdersMapper {
 
     @Mapping(target = "usersId", source = "users.id")//this show userId=null
     // and deletedUserId=-userId in Orders for deleted user
+    @Mapping(target = "firstName", source = "users.firstName")  // show firstName in Orders
+    @Mapping(target = "lastName", source = "users.lastName")    // show lastName in Orders
     @Mapping(target = "items", source = "orderItems")
     OrdersDto entityToDto(Orders entity);
 
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "productName", source = "product.id", qualifiedByName = "productNameFromId")//ето инжекция product name from ProductHelper
-    @Mapping(target = "firstName")
+//    @Mapping(target = "firstName", source = "order.users.id", qualifiedByName = "userFirstName")
+//    @Mapping(target = "lastName", source = "order.users.id", qualifiedByName = "userLasttName")
     CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
 
     List<OrdersDto> entityListToDto(List<Orders> entities);

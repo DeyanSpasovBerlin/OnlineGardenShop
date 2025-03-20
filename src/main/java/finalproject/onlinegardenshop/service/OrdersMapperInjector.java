@@ -28,10 +28,6 @@ public class OrdersMapperInjector {
         this.usersRepository = usersRepository;
     }
 
-    public OrdersMapperInjector(ProductsRepository productsRepository) {
-        this.productsRepository = productsRepository;
-    }
-
     @Named("productNameFromId")
     public String productNameFromId(Integer productId) {
         Optional<Products> product = productsRepository.findById(productId);
@@ -42,22 +38,28 @@ public class OrdersMapperInjector {
 
     }
 
-    @Named("userFirstName")
-    public String userFirstName(Integer userId){
-        Optional<Users> user = usersRepository.findById(userId);
-        if(user.isPresent()){
-            return user != null ? user.get().getFirstName() : null;
-        }
-        throw new OnlineGardenShopResourceNotFoundException("No user with "+userId+" in data base");
-    }
-
-    @Named("userLasttName")
-    public String userLasttName(Integer userId){
-        Optional<Users> user = usersRepository.findById(userId);
-        if(user.isPresent()){
-            return user != null ? user.get().getLastName() : null;
-        }
-        throw new OnlineGardenShopResourceNotFoundException("No user with "+userId+" in data base");
-    }
+//    @Named("userFirstName")
+//    public String userFirstName(Integer userId){
+////        Optional<Users> user = usersRepository.findById(userId);
+////        if(user.isPresent()){
+////            return user != null ? user.get().getFirstName() : null;
+////        }
+////        throw new OnlineGardenShopResourceNotFoundException("No user with "+userId+" in data base");
+//        if (userId == null) {
+//            throw new IllegalArgumentException("User ID must not be null");
+//        }
+//        return usersRepository.findById(userId)
+//                .map(Users::getFirstName)
+//                .orElse("Unknown");
+//    }
+//
+//    @Named("userLasttName")
+//    public String userLasttName(Integer userId){
+//        Optional<Users> user = usersRepository.findById(userId);
+//        if(user.isPresent()){
+//            return user != null ? user.get().getLastName() : null;
+//        }
+//        throw new OnlineGardenShopResourceNotFoundException("No user with "+userId+" in data base");
+//    }
 
 }
