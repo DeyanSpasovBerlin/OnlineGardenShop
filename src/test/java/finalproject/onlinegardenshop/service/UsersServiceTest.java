@@ -188,7 +188,9 @@ class UsersServiceTest {
                 .filter(v -> v.getPropertyPath().toString().equals("email"))
                 .findFirst();
         assertTrue(emailViolation.isPresent());
-        assertEquals("Invalid email format. Email must start with a letter and be in the format example@domain.com", emailViolation.get().getMessage());
+        assertEquals("Invalid email format. Email must start with a letter and be in the format example@domain.com",
+                emailViolation.get().getMessage());//The email is mandatory!
+        //
     }
 
     @Test
