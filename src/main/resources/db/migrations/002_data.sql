@@ -49,10 +49,10 @@ values ( 1,1, 8, 2),
 
 INSERT INTO orders(id, users_id, delivery_address, contact_phone, status, delivery_method, created_at, updated_at)
 VALUES
-    (1, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "PENDING_PAYMENT", "COURIER_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (2, 8, "Musterstraße 12, 10115 Berlin, Germany", "+49 351 8765432", "DELIVERED", "SELF_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (3, 5, "Bahnhofstraße 8, 80335 München, Germany", "+49 711 9876543", "SHIPPED", "COURIER_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    (4, 1, "Domstraße 5, 60528 Frankfurt am Main", "+49 30 1234567", "CANCELED", "SELF_DELIVERY", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    (1, 1, 'Domstraße 5, 60528 Frankfurt am Main', '+49 30 1234567', 'PENDING_PAYMENT', 'COURIER_DELIVERY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (2, 8, 'Musterstraße 12, 10115 Berlin, Germany', '+49 351 8765432', 'DELIVERED', 'SELF_DELIVERY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (3, 5, 'Bahnhofstraße 8, 80335 München, Germany', '+49 711 9876543', 'SHIPPED', 'COURIER_DELIVERY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (4, 1, 'Domstraße 5, 60528 Frankfurt am Main', '+49 30 1234567', 'CANCELED', 'SELF_DELIVERY', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO order_items (id, orders_id, products_id, quantity, price_at_purchase)
 VALUES

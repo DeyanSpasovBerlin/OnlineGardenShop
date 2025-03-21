@@ -6,13 +6,15 @@ import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
+import finalproject.onlinegardenshop.service.OrdersMapperInjector;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+
+@Mapper(componentModel = "spring",  uses = {OrdersMapperInjector.class})//inject ProductHelper
 public interface OrdersMapper {
 
     @Mapping(target = "updatedAt", ignore = true)
@@ -20,11 +22,17 @@ public interface OrdersMapper {
     @Mapping(target = "users", source = "usersId", qualifiedByName = "usersFromId")
     Orders dtoToEntity(OrdersDto dto);
 
-    @Mapping(target = "usersId", source = "users.id")
+    @Mapping(target = "usersId", source = "users.id")//this show userId=null
+    // and deletedUserId=-userId in Orders for deleted user
+    @Mapping(target = "firstName", source = "users.firstName")  // show firstName in Orders
+    @Mapping(target = "lastName", source = "users.lastName")    // show lastName in Orders
     @Mapping(target = "items", source = "orderItems")
     OrdersDto entityToDto(Orders entity);
 
-    @Mapping(target = "productId", source = "product.id") // FIXED!
+    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "productName", source = "product.id", qualifiedByName = "productNameFromId")//ето инжекция product name from ProductHelper
+//    @Mapping(target = "firstName", source = "order.users.id", qualifiedByName = "userFirstName")
+//    @Mapping(target = "lastName", source = "order.users.id", qualifiedByName = "userLasttName")
     CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
 
     List<OrdersDto> entityListToDto(List<Orders> entities);
@@ -50,5 +58,6 @@ public interface OrdersMapper {
         users.setId(id);
         return users;
     }
+
 
 }

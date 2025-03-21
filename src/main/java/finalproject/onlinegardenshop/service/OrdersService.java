@@ -98,7 +98,7 @@ public class OrdersService {
     }
 
     @Transactional
-    public void checkout(Integer userId) {
+    public void checkout(Integer userId,String deliveryAddress,String contactPhone,String deliveryMethod) {
         logger.info("Checkout initiated for user: {}", userId);
         Cart cart = cartRepository.findByUsersId(userId)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
@@ -109,6 +109,13 @@ public class OrdersService {
         order.setUsers(cart.getUsers());
         order.setUpdatedAt(LocalDateTime.now());
         order.setStatus(OrdersStatus.PENDING_PAYMENT);
+        //*********
+        order.setDeliveryAddress(deliveryAddress);
+        order.setContactPhone(contactPhone);
+        //revert String -> DeliveryMethod
+        DeliveryMethod deliveryMethodEnum = DeliveryMethod.valueOf(deliveryMethod.toUpperCase());
+        order.setDeliveryMethod(deliveryMethodEnum);
+        //**************
         order.setTotalPrice(calculateTotal(cart)); // This should calculate the total of cart items
         // Loop through the cart items and create order items
         for (CartItems cartItem : cart.getCartItems()) {
@@ -125,16 +132,8 @@ public class OrdersService {
         // Save the order to the database
         ordersRepository.save(order);
         logger.info("Clearing cart for user: {}", userId);
-        //set a "completed" flag on the cart - сохраняем для статистики
-       //Mark cart as completed //ето правильной вариант, но надо добавить колумн в карт!
-        //cart.setCompleted(true);
-//        cart.setCartItems(null);//ето ненаучны вариант, но рабочий
-        // **Explicitly delete all cart items**
                 cartItemsRepository.deleteAll(cart.getCartItems());
         cart.getCartItems().clear(); // Clear from the object to avoid issues
-
-        // Optionally mark the cart as completed
-        // cart.setCompleted(true);  // Uncomment if you add a 'completed' column
         cartRepository.save(cart);
         logger.info("Checkout completed successfully for user: {}", userId);
     }
@@ -174,6 +173,19 @@ public class OrdersService {
         }else{
             throw new OnlineGardenShopResourceNotFoundException("Order with id = " + id + " not found in database");
         }
+    }
+
+    public List<OrdersDto> getOrdersByDeletedUser(Integer userId) {
+        List<Orders> orders = ordersRepository.findByDeletedUserId(-userId);
+        List<OrdersDto> ordersDtos = ordersMapper.entityListToDto(orders);
+        return ordersDtos;
+    }
+
+
+    public List<OrdersDto> getAllDeletedUsersOrders() {
+        List<Orders> orders = ordersRepository.findAllByDeletedUserIdIsNotNull();
+        List<OrdersDto> ordersDtos = ordersMapper.entityListToDto(orders);
+        return ordersDtos;
     }
 
 }

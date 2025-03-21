@@ -8,5 +8,10 @@
     <include file="db/migrations/002_data.sql"/>
     <include file="db/migrations/003_add_total_price.sql"/>
     <include file="db/migrations/005_last_updated_cart.sql"/>
+    <include file="db/migrations/006_deleted_user_id_orders.sql"/>
+    <include file="db/migrations/007_email_sent_orders.sql" />
+    <include file="/db/migrations/008_change_categories_fk_restrictions_products_table.sql"/>
+    <include file="db/migrations/009_change_product_fk_constraints_in_cartitems_orderitems_favorites.sql"/>
+    <include file="/db/migrations/010_changes_in_products_table.sql"/>
 
 </databaseChangeLog>

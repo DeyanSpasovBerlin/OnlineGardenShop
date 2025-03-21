@@ -6,6 +6,7 @@ import finalproject.onlinegardenshop.entity.Categories;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.CategoriesMapper;
 import finalproject.onlinegardenshop.repository.CategoriesRepository;
+import finalproject.onlinegardenshop.repository.ProductsRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,16 @@ public class CategoriesService {
     private final static Logger logger = LogManager.getLogger(CategoriesService.class);
 
     private final CategoriesRepository repository;
+    private final ProductsRepository productsRepository;
     private final CategoriesMapper mapper;
 
     @Autowired
-    public CategoriesService(CategoriesRepository repository, CategoriesMapper mapper) {
+    public CategoriesService(CategoriesRepository repository,
+                             ProductsRepository productsRepository,
+                             CategoriesMapper mapper)
+    {
         this.repository = repository;
+        this.productsRepository = productsRepository;
         this.mapper = mapper;
     }
 
@@ -64,8 +70,10 @@ public class CategoriesService {
 
     @Transactional
     public void deleteCategory(int id) {
+        productsRepository.updateCategoryToNull(id);
         repository.deleteById(id);
     }
 
 }
+
 

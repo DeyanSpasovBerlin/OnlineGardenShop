@@ -14,7 +14,7 @@ import lombok.Setter;
 public class CategoryCreateDto {
 
     @NotNull(message = "{validation.categories.name}")
-    @Pattern(regexp = "^[A-ZÜÄÖ][a-zA-Züäö'\\- ]{0,254}$", message = "{validation.categories.name}")
+    @Pattern(regexp = "^[A-Za-zÜÄÖüäö'\\-., ]{1,255}$", message = "{validation.categories.name}")
     private String name;
 
 }

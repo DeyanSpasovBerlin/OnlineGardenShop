@@ -20,4 +20,13 @@ public interface OrdersRepository extends JpaRepository<Orders,Integer> {
     @Modifying
     int updateStatus(Integer id, OrdersStatus status);
 
+    // Find orders for a specific deleted user
+    List<Orders> findByDeletedUserId(Integer deletedUserId);
+
+    // Find all orders that belong to deleted users
+    List<Orders> findAllByDeletedUserIdIsNotNull();
+
+    //Find all Orders which sendMail=false
+    List<Orders> findByStatusAndEmailSentFalse(OrdersStatus status);
+
 }

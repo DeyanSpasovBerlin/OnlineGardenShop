@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="FILE_LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p --- [%15.15t] %-40.40c{1.} : %m%n%ex
+        </Property>
+        <Property name="CONSOLE_LOG_PATTERN">
+            %d{yy-MM-dd HH:mm:ss.SSS} %clr{%5p} --- [%15.15t] %clr{%-40.40c{1.}}{cyan}  : %m%n%ex
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${CONSOLE_LOG_PATTERN}"/>
+        </Console>
+        <RollingFile name="FileAppender" fileName="logs/bankApp.log"
+                     filePattern="logs/OnlineGardenShop-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <Pattern>${FILE_LOG_PATTERN}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="1MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="ConsoleAppender" />
+            <AppenderRef ref="FileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
