@@ -121,7 +121,14 @@
             <scope>test</scope>
         </dependency>
     <!--End of the group dependencies for test -->
-
+<!--        13-->
+<!--    DB for Test H2-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+            <!--            <scope>test</scope>-->
+        </dependency>
     </dependencies>
 
     <build>
