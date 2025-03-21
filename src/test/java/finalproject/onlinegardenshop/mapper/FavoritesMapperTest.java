@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class FavoritesMapperTest {
 
@@ -20,35 +21,31 @@ public class FavoritesMapperTest {
 
     @Test
     public void testToDto() {
-        // Создаем объекты для тестирования
-        Products product = new Products();
-        product.setId(1); //L
 
-        Users user = new Users();  // Это поле будет игнорироваться в тестах
-        user.setId(1); // L
+        Products product = new Products();
+        product.setId(1);
+
+        Users user = new Users();
+        user.setId(1);
 
         Favorites favorite = new Favorites();
         favorite.setProduct(product);
         favorite.setUser(user);
 
-        // Маппим объект Favorites в FavoritesDto
         FavoritesDto favoritesDto = favoritesMapper.toDto(favorite);
 
-        // Проверяем, что маппинг работает корректно
         assertEquals(favorite.getProduct().getId(), favoritesDto.getProductsId());
     }
 
     @Test
     public void testToEntity() {
-        // Создаем DTO для тестирования
-        FavoritesDto favoritesDto = new FavoritesDto();
-        favoritesDto.setProductsId(1); //L
 
-        // Маппим DTO в сущность Favorites
+        FavoritesDto favoritesDto = new FavoritesDto();
+        favoritesDto.setProductsId(1);
+
         Favorites favorite = favoritesMapper.toEntity(favoritesDto);
 
-        // Проверяем, что поля "users" и "products" не инициализируются, так как они игнорируются в маппере
-        assertEquals(null, favorite.getUser());
-        assertEquals(null, favorite.getProduct());
+        assertNull(favorite.getUser());
+        assertNull(favorite.getProduct());
     }
 }

@@ -2,34 +2,25 @@ package finalproject.onlinegardenshop.entity;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.mockito.Mockito;
 
 class FavoritesTest {
 
     @Test
-    void shouldCreateFavoritesEntityCorrectly() {
-        Users user = new Users();
-        Products product = new Products();
+    void testFavoritesEntity() {
 
-        Favorites favorite = new Favorites(1, user, product);
-
-        assertNotNull(favorite);
-        assertEquals(1, favorite.getId());
-        assertEquals(user, favorite.getUser());
-        assertEquals(product, favorite.getProduct());
-    }
-
-    @Test
-    void shouldAllowSettingValues() {
-        Users user = new Users();
-        Products product = new Products();
+        Users mockUser = Mockito.mock(Users.class);
+        Products mockProduct = Mockito.mock(Products.class);
 
         Favorites favorite = new Favorites();
-        favorite.setId(2);
-        favorite.setUser(user);
-        favorite.setProduct(product);
+        favorite.setId(1);
+        favorite.setUser(mockUser);
+        favorite.setProduct(mockProduct);
+        favorite.setTestData("Sample Data");
 
-        assertEquals(2, favorite.getId());
-        assertEquals(user, favorite.getUser());
-        assertEquals(product, favorite.getProduct());
+        assertEquals(1, favorite.getId());
+        assertEquals(mockUser, favorite.getUser());
+        assertEquals(mockProduct, favorite.getProduct());
+        assertEquals("Sample Data", favorite.getTestData());
     }
 }

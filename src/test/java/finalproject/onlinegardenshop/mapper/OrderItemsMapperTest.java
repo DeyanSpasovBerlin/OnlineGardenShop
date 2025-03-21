@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class OrderItemsMapperTest {
 
@@ -20,7 +21,7 @@ public class OrderItemsMapperTest {
 
     @Test
     public void testToDto() {
-        // Создаем объекты для тестирования
+
         Orders order = new Orders();
         order.setId(1);
 
@@ -31,10 +32,8 @@ public class OrderItemsMapperTest {
         orderItems.setOrder(order);
         orderItems.setProduct(product);
 
-        // Маппим объект OrderItems в OrderItemsDto
         OrderItemsDto orderItemsDto = orderItemsMapper.toDto(orderItems);
 
-        // Проверяем, что маппинг работает корректно
         assertEquals(orderItems.getOrder().getId(), orderItemsDto.getOrderId());
         assertEquals(orderItems.getProduct().getId(), orderItemsDto.getProductId());
     }
@@ -43,14 +42,12 @@ public class OrderItemsMapperTest {
     public void testToEntity() {
         // Создаем DTO для тестирования
         OrderItemsDto orderItemsDto = new OrderItemsDto();
-        orderItemsDto.setOrderId(1);      //L
-        orderItemsDto.setProductId(2);    // L
+        orderItemsDto.setOrderId(1);
+        orderItemsDto.setProductId(2);
 
-        // Маппим DTO в сущность OrderItems
         OrderItems orderItems = orderItemsMapper.toEntity(orderItemsDto);
 
-        // Проверяем, что Order и Product не инициализируются, так как они игнорируются в маппере
-        assertEquals(null, orderItems.getOrder());
-        assertEquals(null, orderItems.getProduct());
+        assertNull(orderItems.getOrder());
+        assertNull(orderItems.getProduct());
     }
 }
