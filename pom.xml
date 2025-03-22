@@ -129,6 +129,22 @@
             <version>2.2.224</version>
             <!--            <scope>test</scope>-->
         </dependency>
+<!--        14-->
+<!--        Group dependncies for compactibility with jupiter5-->
+<!--        Explan. J23 имеет какуюто несогласованость с Spring boot. Поетому он не всегда понимает, что надо использоват Jupiter5,
+что прописано в spring-boot-starter-test. Ети 2 dependencies публикованные девелопер, которые имели ету ошибку.
+ Они заставляют Спринг работать с Юпитер5-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+<!--        End of compactibility Jupiter 5-->
     </dependencies>
 
     <build>
