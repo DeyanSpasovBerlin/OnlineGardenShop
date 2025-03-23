@@ -5,6 +5,7 @@ import finalproject.onlinegardenshop.entity.enums.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public interface UsersRepository extends JpaRepository<Users,Integer> {
     @Query("select u from Users u where u.lastName like :lastname% and u.firstName like :firstName%")
     List<Users> findByFirstLetterFromFirstNameAndFirstLetterFromLastName(String firstName, String lastname);
 
+    @Transactional
     @Query("update Users u set u.role = :status where u.id = :id")
     @Modifying
     int updateStatus(Long id, UserRole status);
