@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   db:
@@ -15,6 +15,11 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - onlinegarden-network
+    healthcheck:
+        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+        interval: 10s
+        retries: 5
+        timeout: 5s
 
   app:
     build: .
@@ -22,7 +27,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy  # Wait until MySQL is ready
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlineGardenShop
       SPRING_DATASOURCE_USERNAME: root
