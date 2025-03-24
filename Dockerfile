@@ -22,16 +22,13 @@ WORKDIR /app
 
 # Copy the Maven wrapper and POM file
 COPY mvnw mvnw.cmd pom.xml ./
-COPY .mvn .mvn
+COPY .mvn .mvn/
 
 # Grant execute permissions for Maven wrapper (needed in Linux-based containers)
 RUN chmod +x mvnw
-
-# Copy the source code into the container
-COPY src src
-
+COPY src src/
 # Build the application inside the container
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
 
 # Use a new, clean runtime image to run the app
 FROM openjdk:24-jdk-slim
