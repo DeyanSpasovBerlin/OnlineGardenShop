@@ -4,11 +4,12 @@ services:
   db:
     image: mysql:5.7
     container_name: onlinegarden-db
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: onlineGardenShop
-#      MYSQL_USER: root
-#      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: onlinegardenshop
+    env_file:
+        - .env  # Load environment variables from .env file
     ports:
       - "3306:3306"
     volumes:
@@ -30,7 +31,8 @@ services:
       db:
         condition: service_healthy  # Wait until MySQL is ready
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlineGardenShop
+#      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlineGardenShop
+      SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/onlinegardenshop:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
     networks:
