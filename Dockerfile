@@ -15,7 +15,7 @@
 #CMD ["java", "-jar", "app.jar"]
 # Use OpenJDK 24 as the base image
 #******************************
-FROM openjdk:24-jdk-slim AS builder
+FROM openjdk:23-jdk-slim AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -31,7 +31,7 @@ COPY src src/
 #RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
 RUN ./mvnw clean package -DskipTests
 # Use a new, clean runtime image to run the app
-FROM openjdk:24-jdk-slim
+FROM openjdk:23-jdk-slim
 
 # Set working directory
 WORKDIR /app
