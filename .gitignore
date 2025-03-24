@@ -3,7 +3,7 @@ HELP.md
 target/
 
 # But don't ignore the specific JAR file
-!target/OnlineGardenShop-0.0.1-SNAPSHOT.jar
+#!target/OnlineGardenShop-0.0.1-SNAPSHOT.jar
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
