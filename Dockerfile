@@ -28,8 +28,8 @@ COPY .mvn .mvn/
 RUN chmod +x mvnw
 COPY src src/
 # Build the application inside the container
-RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
-
+#RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
+RUN ./mvnw clean package -DskipTests
 # Use a new, clean runtime image to run the app
 FROM openjdk:24-jdk-slim
 
