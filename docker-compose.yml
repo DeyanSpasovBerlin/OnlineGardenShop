@@ -1,5 +1,4 @@
 
-
 services:
   db:
     image: mysql:5.7
@@ -9,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DATABASE: onlinegardenshop
     env_file:
-        - .env  # Load environment variables from .env file
+      - .env  # Load environment variables from .env file
     ports:
       - "3306:3306"
     volumes:
@@ -17,10 +16,10 @@ services:
     networks:
       - onlinegarden-network
     healthcheck:
-        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-        interval: 10s
-        retries: 5
-        timeout: 5s
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
   app:
     build: .
@@ -31,8 +30,8 @@ services:
       db:
         condition: service_healthy  # Wait until MySQL is ready
     environment:
-#      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlineGardenShop
-      SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/onlinegardenshop:
+      SPRING_PROFILES_ACTIVE: docker  # This tells Spring to use 'application-docker.properties'
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlinegardenshop  # Remove the trailing colon
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
     networks:
