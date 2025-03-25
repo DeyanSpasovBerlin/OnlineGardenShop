@@ -5,7 +5,7 @@ services:
     container_name: onlinegarden-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: what1960 #${MYSQL_PASSWORD}
       MYSQL_DATABASE: onlinegardenshop
     env_file:
       - .env  # Load environment variables from .env file
@@ -31,7 +31,7 @@ services:
         condition: service_healthy  # Wait until MySQL is ready
     environment:
       SPRING_PROFILES_ACTIVE: docker  # This tells Spring to use 'application-docker.properties'
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlinegardenshop  # Remove the trailing colon
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/onlinegardenshop
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: what1960 #${MYSQL_PASSWORD}
     networks:
