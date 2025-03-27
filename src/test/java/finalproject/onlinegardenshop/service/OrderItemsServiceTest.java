@@ -18,9 +18,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for OrderItemsService.
- */
 @ExtendWith(MockitoExtension.class)
 class OrderItemsServiceTest {
 
@@ -45,9 +42,6 @@ class OrderItemsServiceTest {
         orderItemDto.setId(1);
     }
 
-    /**
-     * Test fetching all order items.
-     */
     @Test
     void getAllOrderItems_ShouldReturnList() {
         when(repository.findAll()).thenReturn(List.of(orderItem));
@@ -60,9 +54,6 @@ class OrderItemsServiceTest {
         assertEquals(orderItemDto.getId(), result.getFirst().getId());
     }
 
-    /**
-     * Test fetching an order item by ID when it exists.
-     */
     @Test
     void getOrderItemById_ShouldReturnOrderItemDto_WhenExists() {
         when(repository.findById(1)).thenReturn(Optional.of(orderItem));
@@ -74,9 +65,6 @@ class OrderItemsServiceTest {
         assertEquals(orderItemDto.getId(), result.getId());
     }
 
-    /**
-     * Test fetching an order item by ID when it does not exist.
-     */
     @Test
     void getOrderItemById_ShouldThrowException_WhenNotExists() {
         when(repository.findById(1)).thenReturn(Optional.empty());
