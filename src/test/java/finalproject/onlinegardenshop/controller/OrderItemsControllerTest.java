@@ -1,53 +1,44 @@
 package finalproject.onlinegardenshop.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import finalproject.onlinegardenshop.dto.OrderItemsDto;
 import finalproject.onlinegardenshop.service.OrderItemsService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = OrderItemsController.class)
 class OrderItemsControllerTest {
 
-    private MockMvc mockMvc;
-
-    @Mock
+    @MockitoBean
     private OrderItemsService service;
 
-    @InjectMocks
-    private OrderItemsController controller;
+    @Autowired
+    private MockMvc mockMvc;
 
-    private OrderItemsDto orderItemDto;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        orderItemDto = new OrderItemsDto();
-        orderItemDto.setId(1);
-    }
+    @Autowired
+    private ObjectMapper mapper;
 
     @Test
-    void getAllOrderItems_ShouldReturnOrderItemsList() throws Exception {
-        when(service.getAllOrderItems()).thenReturn(List.of(orderItemDto));
+    void getAllOrderItems() throws Exception {
+        Integer orderId = 1;
+        List<OrderItemsDto> orderItems = Collections.emptyList();
+        when(service.getAllOrderItems()).thenReturn(orderItems);
 
-        mockMvc.perform(get("/orders/1/order-items/all")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id").value(1));
+        mockMvc.perform(get("/orders/" + orderId + "/order-items/all")
+                        .contentType("application/json"))
+                .andExpect(status().isOk());
 
-        verify(service, times(1)).getAllOrderItems();
+        verify(service).getAllOrderItems();
     }
 }

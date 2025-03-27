@@ -1,13 +1,10 @@
 package finalproject.onlinegardenshop.dto;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,29 +14,31 @@ class FavoritesDtoTest {
 
     @BeforeEach
     void setUp() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+
+        validator = new LocalValidatorFactoryBean();
+        ((LocalValidatorFactoryBean) validator).afterPropertiesSet();
     }
 
     @Test
-    void whenProductsIdIsNull_ShouldReturnConstraintViolation() {
-        FavoritesDto dto = new FavoritesDto();
-        dto.setId(1);
-        dto.setProductsId(null);
+    void testValidFavoritesDto() {
 
-        Set<ConstraintViolation<FavoritesDto>> violations = validator.validate(dto);
+        FavoritesDto favoritesDto = new FavoritesDto(1, 1, "ACTIVE");
 
-        assertFalse(violations.isEmpty());
-        assertEquals(1, violations.size());
-        assertEquals("{validation.favorites.productId}", violations.iterator().next().getMessage());
+        BindingResult bindingResult = new org.springframework.validation.BeanPropertyBindingResult(favoritesDto, "favoritesDto");
+        validator.validate(favoritesDto, bindingResult);
+
+        assertFalse(bindingResult.hasErrors(), "Expected no validation errors, but found some.");
     }
 
     @Test
-    void whenProductsIdIsNotNull_ShouldPassValidation() {
-        FavoritesDto dto = new FavoritesDto(1, 100);
+    void testInvalidFavoritesDtoWithNullProductId() {
 
-        Set<ConstraintViolation<FavoritesDto>> violations = validator.validate(dto);
+        FavoritesDto favoritesDto = new FavoritesDto(1, null, "ACTIVE");
 
-        assertTrue(violations.isEmpty());
+        BindingResult bindingResult = new org.springframework.validation.BeanPropertyBindingResult(favoritesDto, "favoritesDto");
+        validator.validate(favoritesDto, bindingResult);
+
+        assertNotNull(bindingResult.getFieldError("productsId"), "Expected validation error for 'productsId'.");
+        assertEquals("{validation.favorites.productId}", bindingResult.getFieldError("productsId").getDefaultMessage());
     }
 }

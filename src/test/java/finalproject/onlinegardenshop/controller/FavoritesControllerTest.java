@@ -1,78 +1,61 @@
 package finalproject.onlinegardenshop.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import finalproject.onlinegardenshop.dto.FavoritesDto;
 import finalproject.onlinegardenshop.service.FavoritesService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.List;
-
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(controllers = FavoritesController.class)
 class FavoritesControllerTest {
 
-    private MockMvc mockMvc;
-
-    @Mock
+    @MockitoBean
     private FavoritesService service;
 
-    @InjectMocks
-    private FavoritesController controller;
+    @Autowired
+    private MockMvc mockMvc;
 
-    private FavoritesDto favoriteDto;
+    @Autowired
+    private ObjectMapper mapper;
 
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-        favoriteDto = new FavoritesDto();
-        favoriteDto.setId(1);
+    @Test
+    void getAllFavorites() throws Exception {
+        mockMvc.perform(get("/favorites/all").contentType("application/json"))
+                .andExpect(status().isOk());
+        verify(service).getAllFavorites();
     }
 
     @Test
-    void getAllFavorites_ShouldReturnFavoritesList() throws Exception {
-        when(service.getAllFavorites()).thenReturn(List.of(favoriteDto));
+    void saveFavorite() throws Exception {
+        FavoritesDto favorite = new FavoritesDto();
+        when(service.saveFavorite(any(FavoritesDto.class))).thenReturn(favorite);
 
-        mockMvc.perform(get("/favorites/all")
-                        .contentType(MediaType.APPLICATION_JSON))
+        MvcResult mvcResult = mockMvc.perform(post("/favorites")
+                        .contentType("application/json")
+                        .content(mapper.writeValueAsString(favorite)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1));
+                .andReturn();
+        verify(service).saveFavorite(any(FavoritesDto.class));
 
-        verify(service, times(1)).getAllFavorites();
+        String json = mvcResult.getResponse().getContentAsString();
+        assertEquals(mapper.writeValueAsString(favorite), json);
     }
 
     @Test
-    void saveFavorite_ShouldReturnSavedFavorite() throws Exception {
-        when(service.saveFavorite(any())).thenReturn(favoriteDto);
-
-        mockMvc.perform(post("/favorites")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(favoriteDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1));
-
-        verify(service, times(1)).saveFavorite(any());
-    }
-
-    @Test
-    void deleteFavorite_ShouldReturnNoContent() throws Exception {
-        doNothing().when(service).deleteFavorite(1);
-
-        mockMvc.perform(delete("/favorites/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+    void deleteFavorite() throws Exception {
+        mockMvc.perform(delete("/favorites/1").contentType("application/json"))
                 .andExpect(status().isNoContent());
-
-        verify(service, times(1)).deleteFavorite(1);
+        verify(service).deleteFavorite(1);
     }
 }

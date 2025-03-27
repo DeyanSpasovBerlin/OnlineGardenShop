@@ -40,7 +40,7 @@ public class OrderItemsMapperTest {
 
     @Test
     public void testToEntity() {
-        // Создаем DTO для тестирования
+
         OrderItemsDto orderItemsDto = new OrderItemsDto();
         orderItemsDto.setOrderId(1);
         orderItemsDto.setProductId(2);
