@@ -76,11 +76,11 @@ public class CategoriesServiceTest {
         when(categoriesMapper.entityToDto(category)).thenReturn(categoryDto);
 
         // Вызов метода
-        Optional<CategoriesDto> result = categoriesService.getById(1);
+        CategoriesDto result = categoriesService.getById(1);
 
         // Проверки
-        assertTrue(result.isPresent());
-        assertEquals("Test Category", result.get().getName());
+        assertNotNull(result);
+        assertEquals("Test Category", result.getName());
     }
 
     @Test

@@ -38,15 +38,17 @@ public class CategoriesService {
 
     public List<CategoriesDto> getAll() {
         List<Categories> categories = repository.findAll();
+        if (categories.isEmpty()) {
+            throw new OnlineGardenShopResourceNotFoundException("Categories not found");
+        }
         logger.debug("Categories retrieved from database");
         logger.debug("Category ids: {}", ()->categories.stream().map(Categories::getId).toList());
         return mapper.entityListToDto(categories);
     }
 
-    public Optional<CategoriesDto> getById(int id) {
-        Optional<Categories> category = repository.findById(id);
-        CategoriesDto dto = mapper.entityToDto(category.orElse(null));
-        return Optional.ofNullable(dto);
+    public CategoriesDto getById(int id) {
+        return repository.findById(id).map(mapper::entityToDto)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Category with id " + id + " not found"));
     }
 
     @Transactional
@@ -70,6 +72,8 @@ public class CategoriesService {
 
     @Transactional
     public void deleteCategory(int id) {
+        Categories category = repository.findById(id)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Category with id " + id + " not found"));
         productsRepository.updateCategoryToNull(id);
         repository.deleteById(id);
     }

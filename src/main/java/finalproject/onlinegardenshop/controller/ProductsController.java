@@ -27,21 +27,13 @@ public class ProductsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductsDto>> getAll(){
-        List<ProductsDto> products = service.getAll();
-        if(!products.isEmpty()){
-            return new ResponseEntity<>(products, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<List<ProductsDto>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductsDto> getById(@PathVariable int id){
-        Optional<ProductsDto> product = service.getById(id);
-        if(product.isPresent()){
-            return new ResponseEntity<>(product.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<ProductsDto> getById(@PathVariable int id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @GetMapping
@@ -61,27 +53,23 @@ public class ProductsController {
             default -> Sort.by(Sort.Order.asc("name"));
         };
 
-        List<ProductsDto> products = service.getFilteredProducts(category, minPrice, maxPrice, discount, sorting);
-        return products.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(products);
+        return ResponseEntity.ok(service.getFilteredProducts(category, minPrice, maxPrice, discount, sorting));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductsDto> add(@RequestBody @Valid ProductCreateDto product){
-        ProductsDto created = service.addProduct(product);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    public ResponseEntity<ProductsDto> add(@RequestBody @Valid ProductCreateDto product) {
+        return new ResponseEntity<>(service.addProduct(product), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductsDto> update(@PathVariable int id, @RequestBody @Valid ProductsDto product){
-        ProductsDto updated = service.updateProduct(id, product);
-        return new ResponseEntity<>(updated, HttpStatus.OK);
+    public ResponseEntity<ProductsDto> update(@PathVariable int id, @RequestBody @Valid ProductsDto product) {
+        return ResponseEntity.ok(service.updateProduct(id, product));
     }
 
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id){
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         service.deleteProduct(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }
