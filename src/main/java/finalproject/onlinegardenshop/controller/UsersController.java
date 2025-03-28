@@ -105,19 +105,13 @@ public class UsersController {
 
     //3. update Users  200 OK, 400 Bad Request, 404 Not Found
     @PutMapping("/{id}")
-    public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody Map<String, Object> requestBody) {
-        // проверяем для наличии в query запретные поля check for not allowed field
-        if (requestBody.containsKey("password") || requestBody.containsKey("email") || requestBody.containsKey("role")) {
-            throw new OnlineGardenShopBadRequestException("Updating password, email, or role is not allowed.");
-        }
-        // Convert request body to DTO
-        UsersUpdateDto user = new UsersUpdateDto();
-        user.setId(id);
-        user.setFirstName((String) requestBody.get("firstName"));
-        user.setLastName((String) requestBody.get("lastName"));
-        user.setPhone((String) requestBody.get("phone"));
-        // @Valid work only on dto object. Here we use  Map<String, Object> and firstName,... is not validated with regexp.
-        //When manualy add validator we say javac to validate Map
+        public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto user) {
+        //use UsersUpdateDto becouse only FirstName,LastName and Phone is alloyed to change
+        UsersUpdateDto newUser = new UsersUpdateDto();
+        newUser.setId(id);
+        newUser.setFirstName((String) user.getFirstName());
+        newUser.setLastName((String) user.getLastName());
+        newUser.setPhone((String) user.getPhone());
         Set<ConstraintViolation<UsersUpdateDto>> violations = validator.validate(user);
         if (!violations.isEmpty()) {
             StringBuilder errorMessages = new StringBuilder();
@@ -128,7 +122,7 @@ public class UsersController {
         }
         //здесь меняем UsersUpdateDto -> UsersDto потому что в Service
         // возвращаеться UsersDto, потому что mapper работает только с UsersDto
-        UsersDto updatedUser = userService.updatedUsersService(user);
+        UsersDto updatedUser = userService.updatedUsersService(newUser);
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
          /*
