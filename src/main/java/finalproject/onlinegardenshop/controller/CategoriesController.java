@@ -29,19 +29,12 @@ public class CategoriesController {
     @GetMapping
     public ResponseEntity<List<CategoriesDto>> getAll(){
         List<CategoriesDto> categories = service.getAll();
-        if(!categories.isEmpty()){
-            return new ResponseEntity<>(categories, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriesDto> getById(@PathVariable int id){
-        Optional<CategoriesDto> category = service.getById(id);
-        if(category.isPresent()){
-            return new ResponseEntity<>(category.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<CategoriesDto> getById(@PathVariable int id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     @PostMapping
@@ -61,9 +54,9 @@ public class CategoriesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id){
+    public ResponseEntity<Void> delete(@PathVariable int id) {
         service.deleteCategory(id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.notFound().build();
     }
 
 }
