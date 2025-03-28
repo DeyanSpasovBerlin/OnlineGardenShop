@@ -18,9 +18,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for FavoritesService.
- */
 @ExtendWith(MockitoExtension.class)
 class FavoritesServiceTest {
 
@@ -45,9 +42,6 @@ class FavoritesServiceTest {
         favoriteDto.setId(1);
     }
 
-    /**
-     * Test fetching all favorites.
-     */
     @Test
     void getAllFavorites_ShouldReturnList() {
         when(repository.findAll()).thenReturn(List.of(favorite));
@@ -60,9 +54,6 @@ class FavoritesServiceTest {
         assertEquals(favoriteDto.getId(), result.getFirst().getId());
     }
 
-    /**
-     * Test fetching a favorite by ID when it exists.
-     */
     @Test
     void getFavoriteById_ShouldReturnFavoriteDto_WhenExists() {
         when(repository.findById(1)).thenReturn(Optional.of(favorite));
@@ -74,9 +65,6 @@ class FavoritesServiceTest {
         assertEquals(favoriteDto.getId(), result.getId());
     }
 
-    /**
-     * Test fetching a favorite by ID when it does not exist.
-     */
     @Test
     void getFavoriteById_ShouldReturnNull_WhenNotExists() {
         when(repository.findById(1)).thenReturn(Optional.empty());
@@ -86,9 +74,6 @@ class FavoritesServiceTest {
         assertNull(result);
     }
 
-    /**
-     * Test saving a favorite.
-     */
     @Test
     void saveFavorite_ShouldReturnSavedFavorite() {
         when(mapper.toEntity(any())).thenReturn(favorite);
@@ -101,9 +86,6 @@ class FavoritesServiceTest {
         assertEquals(favoriteDto.getId(), result.getId());
     }
 
-    /**
-     * Test deleting a favorite when it exists.
-     */
     @Test
     void deleteFavorite_ShouldDelete_WhenExists() {
         when(repository.findById(1)).thenReturn(Optional.of(favorite));
@@ -113,9 +95,6 @@ class FavoritesServiceTest {
         verify(repository, times(1)).delete(favorite);
     }
 
-    /**
-     * Test deleting a favorite when it does not exist.
-     */
     @Test
     void deleteFavorite_ShouldThrowException_WhenNotExists() {
         when(repository.findById(1)).thenReturn(Optional.empty());
