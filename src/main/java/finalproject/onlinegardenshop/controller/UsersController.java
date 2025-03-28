@@ -2,7 +2,7 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.dto.UsersUpdateDto;
-import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestException;
 import finalproject.onlinegardenshop.repository.UsersRepository;
 import finalproject.onlinegardenshop.service.UsersService;
 import jakarta.validation.Valid;
@@ -90,7 +90,7 @@ public class UsersController {
         try {
             String token = userService.authenticateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
             return ResponseEntity.ok(token); // Return 200 OK if successful
-        } catch (OnlineGardenSchopBadRequestException e) {
+        } catch (OnlineGardenShopBadRequestException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");//Return 401 Unauthorized
         }
     }
@@ -108,7 +108,7 @@ public class UsersController {
     public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody Map<String, Object> requestBody) {
         // проверяем для наличии в query запретные поля check for not allowed field
         if (requestBody.containsKey("password") || requestBody.containsKey("email") || requestBody.containsKey("role")) {
-            throw new OnlineGardenSchopBadRequestException("Updating password, email, or role is not allowed.");
+            throw new OnlineGardenShopBadRequestException("Updating password, email, or role is not allowed.");
         }
         // Convert request body to DTO
         UsersUpdateDto user = new UsersUpdateDto();
@@ -124,7 +124,7 @@ public class UsersController {
             for (ConstraintViolation<UsersUpdateDto> violation : violations) {
                 errorMessages.append(violation.getMessage()).append(" ");
             }
-            throw new OnlineGardenSchopBadRequestException(errorMessages.toString().trim());
+            throw new OnlineGardenShopBadRequestException(errorMessages.toString().trim());
         }
         //здесь меняем UsersUpdateDto -> UsersDto потому что в Service
         // возвращаеться UsersDto, потому что mapper работает только с UsersDto
