@@ -1,6 +1,7 @@
 package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.entity.Orders;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,9 +29,7 @@ public class EmailService {
         try {
             mailSender.send(message);
         } catch (MailException e) {
-            // Log the error here for troubleshooting
-            e.printStackTrace();
-            throw new RuntimeException("Failed to send email", e);
+            throw new OnlineGardenShopBadRequestException("Failed to send email: " + e.getMessage());
         }
     }
 
