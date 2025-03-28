@@ -30,7 +30,8 @@ class FavoritesRepositoryTest {
     @Test
     void testFindByUserId() {
         Users user = new Users();
-        user.setName("Test User");
+        user.setFirstName("Test");
+        user.setLastName("User");
         user = userRepository.save(user);
 
         Products product = new Products();
@@ -49,9 +50,9 @@ class FavoritesRepositoryTest {
 
     @Test
     void testFindByProductId() {
-
         Users user = new Users();
-        user.setName("Test User");
+        user.setFirstName("Test");
+        user.setLastName("User");
         user = userRepository.save(user);
 
         Products product = new Products();
