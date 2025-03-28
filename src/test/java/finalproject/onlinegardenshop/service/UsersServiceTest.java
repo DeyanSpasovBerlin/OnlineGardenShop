@@ -4,7 +4,7 @@ import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
-import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestException;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.UsersMapper;
 import finalproject.onlinegardenshop.repository.CartItemsRepository;
@@ -20,9 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -145,7 +142,7 @@ class UsersServiceTest {
         // Arrange
         when(usersRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(userList.get(0)));
         // Act & Assert
-        OnlineGardenSchopBadRequestException exception = assertThrows(OnlineGardenSchopBadRequestException.class, () -> {
+        OnlineGardenShopBadRequestException exception = assertThrows(OnlineGardenShopBadRequestException.class, () -> {
             usersService.registerUser(userDtoList.get(0));
         });
         assertEquals("Email is already in use", exception.getMessage());
