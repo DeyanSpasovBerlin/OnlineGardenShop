@@ -67,9 +67,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(OnlineGardenSchopBadRequestException.class)
+    @ExceptionHandler(OnlineGardenShopBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleOnlineGardenSchopBadRequestException(OnlineGardenSchopBadRequestException e) {
+    public ResponseEntity<String> handleOnlineGardenSchopBadRequestException(OnlineGardenShopBadRequestException e) {
         logger.debug("BankAppBadRequestException", e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }

@@ -1,13 +1,12 @@
 package finalproject.onlinegardenshop.service;
 
-import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.dto.UsersUpdateDto;
 import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
-import finalproject.onlinegardenshop.exception.OnlineGardenSchopBadRequestException;
+import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestException;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.mapper.UsersMapper;
@@ -94,7 +93,7 @@ public class UsersService {
         // Check if email already exists
         Optional<Users> existingUser = repository.findByEmail(usersDto.getEmail());
         if (existingUser.isPresent()) {
-            throw new OnlineGardenSchopBadRequestException("Email is already in use");//400 Bad Request
+            throw new OnlineGardenShopBadRequestException("Email is already in use");//400 Bad Request
             // or if Invalid input (missing fields, wrong format) -> "email": "Email is required"
         }
         // Convert DTO to entity and save to DB
@@ -108,9 +107,9 @@ public class UsersService {
     //2.  • Аутентификация пользователя Service
     public String authenticateUser(String email, String password) {
         Users user = repository.findByEmail(email)
-                .orElseThrow(() -> new OnlineGardenSchopBadRequestException("Invalid credentials"));// Find the user by email
+                .orElseThrow(() -> new OnlineGardenShopBadRequestException("Invalid credentials"));// Find the user by email
         if (!password.equals(user.getPassword())) {// Compare input password with stored password (plain-text comparison)
-            throw new OnlineGardenSchopBadRequestException("Invalid credentials");
+            throw new OnlineGardenShopBadRequestException("Invalid credentials");
         }
         System.out.println("User " + email + " successfully authenticated.");// Log successful authentication
         return "User authenticated successfully!";// Return success message after authentication
