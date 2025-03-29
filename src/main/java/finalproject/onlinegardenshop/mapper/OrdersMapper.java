@@ -3,6 +3,7 @@ package finalproject.onlinegardenshop.mapper;
 import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
 import finalproject.onlinegardenshop.dto.CreateOrderRequestSaveOrderItemsDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
+import finalproject.onlinegardenshop.dto.RevenueReportDto;
 import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.Users;
@@ -12,6 +13,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Mapper(componentModel = "spring",  uses = {OrdersMapperInjector.class})//inject ProductHelper
@@ -59,5 +61,15 @@ public interface OrdersMapper {
         return users;
     }
 
+//    // Преобразуваме един Object[] в RevenueReportDto -> getRevenueForLast10Days()->RevenueReportDto
+//    @Mapping(target = "period", source = "0")  // Първият елемент от Object[]
+//    @Mapping(target = "totalRevenue", source = "1")  // Вторият елемент от Object[]
+//    RevenueReportDto objectArrayToRevenueReportDto(Object[] data);
+//    // Преобразуваме списък от Object[] в списък от RevenueReportDto
+//    default List<RevenueReportDto> mapToRevenueReportDtoList(List<Object[]> data) {
+//        return data.stream()
+//                .map(this::objectArrayToRevenueReportDto)
+//                .collect(Collectors.toList());
+//    }
 
 }
