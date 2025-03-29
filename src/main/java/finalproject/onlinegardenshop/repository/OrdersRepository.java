@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,45 +40,31 @@ public interface OrdersRepository extends JpaRepository<Orders,Integer> {
             "WHERE o.status = 'PENDING_PAYMENT' AND o.createdAt < :thresholdDate")
     List<PendingOrderDto> findPendingOrdersOlderThan(@Param("thresholdDate") LocalDateTime thresholdDate);
 
-    //we need this in RevenueReport  Приходи за период изчисляваме датата в OrdersService
-//
-//    @Query("SELECT new finalproject.onlinegardenshop.dto.RevenueReportDto( " +
-//            "CASE " +
-//            "WHEN :period = 'hour' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%m-%d %H:00:00') " +
-//            "WHEN :period = 'day' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%m-%d') " +
-//            "WHEN :period = 'week' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%u') " +
-//            "WHEN :period = 'month' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%m') " +
-//            "END, SUM(o.totalPrice)) " +
-//            "FROM Orders o " +
-//            "WHERE o.createdAt >= :startDate " +
-//            "GROUP BY " +
-//            "CASE " +
-//            "WHEN :period = 'hour' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%m-%d %H:00:00') " +
-//            "WHEN :period = 'day' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%m-%d') " +
-//            "WHEN :period = 'week' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%u') " +
-//            "WHEN :period = 'month' THEN FUNCTION('DATE_FORMAT', o.createdAt, '%Y-%m') " +
-//            "END " +
-//            "ORDER BY 1 DESC")
-//    List<RevenueReportDto> findRevenueGroupedByPeriod(
-//            @Param("period") String period,
-//            @Param("startDate") LocalDateTime startDate
-//    );
-    //******************
-
-//    @Query("SELECT new finalproject.onlinegardenshop.dto.RevenueReportDto(" +
-//            "DATE(o.createdAt), SUM(o.totalPrice)) " +
-//            "FROM Orders o " +
-//            "GROUP BY DATE(o.createdAt) " +
-//            "ORDER BY DATE(o.createdAt)")
-//    List<RevenueReportDto> getRevenueForLast10Days();
-    @Query(value = "SELECT DATE(created_at) AS period, SUM(total_price) AS totalRevenue " +
-            "FROM orders " +
-            "GROUP BY DATE(created_at) " +
+    @Query(value = "SELECT CASE " +
+            "   WHEN :intervalType = 'HOUR' THEN DATE_FORMAT(o.created_at, '%Y-%m-%d %H:00:00') " +
+            "   WHEN :intervalType = 'DAY' THEN DATE_FORMAT(o.created_at, '%Y-%m-%d') " +
+            "   WHEN :intervalType = 'WEEK' THEN CONCAT(YEAR(o.created_at), '-W', WEEK(o.created_at)) " +
+            "   WHEN :intervalType = 'MONTH' THEN DATE_FORMAT(o.created_at, '%Y-%m') " +
+            "   WHEN :intervalType = 'YEAR' THEN YEAR(o.created_at) " +
+            "END AS period, " +
+            "SUM(oi.quantity * oi.price_at_purchase) AS total_revenue " +
+            "FROM orders o " +
+            "LEFT JOIN order_items oi ON o.id = oi.orders_id " +
+            "WHERE o.created_at >= DATE_SUB(NOW(), INTERVAL :n DAY) " +
+            "GROUP BY period " +
             "ORDER BY period", nativeQuery = true)
-    List<Object[]> getRevenueForLast10Days();
-//    //********************
-//    @Query(value = "SELECT COUNT(*) FROM orders", nativeQuery = true)
-//    Long countOrders();
-    //***********
+    List<Object[]> getRevenueReport(@Param("n") int n, @Param("intervalType") String intervalType);
+
+    // Преобразуваме резултатите в DTO
+    default List<RevenueReportDto> getRevenueReportDto(int n, String intervalType) {
+        List<Object[]> results = getRevenueReport(n, intervalType);
+        List<RevenueReportDto> reportDtos = new ArrayList<>();
+        for (Object[] result : results) {
+            String period = (String) result[0];
+            Double totalRevenue = (Double) result[1];
+            reportDtos.add(new RevenueReportDto(period, totalRevenue));
+        }
+        return reportDtos;
+    }
 
 }

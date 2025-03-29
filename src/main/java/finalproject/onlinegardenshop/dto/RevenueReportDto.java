@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RevenueReportDto {
-    private LocalDateTime period; // Период (например, дата, час, седмица и т.н.)
-    private Double totalRevenue; // Обща печалба за този период
+    private String period;
+    private Double totalRevenue;
 
 }

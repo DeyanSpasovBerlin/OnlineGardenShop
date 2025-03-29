@@ -42,59 +42,32 @@ public class ReportsController {
     }
     //GET http://localhost:8080/reports/pending-orders/7  Неплатени поръчки повече от 7 дни
 
-//    @GetMapping("/revenue")
-//    public List<RevenueReportDto> getRevenueForLastPeriod(
-//            @RequestParam int count,
-//            @RequestParam String period
-//    ) {
-//        return reportsService.getRevenueForLastPeriod(count, period);
-//    }
-//    orders/revenue?count=7&period=day → приходи за последните 7 дни
-//    orders/revenue?count=3&period=month → приходи за последните 3 месеца
-
-//    @GetMapping("/revenue")
-//    public List<RevenueReportDto> getRevenueReport(@RequestParam String period, @RequestParam LocalDateTime startDate) {
-//        return reportsService.getRevenueReport(period, startDate);
-//    }
-    //*****************
-
-//    @GetMapping("/revenue/last-10-days")
-//    public List<RevenueReportDto> getRevenueForLast10Days() {
-//        return reportsService.getRevenueForLast10Days();
-//    }
-//    @GetMapping("/revenue/last-10-days")
-//    public ResponseEntity<List<RevenueReportDto>> getRevenueForLast10Days() {
-//        try {
-//            List<RevenueReportDto> revenueReports = reportsService.getRevenueForLast10Days();
-//            if (revenueReports.isEmpty()) {
-//                return ResponseEntity.noContent().build();  // Ако няма данни
-//            }
-//            return ResponseEntity.ok(revenueReports);
-//        } catch (Exception e) {
-//            // Логиране на грешката
-//            System.err.println("Error fetching revenue data: " + e.getMessage());
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();  // Връща 500 при грешка
-//        }
-//    }
-    @GetMapping("/revenue/last-10-days")
-    public ResponseEntity<List<RevenueReportDto>> getRevenueForLast10Days() {
-        List<RevenueReportDto> revenueReportDtos = reportsService.getRevenueForLast10Days();
-        return ResponseEntity.ok(revenueReportDtos);
+    // Метод за генериране на отчет за приходи по дни, месеци, часове и т.н.
+    @GetMapping("/revenue")
+    public List<RevenueReportDto> getRevenueReport(
+            @RequestParam("n") int n,                    // Параметър за броя дни/месеци/години
+            @RequestParam("intervalType") String intervalType) {  // Тип на интервала (например 'DAY', 'HOUR', 'MONTH')
+        return reportsService.getRevenueReport(n, intervalType);
     }
-    //GET http://localhost:8080/reports/revenue/last-10-days
-    //*********************
-//    @GetMapping("/count-orders")
-//    public ResponseEntity<Long> getOrderCount() {
-//        try {
-//            Long orderCount = reportsService.getOrderCount();
-//            return ResponseEntity.ok(orderCount);  // Връща брой на поръчките
-//        } catch (Exception e) {
-//            // Логиране на грешката
-//            System.err.println("Error fetching order count: " + e.getMessage());
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();  // Връща 500 при грешка
-//        }
-//    }
-    //****************
 }
+/*
+1. Заявка за групиране по час (HOUR)
+Тази заявка ще върне приходи, групирани по час.
+    http://localhost:8080/reports/revenue?intervalType=HOUR&n=30
+    Описание:Тази заявка ще върне общите приходи за последните 30 часа.
+    ******************
+    2. Заявка за групиране по ден (DAY)
+Тази заявка ще върне приходи, групирани по ден.
+    http://localhost:8080/reports/revenue?intervalType=DAY&n=30
+    Описание: Тази заявка ще върне общите приходи за последните 30 дни.
+    ********************
+    3. Заявка за групиране по седмица (WEEK)
+Тази заявка ще върне приходи, групирани по седмица.
+    http://localhost:8080/reports/revenue?intervalType=WEEK&n=12
+    Описание: Тази заявка ще върне общите приходи за последните 12 седмици.
+    ******************
+    5. Заявка за групиране по година (YEAR)
+Тази заявка ще върне приходи, групирани по година.
+    http://localhost:8080/reports/revenue?intervalType=YEAR&n=5
+    Описание: Тази заявка ще върне общите приходи за последните 5 години.
+ */
