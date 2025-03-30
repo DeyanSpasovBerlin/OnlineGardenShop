@@ -51,21 +51,35 @@
 
 # new variant for codespace-> cloud.google.MySQLServer
 
+#services:
+#  app:
+#    build: .
+#    container_name: onlinegarden-app
+#    ports:
+#      - "8080:8080"
+#    depends_on: []
+#    environment:
+#      SPRING_PROFILES_ACTIVE: docker
+#      SPRING_DATASOURCE_URL: jdbc:mysql://34.32.48.226:3306/onlinegardenshop  # Google Cloud MySQL IP адрес
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: GT-QC=<[8`Nb|<,2  # Постави тук същата парола като в Google Cloud
+#    networks:
+#      - onlinegarden-network  # Мрежата е по избор, може да я премахнеш, ако не е необходима
+#
+#networks:
+#  onlinegarden-network:
+#    driver: bridge
+#*************************************
 services:
   app:
     build: .
     container_name: onlinegarden-app
     ports:
       - "8080:8080"
-    depends_on: []
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://34.32.48.226:3306/onlinegardenshop  # Google Cloud MySQL IP адрес
+      SPRING_DATASOURCE_URL: jdbc:mysql://diplomproject.cloiwa66sqiw.eu-north-1.rds.amazonaws.com:3306/onlinegardenshop
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: GT-QC=<[8`Nb|<,2  # Постави тук същата парола като в Google Cloud
-    networks:
-      - onlinegarden-network  # Мрежата е по избор, може да я премахнеш, ако не е необходима
+      SPRING_DATASOURCE_PASSWORD: DeyanSpasovBerlin
 
-networks:
-  onlinegarden-network:
-    driver: bridge
+
