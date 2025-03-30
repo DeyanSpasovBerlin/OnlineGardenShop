@@ -56,6 +56,11 @@ public class ProductsController {
         return ResponseEntity.ok(service.getFilteredProducts(category, minPrice, maxPrice, discount, sorting));
     }
 
+    @GetMapping("deal-of-the-day")
+    public ResponseEntity<ProductsDto> getDealOfTheDay() {
+        return ResponseEntity.ok(service.getDealOfTheDay());
+    }
+
     @PostMapping("/add")
     public ResponseEntity<ProductsDto> add(@RequestBody @Valid ProductCreateDto product) {
         return new ResponseEntity<>(service.addProduct(product), HttpStatus.CREATED);
