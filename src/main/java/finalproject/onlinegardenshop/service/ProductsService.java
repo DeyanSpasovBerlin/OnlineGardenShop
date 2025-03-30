@@ -90,6 +90,12 @@ public class ProductsService {
         return mapper.entityListToDto(products);
     }
 
+    public ProductsDto getDealOfTheDay() {
+        return repository.findBestDiscountedProduct()
+                .map(mapper::entityToDto)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("No discounted products available"));
+    }
+
     @Transactional
     public ProductsDto addProduct(ProductCreateDto dto) {
 

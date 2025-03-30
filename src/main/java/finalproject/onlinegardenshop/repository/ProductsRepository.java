@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductsRepository extends JpaRepository<Products, Integer> {
@@ -42,6 +43,9 @@ public interface ProductsRepository extends JpaRepository<Products, Integer> {
 
     // Проверка существования товара по ID
     boolean existsById(Integer id);
+
+    @Query(value = "SELECT * FROM products WHERE discount_price > 0 ORDER BY (price - discount_price) DESC, RAND() LIMIT 1", nativeQuery = true)
+    Optional<Products> findBestDiscountedProduct();
 
 }
 

@@ -150,19 +150,20 @@ public class CategoriesServiceTest {
 
     @Test
     void testDeleteCategory() {
-        // Подготовка данных
-        int categoryId = 1;
 
-        // Мокируем поведение репозитория
+        int categoryId = 1;
+        Categories category = new Categories(categoryId, "Test Category");
+
+        when(categoriesRepository.findById(categoryId)).thenReturn(Optional.of(category));
         doNothing().when(productsRepository).updateCategoryToNull(categoryId);
         doNothing().when(categoriesRepository).deleteById(categoryId);
 
-        // Вызов метода
         categoriesService.deleteCategory(categoryId);
 
-        // Проверки
+        verify(categoriesRepository, times(1)).findById(categoryId);
         verify(productsRepository, times(1)).updateCategoryToNull(categoryId);
         verify(categoriesRepository, times(1)).deleteById(categoryId);
     }
+
 }
 
