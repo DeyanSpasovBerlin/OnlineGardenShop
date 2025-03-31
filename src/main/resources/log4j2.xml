@@ -12,7 +12,7 @@
         <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
             <PatternLayout pattern="${CONSOLE_LOG_PATTERN}"/>
         </Console>
-        <RollingFile name="FileAppender" fileName="logs/bankApp.log"
+        <RollingFile name="FileAppender" fileName="logs/OnlineGardenShop.log"
                      filePattern="logs/OnlineGardenShop-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <Pattern>${FILE_LOG_PATTERN}</Pattern>

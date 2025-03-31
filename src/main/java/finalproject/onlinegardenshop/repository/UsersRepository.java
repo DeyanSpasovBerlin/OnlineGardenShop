@@ -28,4 +28,7 @@ public interface UsersRepository extends JpaRepository<Users,Integer> {
     // 1 •	Регистрация пользователя repository
     Optional<Users> findByEmail(String email);
 
+    // для совпадения обозвначений
+//    Optional<Users> findUsersByEmail(String email);
+
 }
