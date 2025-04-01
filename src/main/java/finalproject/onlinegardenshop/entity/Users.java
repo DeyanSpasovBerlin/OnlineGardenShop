@@ -35,6 +35,8 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    private String refreshToken;
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

@@ -5,9 +5,12 @@ import finalproject.onlinegardenshop.dto.UsersUpdateDto;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestException;
 import finalproject.onlinegardenshop.repository.UsersRepository;
 import finalproject.onlinegardenshop.service.UsersService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/users")
 @Validated
+@Tag(name = "Users Controller", description = "REST API for managing users in the app")
 public class UsersController {
     private final UsersService userService;
     private final Validator validator;//this is need in updatedUsersController
@@ -31,7 +35,9 @@ public class UsersController {
         this.usersRepository = usersRepository;
     }
 
+    @Operation(summary = "Returns all app users")
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
         public List<UsersDto> getAllUserrs() {
         return userService.getAll();
     }

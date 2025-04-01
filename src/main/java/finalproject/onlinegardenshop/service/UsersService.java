@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class UsersService {
     private final OrdersRepository ordersRepository;
     private final OrdersMapper ordersMapper;
     private final CartItemsRepository cartItemsRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
     public UsersService(UsersRepository repository,
@@ -43,14 +45,19 @@ public class UsersService {
                         CartRepository cartRepository,
                         OrdersRepository ordersRepository,
                         OrdersMapper ordersMapper,
-                        CartItemsRepository cartItemsRepository) {
+                        CartItemsRepository cartItemsRepository,
+                        PasswordEncoder encoder) {
         this.repository = repository;
         this.mapper = mapper;
         this.cartRepository = cartRepository;
         this.ordersRepository = ordersRepository;
         this.ordersMapper = ordersMapper;
         this.cartItemsRepository = cartItemsRepository;
+        this.encoder = encoder;
     }
+
+
+
 
     public List<UsersDto> getAll(){
         List<Users> users = repository.findAll();
@@ -166,6 +173,23 @@ public class UsersService {
         }else {
             throw new OnlineGardenShopResourceNotFoundException("Manager with id = " + userId + " not found in database!");
         }
+    }
+
+    @Transactional
+    public UsersDto createUser(UsersDto userDto) {
+        Users entity = mapper.dtoToEntity(userDto);
+        entity.setPassword(encoder.encode(entity.getPassword()));
+        Users user = repository.save(entity);
+        return mapper.entityToDto(user);
+    }
+
+    public Optional<Users> getByLogin(String login) {
+        return repository.findByEmail(login);
+    }
+
+    @Transactional
+    public void save(Users user) {
+        repository.save(user);
     }
 
 }
