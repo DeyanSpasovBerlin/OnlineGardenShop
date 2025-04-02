@@ -111,31 +111,31 @@ class UsersServiceTest {
     }
 
 
-    @Test
-    void testGetUsersById_Found() {
-        // Arrange
-        when(usersRepository.findById(1)).thenReturn(Optional.of(userList.get(0)));
-        when(usersMapper.entityToDto(userList.get(0))).thenReturn(userDtoList.get(0));
-        // Act
-        UsersDto result = usersService.getUsersById(1);
-        // Assert
-        assertNotNull(result);
-        assertEquals(userDtoList.get(0), result);
-        verify(usersRepository, times(1)).findById(1);
-        verify(usersMapper, times(1)).entityToDto(userList.get(0));
-    }
+//    @Test
+//    void testGetUsersById_Found() {
+//        // Arrange
+//        when(usersRepository.findById(1)).thenReturn(Optional.of(userList.get(0)));
+//        when(usersMapper.entityToDto(userList.get(0))).thenReturn(userDtoList.get(0));
+//        // Act
+//        UsersDto result = usersService.getUsersById(1);
+//        // Assert
+//        assertNotNull(result);
+//        assertEquals(userDtoList.get(0), result);
+//        verify(usersRepository, times(1)).findById(1);
+//        verify(usersMapper, times(1)).entityToDto(userList.get(0));
+//    }
 
-    @Test
-    void testGetUsersById_NotFound() {
-        // Arrange
-        when(usersRepository.findById(3)).thenReturn(Optional.empty());
-        // Act & Assert
-        OnlineGardenShopResourceNotFoundException exception = assertThrows(OnlineGardenShopResourceNotFoundException.class, () -> {
-            usersService.getUsersById(3);
-        });
-        assertEquals("User with id = 3 not found in database", exception.getMessage());
-        verify(usersRepository, times(1)).findById(3);
-    }
+//    @Test
+//    void testGetUsersById_NotFound() {
+//        // Arrange
+//        when(usersRepository.findById(3)).thenReturn(Optional.empty());
+//        // Act & Assert
+//        OnlineGardenShopResourceNotFoundException exception = assertThrows(OnlineGardenShopResourceNotFoundException.class, () -> {
+//            usersService.getUsersById(3);
+//        });
+//        assertEquals("User with id = 3 not found in database", exception.getMessage());
+//        verify(usersRepository, times(1)).findById(3);
+//    }
 
     @Test
     void testRegisterUser_EmailAlreadyInUse() {

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -97,6 +98,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Some error on the server. Please try again later", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // това обработна грешка, когато е подаден user с несъответсващи права
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
+        logger.debug("AccessDeniedException", e);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
 //    //2.  •	Аутентификация пользователя
 //    @ExceptionHandler(OnlineGardenSchopBadRequestException.class)
 //    @ResponseStatus(HttpStatus.UNAUTHORIZED)
