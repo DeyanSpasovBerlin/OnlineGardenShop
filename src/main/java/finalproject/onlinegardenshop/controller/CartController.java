@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,18 +31,21 @@ public class CartController {
 
     @GetMapping("/all")
     @Operation(summary = "Returns a list of all carts available in the app")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<CartDto> gerAllCarts() {
         return cartService.getAll();
     }
 
     @GetMapping("/full")
     @Operation(summary = "Returns a list of full carts with cart items and users data")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<CartFullDto> getFullCart() {
         return cartService.getAllCartWithItemsAndUsers();
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Returns a cart by its id")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<CartDto> getCartById(@PathVariable Integer id) {
         return Optional.ofNullable(cartService.getCartById(id));
     }
@@ -53,13 +57,9 @@ public class CartController {
         cartService.addToCart(userId, request);
         return ResponseEntity.ok("Product added to cart successfully");
     }
-//    public ResponseEntity<String> addToCart(@RequestParam("userId") Integer userId,//url is faster and ligter
-//                                            @Valid @RequestBody AddToCartRequestDto request) {
-//        cartService.addToCart(userId, request);
-//        return ResponseEntity.ok("Product added to cart successfully");// ето тоже работает, но 1 вариант более науны
-//    }
     /*query
     POST  http://localhost:8080/cart
+    Header:userId: number
     BODY:
     {
       "productId": 5,
@@ -74,28 +74,31 @@ public class CartController {
     }
     /*
     GET request: http://localhost:8080/cart/items
-    Header:userId: 1
+    Header:userId: number
      */
 
     @GetMapping("/fullId")
     @Operation(summary = "Returns a full cart of a user selected by cart id")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<CartFullDto> getFullCartById(@RequestHeader("cartId") Integer cartId) {
         return Optional.ofNullable(cartService.getFullCartById(cartId));
     }
     /*
     query:  GET   http://localhost:8080/cart/fullId
-            HEADER  cartId  1
+            HEADER:  cartId:  number
      */
 
     @PatchMapping("/changeQuantity")
     @Operation(summary = "changes quantity of items in the given cart")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
     public CartFullDto changeCartItemsQuantity(@RequestParam Integer cartId,
                                                @RequestParam Integer cartItemsId,
-                                               @RequestParam Integer cartItemsQuantity) {
-        return cartService.changeCartItem(cartId, cartItemsId, cartItemsQuantity);
+                                               @RequestParam Integer cartItemsQuantity){//@RequestHeader("userId") Integer userId
+        return cartService.changeCartItem(cartId, cartItemsId, cartItemsQuantity);//,userId
     }
     /*
     PATCH http://localhost:8080/cart/changeQuantity?cartId=5&cartItemsId=5&cartItemsQuantity=1
+    Header:userId: number
      */
 
     @GetMapping("/userId")
@@ -104,5 +107,9 @@ public class CartController {
         Optional<CartFullDto> find = Optional.ofNullable(cartService.getCartByUserId(userId));
         return find;
     }
+        /*
+    GET http://localhost:8080/cart/userId
+    Header:userId: number
+     */
 }
 

@@ -42,7 +42,7 @@ public class ProductsController {
         return ResponseEntity.ok(service.getById(id));
     }
 
-    @GetMapping
+    @GetMapping("/sort")
     @Operation(summary = "Returns a product or a list of products based on certain filtering/sorting parameter(s)")
     public ResponseEntity<List<ProductsDto>> getFilteredProducts(
             @RequestParam(required = false) String category,

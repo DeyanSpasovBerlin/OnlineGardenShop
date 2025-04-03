@@ -8,6 +8,7 @@ import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.CartItems;
 import finalproject.onlinegardenshop.entity.Products;
 import finalproject.onlinegardenshop.entity.Users;
+import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.CartItemsMapper;
 import finalproject.onlinegardenshop.mapper.CartMapper;
@@ -20,6 +21,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,6 +78,12 @@ public class CartService {
 
     @Transactional
     public void addToCart(Integer userId, AddToCartRequestDto request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
+        if (authorizedUser.getRole() == UserRole.CLIENT && !authorizedUser.getId().equals(userId)) {
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
         logger.info("Adding product {} to cart for user {}", request.getProductId(), userId);
         // Check if product exists
         Products product = productsRepository.findById(request.getProductId())
@@ -108,6 +118,12 @@ public class CartService {
     }
 
     public List<CartItemsDto> getCartItemsForUser(Integer userId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users existingUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
+        if (existingUser.getRole() == UserRole.CLIENT && !existingUser.getId().equals(userId)) {
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
         Cart cart = cartRepository.findByUsersId(userId)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
         return cartItemsMapper.entityListToDto(cart.getCartItems());
@@ -129,13 +145,19 @@ public class CartService {
 
 
     @Transactional
-    public CartFullDto changeCartItem(Integer cartId, Integer itemId, Integer quantity) {
+    public CartFullDto changeCartItem(Integer cartId, Integer itemId, Integer quantity) {//,Integer userId
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
         Optional<Cart> optional = cartRepository.findById(cartId);
         if (optional.isEmpty()) {
             throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + cartId +
                     " hasn’t CartItems with id: " + itemId);
         }
         Cart cart = optional.get(); // Work directly with the entity
+        //сравняваме дали user ID from cart == user ID from Authentication
+        if(cart.getUsers().getId() != authorizedUser.getId()){
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
         boolean itemFound = false;
         for (CartItems item : cart.getCartItems()) {
             if (item.getId().equals(itemId)) {
@@ -156,6 +178,12 @@ public class CartService {
     }
 
     public CartFullDto getCartByUserId(Integer userId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
+        if (authorizedUser.getRole() == UserRole.CLIENT && !authorizedUser.getId().equals(userId)) {
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
          Optional<Cart> optional = cartRepository.findByUsersId(userId);
          if(optional.isPresent()){
              CartFullDto find = cartMapper.entityToFullDto(optional.get());
