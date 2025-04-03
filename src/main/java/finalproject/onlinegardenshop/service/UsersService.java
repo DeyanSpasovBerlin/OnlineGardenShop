@@ -18,6 +18,9 @@ import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,13 +69,34 @@ public class UsersService {
         return mapper.entityListToDto(users);
     }
 
+//    public UsersDto getUsersById(Integer id) {
+//        Optional<Users> optional = repository.findById(id);
+//        if (optional.isPresent()) {
+//            UsersDto found = mapper.entityToDto(optional.get()) ;
+//            return found;
+//        }
+//        throw new OnlineGardenShopResourceNotFoundException("User with id = " + id + " not found in database");
+//    }
+
     public UsersDto getUsersById(Integer id) {
-        Optional<Users> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            UsersDto found = mapper.entityToDto(optional.get()) ;
-            return found;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new AccessDeniedException("Unauthorized access");
         }
-        throw new OnlineGardenShopResourceNotFoundException("User with id = " + id + " not found in database");
+        String email = (String) auth.getPrincipal(); //  Извличаме e-mail от токена
+        logger.info("Authenticated user email: {}", email);
+        Optional<Users> optional = repository.findByEmail(email);
+        if (optional.isEmpty()) {
+            logger.error("No user found with email: {}", email);
+            throw new OnlineGardenShopBadRequestException("User not found");
+        }
+        Users user = optional.get();
+        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
+        if (user.getRole() == UserRole.CLIENT && !user.getId().equals(id)) {
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
+        return mapper.entityToDto(repository.findById(id)
+                .orElseThrow(() -> new OnlineGardenShopBadRequestException("User not found")));
     }
 
     public List<UsersDto> findByName(String firstName){
@@ -106,37 +130,76 @@ public class UsersService {
         // Convert DTO to entity and save to DB
         Users user = mapper.dtoToEntity(usersDto);
         user.setRole(UserRole.CLIENT); // Default role
+        user.setPassword(encoder.encode(usersDto.getPassword()));// КОДИРАМЕ ПАРОЛАТА ПРЕДИ ЗАПИС
         Users savedUser = repository.save(user);
         logger.info("User registered successfully: {}", savedUser.getEmail());//201 Created
         return mapper.entityToDto(savedUser);
     }
 
-    //2.  • Аутентификация пользователя Service
-    public String authenticateUser(String email, String password) {
-        Users user = repository.findByEmail(email)
-                .orElseThrow(() -> new OnlineGardenShopBadRequestException("Invalid credentials"));// Find the user by email
-        if (!password.equals(user.getPassword())) {// Compare input password with stored password (plain-text comparison)
-            throw new OnlineGardenShopBadRequestException("Invalid credentials");
-        }
-        System.out.println("User " + email + " successfully authenticated.");// Log successful authentication
-        return "User authenticated successfully!";// Return success message after authentication
-    }
+    //2.  • Аутентификация пользователя Service  ето вариант до Spring Security
+//    public String authenticateUser(String email, String password) {
+//        Users user = repository.findByEmail(email)
+//                .orElseThrow(() -> new OnlineGardenShopBadRequestException("Invalid credentials"));// Find the user by email
+//        if (!password.equals(user.getPassword())) {// Compare input password with stored password (plain-text comparison)
+//            throw new OnlineGardenShopBadRequestException("Invalid credentials");
+//        }
+//        System.out.println("User " + email + " successfully authenticated.");// Log successful authentication
+//        return "User authenticated successfully!";// Return success message after authentication
+//    }
 
     //3. update Users  200 OK, 400 Bad Request, 404 Not Found
+//    @Transactional
+//    public UsersDto updatedUsersService(@Valid UsersUpdateDto usersDto) {//UsersUpdateDto have only this field,
+//        // which is alloyed to change. This prevent from changing E-mail, ID and Pass.
+//        //UsersDto has all field. In return we return full Dto with field changed only by fied in restricted UsersUpdateDto
+//        Optional<Users> optional = repository.findById(usersDto.getId());
+//        if (optional.isPresent()) {
+//            Users existingUser = optional.get();
+//// если какаое-то поле не задано, задаем его вручную от старого ентити manualy set existing fields
+//            if (usersDto.getFirstName() != null) existingUser.setFirstName(usersDto.getFirstName());
+//            if (usersDto.getLastName() != null) existingUser.setLastName(usersDto.getLastName());
+//            if (usersDto.getPhone() != null) existingUser.setPhone(usersDto.getPhone());
+//            Users savedUser = repository.save(existingUser);
+//            return mapper.entityToDto(savedUser);
+//        }
+//        throw new OnlineGardenShopResourceNotFoundException("User with id = " + usersDto.getId() + " not found in database");
+//    }
+
+//******************************************
+
     @Transactional
-    public UsersDto updatedUsersService(@Valid UsersUpdateDto usersDto) {
-        Optional<Users> optional = repository.findById(usersDto.getId());
-        if (optional.isPresent()) {
-            Users existingUser = optional.get();
-// если какаое-то поле не задано, задаем его вручную от старого ентити manualy set existing fields
-            if (usersDto.getFirstName() != null) existingUser.setFirstName(usersDto.getFirstName());
-            if (usersDto.getLastName() != null) existingUser.setLastName(usersDto.getLastName());
-            if (usersDto.getPhone() != null) existingUser.setPhone(usersDto.getPhone());
-            Users savedUser = repository.save(existingUser);
+    public UsersDto updatedUsersService(Integer id, @Valid UsersUpdateDto usersDto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+        String email = (String) auth.getPrincipal(); //  Извличаме e-mail от токена
+        logger.info("Authenticated user email: {}", email);
+        Optional<Users> optional = repository.findByEmail(email);
+        if (optional.isEmpty()) {
+            logger.error("No user found with email: {}", email);
+            throw new OnlineGardenShopBadRequestException("User not found");
+        }
+        Users existingUser = optional.get();
+        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
+        if (existingUser.getRole() == UserRole.CLIENT && !existingUser.getId().equals(id)) {
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
+        Optional<Users> optionalId = repository.findById(usersDto.getId());
+        if(optionalId.isPresent()){
+            Users userToUpdate = optionalId.get();
+            // если какаое-то поле не задано, задаем его вручную от старого ентити manualy set existing fields
+            if (usersDto.getFirstName() != null) userToUpdate.setFirstName(usersDto.getFirstName());
+            if (usersDto.getLastName() != null) userToUpdate.setLastName(usersDto.getLastName());
+            if (usersDto.getPhone() != null) userToUpdate.setPhone(usersDto.getPhone());
+            Users savedUser = repository.save(userToUpdate);
             return mapper.entityToDto(savedUser);
         }
         throw new OnlineGardenShopResourceNotFoundException("User with id = " + usersDto.getId() + " not found in database");
-    }
+}
+
+//********************************************************************************
+
 
     // REST API from tex docs:
     //4 •	Удаление учетной записи

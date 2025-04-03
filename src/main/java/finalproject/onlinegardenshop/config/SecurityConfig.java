@@ -1,6 +1,5 @@
 package finalproject.onlinegardenshop.config;
 
-//import de.telran.bankapp.security.JwtFilter;
 import finalproject.onlinegardenshop.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -75,7 +74,8 @@ public class SecurityConfig {
                                         "/swagger-ui.html",
                                         "/api/v1/auth/**",
                                         "/v3/api-docs/**",
-                                        "/swagger-ui/**"
+                                        "/swagger-ui/**",
+                                        "/users/register" // Добавено за да позволи достъп на всички users
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();

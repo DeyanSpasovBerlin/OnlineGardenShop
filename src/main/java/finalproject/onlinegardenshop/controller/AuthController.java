@@ -8,6 +8,8 @@ import finalproject.onlinegardenshop.dto.JwtRequest;
 import finalproject.onlinegardenshop.dto.JwtRequestRefresh;
 import finalproject.onlinegardenshop.dto.JwtResponse;
 import finalproject.onlinegardenshop.security.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication Controller", description = "REST API managing authentication operations")
 public class AuthController {
 
     /**
@@ -51,6 +54,7 @@ public class AuthController {
      * @throws AuthException if authentication fails.
      */
     @PostMapping("login")
+    @Operation(summary = "Handles user login and returns a JWT response")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws AuthException {
         final JwtResponse token = authService.login(authRequest);
         return ResponseEntity.ok(token);
@@ -64,6 +68,7 @@ public class AuthController {
      * @throws AuthException if token refresh fails.
      */
     @PostMapping("token")
+    @Operation(summary = "Returns a new access token based on a refresh token")
     public ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody JwtRequestRefresh request) throws AuthException {
         final JwtResponse token = authService.getAccessToken(request.getRefreshToken());
         return ResponseEntity.ok(token);
@@ -77,6 +82,7 @@ public class AuthController {
      * @throws AuthException if token refresh fails.
      */
     @PostMapping("refresh")
+    @Operation(summary = "Returns a new refresh token based on the existing refresh token")
     public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody JwtRequestRefresh request) throws AuthException {
         final JwtResponse token = authService.refresh(request.getRefreshToken());
         return ResponseEntity.ok(token);

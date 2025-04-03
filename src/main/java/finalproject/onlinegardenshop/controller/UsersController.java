@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,29 +36,43 @@ public class UsersController {
         this.usersRepository = usersRepository;
     }
 
-    @Operation(summary = "Returns all app users")
+    @Operation(summary = "Returns a list of all app users")
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
         public List<UsersDto> getAllUserrs() {
         return userService.getAll();
     }
 
+//    @GetMapping("{id}")
+//    @Operation(summary = "Returns a user by id")
+//    public Optional<UsersDto> getUsersById(@PathVariable Integer id) {
+//        return Optional.ofNullable(userService.getUsersById(id));
+//    }
+
     @GetMapping("{id}")
-    public Optional<UsersDto> getUsersById(@PathVariable Integer id) {
-        return Optional.ofNullable(userService.getUsersById(id));
+    @Operation(summary = "Returns a user by id")
+    public ResponseEntity<UsersDto> getUsersById(@PathVariable Integer id) {
+        UsersDto userDto = userService.getUsersById(id);
+        return ResponseEntity.ok(userDto);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/search")
+    @Operation(summary = "Returns a list of users based on the specified first name")
     public List<UsersDto> findByFirstName(@RequestParam String firstName){
         return userService.findByName(firstName);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/searchByFirstAndLastName")
+    @Operation(summary = "Returns a list of users based on the specified first and last name")
     public List<UsersDto> findByFirstNameAndLastName(@RequestParam String firstName, @RequestParam String lastName){
         return userService.findByFirstNameAndLastName(firstName,lastName);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/searchByFirstLetterFromFirstNameAndFirstLetterFromLastName")
+    @Operation(summary = "Returns a list of users based on the specified first letter of the first name and first letter of the last name")
     public List<UsersDto> findFirstLetterFromFirstNameAndFirstLetterFromLastName(
             @RequestParam String firstName, @RequestParam String lastName){
         return userService.findFirstLetterFromFirstNameAndFirstLetterFromLastName(firstName,lastName);
@@ -67,6 +82,7 @@ public class UsersController {
     //    1 •	Регистрация пользователя  ->controller
 
     @PostMapping("/register")
+    @Operation(summary = "Creates a new user in the app")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UsersDto usersDto) {// здесь ? означает, что можно вернуть
         //UsersDto, ErrorResponse, null. Таким оброзом не надо изпользоват if
         UsersDto createdUser = userService.registerUser(usersDto);
@@ -90,16 +106,17 @@ public class UsersController {
             } -> "email": "Email is required"  400 Bad Request
      */
 
-    //2.  •	Аутентификация пользователя conrtoller
-    @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UsersDto loginRequestDto) {//? смотри наверх; arg -> email+ pass
-        try {
-            String token = userService.authenticateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-            return ResponseEntity.ok(token); // Return 200 OK if successful
-        } catch (OnlineGardenShopBadRequestException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");//Return 401 Unauthorized
-        }
-    }
+    //2.  •	Аутентификация пользователя conrtoller  ето вариант до Spring Security
+//    @PostMapping("/login")
+//    @Operation(summary = "Controls user login procedure")
+//    public ResponseEntity<?> loginUser(@RequestBody UsersDto loginRequestDto) {//? смотри наверх; arg -> email+ pass
+//        try {
+//            String token = userService.authenticateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
+//            return ResponseEntity.ok(token); // Return 200 OK if successful
+//        } catch (OnlineGardenShopBadRequestException e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");//Return 401 Unauthorized
+//        }
+//    }
     /*
     in Postman:
     POST /users/login
@@ -111,6 +128,7 @@ public class UsersController {
 
     //3. update Users  200 OK, 400 Bad Request, 404 Not Found
     @PutMapping("/{id}")
+    @Operation(summary = "Introduces desired changes to the data of the user selected by id")
         public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto user) {
         //use UsersUpdateDto becouse only FirstName,LastName and Phone is alloyed to change
         UsersUpdateDto newUser = new UsersUpdateDto();
@@ -128,7 +146,7 @@ public class UsersController {
         }
         //здесь меняем UsersUpdateDto -> UsersDto потому что в Service
         // возвращаеться UsersDto, потому что mapper работает только с UsersDto
-        UsersDto updatedUser = userService.updatedUsersService(newUser);
+        UsersDto updatedUser = userService.updatedUsersService(id, newUser);//
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
          /*
@@ -143,6 +161,7 @@ public class UsersController {
     // REST API from tex docs:
     //4 •	Удаление учетной записи
     @DeleteMapping("{id}")
+    @Operation(summary = "Deletes a certain user selected by id")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
         userService.deleteUser(id);
         return ResponseEntity.accepted().build();
