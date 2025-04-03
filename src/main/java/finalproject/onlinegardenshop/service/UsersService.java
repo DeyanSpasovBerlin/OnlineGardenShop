@@ -169,18 +169,20 @@ public class UsersService {
 
     @Transactional
     public UsersDto updatedUsersService(Integer id, @Valid UsersUpdateDto usersDto) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+//            throw new AccessDeniedException("Unauthorized access");
+//        }
+//        String email = (String) auth.getPrincipal(); //  Извличаме e-mail от токена
+//        logger.info("Authenticated user email: {}", email);
+//        Optional<Users> optional = repository.findByEmail(email);
+//        if (optional.isEmpty()) {
+//            logger.error("No user found with email: {}", email);
+//            throw new OnlineGardenShopBadRequestException("User not found");
+//        }
+//        Users existingUser = optional.get();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            throw new AccessDeniedException("Unauthorized access");
-        }
-        String email = (String) auth.getPrincipal(); //  Извличаме e-mail от токена
-        logger.info("Authenticated user email: {}", email);
-        Optional<Users> optional = repository.findByEmail(email);
-        if (optional.isEmpty()) {
-            logger.error("No user found with email: {}", email);
-            throw new OnlineGardenShopBadRequestException("User not found");
-        }
-        Users existingUser = optional.get();
+        Users existingUser = repository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
         // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
         if (existingUser.getRole() == UserRole.CLIENT && !existingUser.getId().equals(id)) {
             throw new AccessDeniedException("Clients can only access their own data.");
@@ -212,6 +214,12 @@ public class UsersService {
         // даже если User del для статистики и судебных разбирательств. А Cart and CartItems привязанные к User
         // и их можно удалить вместе с ним. Здесь принцип таков- идем в обратную сторону по цепи relations преди да
         //стигнем до User  and del
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = repository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
+        if (authorizedUser.getRole() == UserRole.CLIENT && !authorizedUser.getId().equals(userId)) {
+            throw new AccessDeniedException("Clients can only access their own data.");
+        }
         Optional<Users> userForDelete = repository.findById(userId);
         if (userForDelete.isPresent()) {
             // ✅ Step 1: Delete Cart Items first

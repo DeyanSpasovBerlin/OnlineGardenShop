@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class OrdersController {
 
     @GetMapping("/all")
     @Operation(summary = "Returns a list of all orders")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<OrdersDto> getAllOrders(){
         return ordersService.getAll();
     }
@@ -63,7 +65,11 @@ public class OrdersController {
     /*
     POST: URL: http://localhost:8080/orders/checkout
     Headers: userId: 1
-    BODY: {empty}
+    BODY: {
+    "deliveryAddress": "Berlin6, Germany",
+        "contactPhone": "+493456784564789",
+        "deliveryMethod": "COURIER_DELIVERY"
+}
      */
     //•	История покупок пользователя
     //o	URL: /orders/history
