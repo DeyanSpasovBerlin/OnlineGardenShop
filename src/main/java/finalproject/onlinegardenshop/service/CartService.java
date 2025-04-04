@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -155,7 +156,7 @@ public class CartService {
         }
         Cart cart = optional.get(); // Work directly with the entity
         //сравняваме дали user ID from cart == user ID from Authentication
-        if(cart.getUsers().getId() != authorizedUser.getId()){
+        if(!Objects.equals(cart.getUsers().getId(), authorizedUser.getId())){
             throw new AccessDeniedException("Clients can only access their own data.");
         }
         boolean itemFound = false;

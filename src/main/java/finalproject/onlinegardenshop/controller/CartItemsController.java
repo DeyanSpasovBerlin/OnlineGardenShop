@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ public class CartItemsController {
 
     @GetMapping("/all")
     @Operation(summary = "Returns a list of cart items")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<CartItemsDto> getAllCartItems(){
         return cartItemsService.getAll();
     }
