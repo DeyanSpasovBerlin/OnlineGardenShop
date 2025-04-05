@@ -17,7 +17,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/cart-items")
 @Validated
-@Tag(name = "Cart Items Controller", description = "REST API to manage cart items related operations in the app")
+@Tag(name = "Cart Items Controller", description = "REST API for emargence use only from ADMIN!")
 public class CartItemsController {
 
     private final CartItemsService cartItemsService;
@@ -36,12 +36,14 @@ public class CartItemsController {
 
     @GetMapping("{id}")
     @Operation(summary = "Returns cart items by id")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<CartItemsDto> getUsersById(@PathVariable Integer id) {
         return Optional.ofNullable(cartItemsService.getCartItemsById(id));
     }
 
     @PostMapping
     @Operation(summary = "Adds items to a cart")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<String> addToCart(@RequestHeader("usersId") Integer userId,
                                             @Valid @RequestBody CartItemsDto request) {
         cartItemsService.addToCart(userId, request);

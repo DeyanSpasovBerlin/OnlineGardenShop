@@ -52,14 +52,13 @@ public class CartController {
 
     @PostMapping
     @Operation(summary = "Adds product(s) to a user's cart")
-    public ResponseEntity<String> addToCart(@RequestHeader("userId") Integer userId,//header is most security
+    public ResponseEntity<String> addToCart(//@RequestHeader("userId") Integer userId,//if no Security leer add header
                                             @Valid @RequestBody AddToCartRequestDto request) {
-        cartService.addToCart(userId, request);
+        cartService.addToCart(request);//if we use header add second arg: userId,
         return ResponseEntity.ok("Product added to cart successfully");
     }
     /*query
     POST  http://localhost:8080/cart
-    Header:userId: number
     BODY:
     {
       "productId": 5,
@@ -68,13 +67,21 @@ public class CartController {
      */
 
     @GetMapping("/items")
-    @Operation(summary = "Returns a list of items in a given user's cart selected by user id")
-    public List<CartItemsDto> getCartItemsForUser(@RequestHeader("userId") Integer userId) {
-        return cartService.getCartItemsForUser(userId);
+    @Operation(summary = "Returns a list of items in the cart for user, who is authorized")
+    public List<CartItemsDto> getCartItemsForUser() {//if no Security leer add header  @RequestHeader("userId") Integer userId
+        return cartService.getCartItemsForUser();//if we use header add second arg: userId,
     }
     /*
     GET request: http://localhost:8080/cart/items
-    Header:userId: number
+     */
+
+    @GetMapping("/fullItems")
+    @Operation(summary = "Returns a list of items in the cart+ cartId + userId  for user, who is authorized")
+    public CartFullDto getCartFullItemsForUser() {//if no Security leer add header  @RequestHeader("userId") Integer userId
+        return cartService.getCartFulItemsForUser();//if we use header add second arg: userId,
+    }
+    /*
+    GET request: http://localhost:8080/cart/fullItems
      */
 
     @GetMapping("/fullId")
@@ -89,27 +96,21 @@ public class CartController {
      */
 
     @PatchMapping("/changeQuantity")
-    @Operation(summary = "changes quantity of items in the given cart")
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT')")
-    public CartFullDto changeCartItemsQuantity(@RequestParam Integer cartId,
-                                               @RequestParam Integer cartItemsId,
-                                               @RequestParam Integer cartItemsQuantity){//@RequestHeader("userId") Integer userId
-        return cartService.changeCartItem(cartId, cartItemsId, cartItemsQuantity);//,userId
+    @Operation(summary = "changes quantity of items in the cart of authorized user")
+    public CartFullDto changeCartItemsQuantity(@RequestParam Integer cartItemsId,
+                                                  @RequestParam Integer cartItemsQuantity){
+        return cartService.changeCartItem(cartItemsId, cartItemsQuantity);
     }
-    /*
-    PATCH http://localhost:8080/cart/changeQuantity?cartId=5&cartItemsId=5&cartItemsQuantity=1
-    Header:userId: number
-     */
+    //PATCH http://localhost:8080/cart/changeQuantity?cartItemsId=5&cartItemsQuantity=1
 
     @GetMapping("/userId")
-    @Operation(summary = "Returns a cart for a given user by user id")
-    public Optional<CartFullDto> findCartForUser(@RequestHeader("userId") Integer userId){
-        Optional<CartFullDto> find = Optional.ofNullable(cartService.getCartByUserId(userId));
+    @Operation(summary = "Returns the cart of authorized user")
+    public Optional<CartFullDto> findCartForUser(){//if no Security leer add header  @RequestHeader("userId") Integer userId
+        Optional<CartFullDto> find = Optional.ofNullable(cartService.getCartByUserId());
         return find;
     }
         /*
     GET http://localhost:8080/cart/userId
-    Header:userId: number
      */
 }
 

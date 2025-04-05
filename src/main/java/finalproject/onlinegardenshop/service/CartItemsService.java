@@ -62,14 +62,9 @@ public class CartItemsService {
     }
 
     public CartItemsDto getCartItemsById(Integer id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users authorizedUser = userRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
         Optional<CartItems> optional = cartItemsRepository.findById(id);
         if (optional.isPresent()) {
             CartItemsDto found = cartItemsMapper.entityToDto(optional.get()) ;
-            if(!Objects.equals(optional.get().getCart().getUsers().getId(), authorizedUser.getId())){
-                throw new AccessDeniedException("Clients can only access their own data.");
-            }
             return found;
         }
         throw new OnlineGardenShopResourceNotFoundException("CartItems with id = " + id + " not found in database");
@@ -77,15 +72,8 @@ public class CartItemsService {
 
     @Transactional
     public void addToCart(Integer userId, CartItemsDto request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users authorizedUser = userRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
-        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
-        if (authorizedUser.getRole() == UserRole.CLIENT && !authorizedUser.getId().equals(userId)) {
-            throw new AccessDeniedException("Clients can only access their own data.");
-        }
         Products product = productRepository.findById(request.getProductsId())
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product not found"));
-
         Cart cart = cartRepository.findById(userId)//findByUsersId(userId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
@@ -93,12 +81,10 @@ public class CartItemsService {
                             .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("User not found")));
                     return cartRepository.save(newCart);
                 });
-
         CartItems cartItem = new CartItems();
         cartItem.setCart(cart);
         cartItem.setProducts(product);
         cartItem.setQuantity(request.getQuantity());
-
         cartItemsRepository.save(cartItem);
     }
 

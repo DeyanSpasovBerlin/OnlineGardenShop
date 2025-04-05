@@ -78,22 +78,18 @@ public class CartService {
     }
 
     @Transactional
-    public void addToCart(Integer userId, AddToCartRequestDto request) {
+    public void addToCart(AddToCartRequestDto request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
-        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
-        if (authorizedUser.getRole() == UserRole.CLIENT && !authorizedUser.getId().equals(userId)) {
-            throw new AccessDeniedException("Clients can only access their own data.");
-        }
-        logger.info("Adding product {} to cart for user {}", request.getProductId(), userId);
+        Integer authorizedUserId = usersRepository.findByEmail((String) auth.getPrincipal()).get().getId();//find userId, who is authorized
+        logger.info("Adding product {} to cart for user {}", request.getProductId(), authorizedUserId);
         // Check if product exists
         Products product = productsRepository.findById(request.getProductId())
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product not found"));
         // Find user's cart or create one
-        Cart cart = cartRepository.findByUsersId(userId)//.findByUsersIdAndCompletedFalse(userId) - если будем пользоваться флаг
+        Cart cart = cartRepository.findByUsersId(authorizedUserId)//find cart for user, who is authorized
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
-                    Users user = usersRepository.findById(userId)
+                    Users user = usersRepository.findById(authorizedUserId)
                             .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("User not found"));
                     newCart.setUsers(user);  // Assign the User object
                     Cart savedCart = cartRepository.save(newCart);
@@ -115,19 +111,26 @@ public class CartService {
             newCartItem.setQuantity(request.getQuantity());
             cartItemsRepository.save(newCartItem);
         }
-        logger.info("Product {} added to cart for user {}", request.getProductId(), userId);
+        logger.info("Product {} added to cart for user {}", request.getProductId(), authorizedUserId);
     }
 
-    public List<CartItemsDto> getCartItemsForUser(Integer userId) {
+    public List<CartItemsDto> getCartItemsForUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users existingUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
-        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
-        if (existingUser.getRole() == UserRole.CLIENT && !existingUser.getId().equals(userId)) {
-            throw new AccessDeniedException("Clients can only access their own data.");
-        }
-        Cart cart = cartRepository.findByUsersId(userId)
-                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
+        Integer authorizedUserId = usersRepository.findByEmail((String) auth.getPrincipal()).get().getId();//find userId, who is authorized
+        Cart cart = cartRepository.findByUsersId(authorizedUserId)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart for user =" +
+                        "  authorizedUser.getFirstName() does´t exist."));
         return cartItemsMapper.entityListToDto(cart.getCartItems());
+    }
+
+    public CartFullDto getCartFulItemsForUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        Cart cart = cartRepository.findByUsersId(authorizedUserId)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("\"Cart for user =" +
+                        " authorizedUser.getFirstName() does´t exist."));
+        return cartMapper.entityToFullDto(cart);
     }
 
     public List<CartFullDto> getAllCartWithItemsAndUsers(){
@@ -144,21 +147,17 @@ public class CartService {
         throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + id + " not found in database");
     }
 
-
     @Transactional
-    public CartFullDto changeCartItem(Integer cartId, Integer itemId, Integer quantity) {//,Integer userId
+    public CartFullDto changeCartItem(Integer itemId, Integer quantity) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
-        Optional<Cart> optional = cartRepository.findById(cartId);
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        Optional<Cart> optional = cartRepository.findByUsersId(authorizedUserId);
         if (optional.isEmpty()) {
-            throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + cartId +
-                    " hasn’t CartItems with id: " + itemId);
+            throw new OnlineGardenShopResourceNotFoundException("Cart for user = " + authorizedUser.getFirstName() +
+                    " does´t exist." );
         }
         Cart cart = optional.get(); // Work directly with the entity
-        //сравняваме дали user ID from cart == user ID from Authentication
-        if(!Objects.equals(cart.getUsers().getId(), authorizedUser.getId())){
-            throw new AccessDeniedException("Clients can only access their own data.");
-        }
         boolean itemFound = false;
         for (CartItems item : cart.getCartItems()) {
             if (item.getId().equals(itemId)) {
@@ -169,30 +168,26 @@ public class CartService {
             }
         }
         if (!itemFound) {
-            throw new OnlineGardenShopResourceNotFoundException("Cart with id = " + cartId +
+            throw new OnlineGardenShopResourceNotFoundException("Cart for user = " + authorizedUser.getFirstName() +
                     " hasn’t CartItems with id: " + itemId);
         }
-        // Save cart to persist changes
         cartRepository.save(cart);
-
         return cartMapper.entityToFullDto(cart); // Convert back to DTO after changes are saved
     }
 
-    public CartFullDto getCartByUserId(Integer userId){
+    @Transactional
+    public CartFullDto getCartByUserId(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
-        // Ако ролята е CLIENT, проверяваме дали иска собственото си ID
-        if (authorizedUser.getRole() == UserRole.CLIENT && !authorizedUser.getId().equals(userId)) {
-            throw new AccessDeniedException("Clients can only access their own data.");
-        }
-         Optional<Cart> optional = cartRepository.findByUsersId(userId);
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        Optional<Cart> optional = cartRepository.findByUsersId(authorizedUserId);
          if(optional.isPresent()){
              CartFullDto find = cartMapper.entityToFullDto(optional.get());
              return find;
          }else {
-             throw new OnlineGardenShopResourceNotFoundException("Cart fot User with id = " + userId + " not found in database");
+             throw new OnlineGardenShopResourceNotFoundException("Cart for user = " + authorizedUser.getFirstName() +
+                     " does´t exist." );
          }
-
     }
 
 }
