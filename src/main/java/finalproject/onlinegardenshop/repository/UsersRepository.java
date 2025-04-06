@@ -31,5 +31,6 @@ public interface UsersRepository extends JpaRepository<Users,Integer> {
     // для совпадения обозвначений
 //    Optional<Users> findUsersByEmail(String email);
 
+//    Optional<Users> findByUsername(String username);
 
 }

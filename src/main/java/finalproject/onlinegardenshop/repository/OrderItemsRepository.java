@@ -11,7 +11,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderItemsRepository extends JpaRepository<OrderItems, Integer> {
 
@@ -35,6 +37,5 @@ public interface OrderItemsRepository extends JpaRepository<OrderItems, Integer>
             "ORDER BY COUNT(oi.id) DESC LIMIT 10")
     List<TopCanceledProductDto> findTop10CanceledProducts();
 
-
-
+    List<OrderItems> findByOrderId(Integer orderId);
 }

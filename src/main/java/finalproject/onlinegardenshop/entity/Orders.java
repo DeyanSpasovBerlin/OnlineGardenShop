@@ -1,5 +1,6 @@
 package finalproject.onlinegardenshop.entity;
 
+import com.rometools.rome.feed.synd.SyndPerson;
 import finalproject.onlinegardenshop.entity.enums.DeliveryMethod;
 import finalproject.onlinegardenshop.entity.enums.OrdersStatus;
 import jakarta.persistence.*;
@@ -59,4 +60,9 @@ public class Orders {
     @Column(name = "email_sent", nullable = false)
     private boolean emailSent = false;
 
+
+
+    public Users getUser() {
+        return new Users();
+    }
 }
