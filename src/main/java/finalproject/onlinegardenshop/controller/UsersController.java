@@ -43,24 +43,26 @@ public class UsersController {
         return userService.getAll();
     }
 
-//    @GetMapping("{id}")
-//    @Operation(summary = "Returns a user by id")
-//    public Optional<UsersDto> getUsersById(@PathVariable Integer id) {
-//        return Optional.ofNullable(userService.getUsersById(id));
-//    }
-
     @GetMapping("{id}")
-    @Operation(summary = "Returns a user by id")
-    public ResponseEntity<UsersDto> getUsersById(@PathVariable Integer id) {
-        UsersDto userDto = userService.getUsersById(id);
+    @Operation(summary = "Returns a user by id for ADMIN purpose")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<UsersDto> getUsersByIdForAdmin(@PathVariable Integer id) {
+        UsersDto userDto = userService.getUsersByIdForAdmin(id);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/user")
+    @Operation(summary = "Returns a user who is authorized")
+    public ResponseEntity<UsersDto> getUsersById() {
+        UsersDto userDto = userService.getUsersById();
         return ResponseEntity.ok(userDto);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/search")
     @Operation(summary = "Returns a list of users based on the specified first name")
-    public List<UsersDto> findByFirstName(@RequestParam String firstName){
-        return userService.findByName(firstName);
+    public List<UsersDto> findByFirstName(@RequestParam String firstName, @RequestParam String lastName){
+        return userService.findByFirstNameAndLastName(firstName,lastName);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -95,8 +97,8 @@ public class UsersController {
               "firstName": "John",
               "lastName": "Doe",
               "email": "john.doe@example.com",
-              "phone": "1234567890",
-              "password": "securePass123"
+              "phone": "+48 101 1234567",
+              "password": "securePass_123"
             }  -> 201 Created
             {
               "firstName": "John",
@@ -106,47 +108,28 @@ public class UsersController {
             } -> "email": "Email is required"  400 Bad Request
      */
 
-    //2.  •	Аутентификация пользователя conrtoller  ето вариант до Spring Security
-//    @PostMapping("/login")
-//    @Operation(summary = "Controls user login procedure")
-//    public ResponseEntity<?> loginUser(@RequestBody UsersDto loginRequestDto) {//? смотри наверх; arg -> email+ pass
-//        try {
-//            String token = userService.authenticateUser(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-//            return ResponseEntity.ok(token); // Return 200 OK if successful
-//        } catch (OnlineGardenShopBadRequestException e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");//Return 401 Unauthorized
-//        }
-//    }
-    /*
-    in Postman:
-    POST /users/login
-    {
-    "email": "alice@example.com",
-    "password": "password123A!"
-    } -> 200 OK or -> 401 Unauthorized "Invalid credentials"
-     */
-
     //3. update Users  200 OK, 400 Bad Request, 404 Not Found
     @PutMapping("/{id}")
     @Operation(summary = "Introduces desired changes to the data of the user selected by id")
-        public ResponseEntity<?> updatedUsersController(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto user) {
-        //use UsersUpdateDto becouse only FirstName,LastName and Phone is alloyed to change
-        UsersUpdateDto newUser = new UsersUpdateDto();
-        newUser.setId(id);
-        newUser.setFirstName((String) user.getFirstName());
-        newUser.setLastName((String) user.getLastName());
-        newUser.setPhone((String) user.getPhone());
-        Set<ConstraintViolation<UsersUpdateDto>> violations = validator.validate(user);
-        if (!violations.isEmpty()) {
-            StringBuilder errorMessages = new StringBuilder();
-            for (ConstraintViolation<UsersUpdateDto> violation : violations) {
-                errorMessages.append(violation.getMessage()).append(" ");
-            }
-            throw new OnlineGardenShopBadRequestException(errorMessages.toString().trim());
-        }
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<?> updatedUsersByAdmin(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto usersUpdateDto) {
+//        //use UsersUpdateDto becouse only FirstName,LastName and Phone is alloyed to change
+//        UsersUpdateDto newUser = new UsersUpdateDto();
+//        newUser.setId(id);
+//        newUser.setFirstName((String) user.getFirstName());
+//        newUser.setLastName((String) user.getLastName());
+//        newUser.setPhone((String) user.getPhone());
+//        Set<ConstraintViolation<UsersUpdateDto>> violations = validator.validate(user);
+//        if (!violations.isEmpty()) {
+//            StringBuilder errorMessages = new StringBuilder();
+//            for (ConstraintViolation<UsersUpdateDto> violation : violations) {
+//                errorMessages.append(violation.getMessage()).append(" ");
+//            }
+//            throw new OnlineGardenShopBadRequestException(errorMessages.toString().trim());
+//        }
         //здесь меняем UsersUpdateDto -> UsersDto потому что в Service
         // возвращаеться UsersDto, потому что mapper работает только с UsersDto
-        UsersDto updatedUser = userService.updatedUsersService(id, newUser);//
+        UsersDto updatedUser = userService.updatedUsersByAdmin(id, usersUpdateDto);//
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
          /*
@@ -157,19 +140,36 @@ public class UsersController {
     "firstName": "string",
     "phone": "string"
       */
+    //***********************************
+         @PutMapping()
+         @Operation(summary = "Introduces desired changes to the data of the user who is authorized")
+         public ResponseEntity<?> updatedUsersByUser( @Valid @RequestBody UsersUpdateDto usersUpdateDto) {
+             UsersDto updatedUser = userService.updatedUsersByUser(usersUpdateDto);//
+             return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
+         }
+
+    //*********************************
 
     // REST API from tex docs:
     //4 •	Удаление учетной записи
     @DeleteMapping("{id}")
-    @Operation(summary = "Deletes a certain user selected by id")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id){
-        userService.deleteUser(id);
+    @Operation(summary = "Deletes a certain user selected by id from ADMIN")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> deleteUserByAdmin(@PathVariable Integer id){
+        userService.deleteUserByAdmin(id);
         return ResponseEntity.accepted().build();
     }
              /*
     corect query in Postman:
     delete: http://localhost:8080/users/{id}
       */
+
+    @DeleteMapping()
+    @Operation(summary = "Deletes a certain user by himself")
+    public ResponseEntity<Void> deleteUserByUser(){
+        userService.deleteUserByUser();
+        return ResponseEntity.accepted().build();
+    }
 
 }
 /*

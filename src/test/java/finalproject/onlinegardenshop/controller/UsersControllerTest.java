@@ -137,14 +137,14 @@ class UsersControllerTest {
         Long userId = 1L;
 
         // Mock service behavior
-        doNothing().when(service).deleteUser(Math.toIntExact(userId));
+        doNothing().when(service).deleteUserByAdmin(Math.toIntExact(userId));
 
         // When & Then
         mockMvc.perform(delete("/users/{id}", userId))
                 .andExpect(status().isAccepted());
 
         // Verify that the service method was called
-        verify(service, times(1)).deleteUser(Math.toIntExact(userId));
+        verify(service, times(1)).deleteUserByAdmin(Math.toIntExact(userId));
 
     }
 }
