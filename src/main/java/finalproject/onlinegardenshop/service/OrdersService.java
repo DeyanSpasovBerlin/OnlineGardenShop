@@ -11,7 +11,10 @@ import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,9 +101,12 @@ public class OrdersService {
     }
 
     @Transactional
-    public void checkout(Integer userId,String deliveryAddress,String contactPhone,String deliveryMethod) {
-        logger.info("Checkout initiated for user: {}", userId);
-        Cart cart = cartRepository.findByUsersId(userId)
+    public void checkout(String deliveryAddress,String contactPhone,String deliveryMethod) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        logger.info("Checkout initiated for user with name: {} and ID: {}", authorizedUser.getFirstName(), authorizedUserId);
+        Cart cart = cartRepository.findByUsersId(authorizedUserId)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Cart not found"));
         if (cart.getCartItems().isEmpty()) {
             throw new IllegalStateException("Cart is empty. Cannot checkout.");
@@ -109,14 +115,12 @@ public class OrdersService {
         order.setUsers(cart.getUsers());
         order.setUpdatedAt(LocalDateTime.now());
         order.setStatus(OrdersStatus.PENDING_PAYMENT);
-        //*********
         order.setDeliveryAddress(deliveryAddress);
         order.setContactPhone(contactPhone);
         //revert String -> DeliveryMethod
         DeliveryMethod deliveryMethodEnum = DeliveryMethod.valueOf(deliveryMethod.toUpperCase());
         order.setDeliveryMethod(deliveryMethodEnum);
-        //**************
-        order.setTotalPrice(calculateTotal(cart)); // This should calculate the total of cart items
+        order.setTotalPrice(calculateTotal(cart)); // This  calculates the total of cart items
         // Loop through the cart items and create order items
         for (CartItems cartItem : cart.getCartItems()) {
             logger.info("Processing cart item: Product ID = {}, Quantity = {}",
@@ -128,14 +132,15 @@ public class OrdersService {
             orderItem.setOrder(order);  // Set the order reference
             order.getOrderItems().add(orderItem);
         }
-        logger.info("Saving order for user: {}", userId);
+        logger.info("Saving order for user with name: {} and ID: {}", authorizedUser.getFirstName(), authorizedUserId);
         // Save the order to the database
         ordersRepository.save(order);
-        logger.info("Clearing cart for user: {}", userId);
-                cartItemsRepository.deleteAll(cart.getCartItems());
+        logger.info("Clearing cart for user with name: {} and ID: {}", authorizedUser.getFirstName(), authorizedUserId);
+        cartItemsRepository.deleteAll(cart.getCartItems());//Clear from CartItems, if it´s not work do next:
         cart.getCartItems().clear(); // Clear from the object to avoid issues
-        cartRepository.save(cart);
-        logger.info("Checkout completed successfully for user: {}", userId);
+        cartRepository.save(cart);// Save the cart with ArrauList CartItems = clear to the database
+        logger.info("Checkout completed successfully for user" +
+                " with name: {} and ID: {}", authorizedUser.getFirstName(), authorizedUserId);
     }
 
     private Double calculateTotal(Cart cart) {
@@ -148,7 +153,21 @@ public class OrdersService {
     //o	URL: /orders/history
     //o	Метод: GET
     @Transactional
-    public List<OrdersDto> getOrdersByUser(Integer userId){
+    public List<OrdersDto> getOrdersByUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        List<Orders> orders = ordersRepository.findByUsersId(authorizedUserId);
+        if(orders.isEmpty()){//order.size == 0
+            throw new OnlineGardenShopResourceNotFoundException("Orders for user with id = "
+                    + authorizedUserId + " and first name= "+authorizedUser.getFirstName()+
+                    " not found in database");
+        }
+        return ordersMapper.entityListToDto(orders);
+    }
+
+    @Transactional
+    public List<OrdersDto> getOrdersByUserFromAdmin(Integer userId){
         List<Orders> orders = ordersRepository.findByUsersId(userId);
         if(orders.isEmpty()){//order.size == 0
             throw new OnlineGardenShopResourceNotFoundException("Orders for user with id = " + userId + " not found in database");
@@ -157,7 +176,7 @@ public class OrdersService {
     }
 
     @Transactional
-    public void cancelOrdersStatus(Integer id) {
+    public void cancelOrdersStatusByAdmin(Integer id) {
         OrdersStatus canceled = OrdersStatus.valueOf("CANCELED");
         Optional<Orders> optional = ordersRepository.findById(id);
         if (optional.isPresent()) {
@@ -174,6 +193,42 @@ public class OrdersService {
             throw new OnlineGardenShopResourceNotFoundException("Order with id = " + id + " not found in database");
         }
     }
+
+    @Transactional
+    public void cancelOrdersStatusByUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        OrdersStatus canceled = OrdersStatus.valueOf("CANCELED");
+        List<Orders> listOrders = ordersRepository.findByUsersId(authorizedUserId);
+        if(listOrders.isEmpty()) throw new OnlineGardenShopResourceNotFoundException("User with id = " + authorizedUserId+
+                " and first name: "+authorizedUser.getFirstName()+
+                " have no any orders.");
+        Orders lastOrder = listOrders.getLast();
+        OrdersStatus findStatus = lastOrder.getStatus();
+            if (findStatus == OrdersStatus.CREATED || findStatus == OrdersStatus.PENDING_PAYMENT) {
+                lastOrder.setStatus(canceled);
+                Orders saved = ordersRepository.save(lastOrder);
+                ordersMapper.entityToDto(saved);
+            } else {
+                throw new OnlineGardenShopResourceNotFoundException("Order for user with id = "
+                        + authorizedUserId + " and first name: "
+                        +authorizedUser.getFirstName()+" can not be canceled!");
+            }
+    }
+
+    public OrdersDto getLastOrdersByUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is authorized
+        Integer authorizedUserId = authorizedUser.getId();//find userId, who is authorized
+        List<Orders> listOrders = ordersRepository.findByUsersId(authorizedUserId);
+        if(listOrders.isEmpty()) throw new OnlineGardenShopResourceNotFoundException("User with id = " + authorizedUserId+
+                " and first name: "+authorizedUser.getFirstName()+
+                " have no any orders.");
+        Orders lastOrder = listOrders.getLast();
+        return ordersMapper.entityToDto(lastOrder);
+    }
+
 
     public List<OrdersDto> getOrdersByDeletedUser(Integer userId) {
         List<Orders> orders = ordersRepository.findByDeletedUserId(-userId);
