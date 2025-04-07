@@ -79,7 +79,8 @@ public class SecurityConfig {
                                         "/products/all",// Добавено за да позволи достъп на всички users
                                         "/products/deal-of-the-day",// Добавено за да позволи достъп на всички users
                                         "/products/sort",// Добавено за да позволи достъп на всички users
-                                        "/products/{id}" // Добавено за да позволи достъп на всички users
+                                        "/products/{id}",
+                                        "/test-data/generate-orders"// Добавено за да позволи достъп на всички users
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();

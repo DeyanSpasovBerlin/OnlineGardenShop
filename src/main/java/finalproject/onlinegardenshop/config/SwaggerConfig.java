@@ -27,7 +27,7 @@ public class SwaggerConfig {//this alloy swagger to work in cloud
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Online Garden Shop API").version("1.0"))
+                .info(new Info().title("Online Garden Shop API").version("3.1.0"))
                 .addServersItem(new Server().url(apiUrl));
     }
 }
