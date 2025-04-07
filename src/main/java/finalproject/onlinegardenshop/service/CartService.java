@@ -8,7 +8,6 @@ import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.CartItems;
 import finalproject.onlinegardenshop.entity.Products;
 import finalproject.onlinegardenshop.entity.Users;
-import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.CartItemsMapper;
 import finalproject.onlinegardenshop.mapper.CartMapper;
@@ -16,21 +15,15 @@ import finalproject.onlinegardenshop.repository.CartItemsRepository;
 import finalproject.onlinegardenshop.repository.CartRepository;
 import finalproject.onlinegardenshop.repository.ProductsRepository;
 import finalproject.onlinegardenshop.repository.UsersRepository;
-import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -78,7 +71,7 @@ public class CartService {
     }
 
     @Transactional
-    public void addToCart(AddToCartRequestDto request) {
+    public CartFullDto addToCart(AddToCartRequestDto request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Integer authorizedUserId = usersRepository.findByEmail((String) auth.getPrincipal()).get().getId();//find userId, who is authorized
         logger.info("Adding product {} to cart for user {}", request.getProductId(), authorizedUserId);
@@ -112,6 +105,8 @@ public class CartService {
             cartItemsRepository.save(newCartItem);
         }
         logger.info("Product {} added to cart for user {}", request.getProductId(), authorizedUserId);
+//         Връщаме DTO с допълнителна информация
+        return cartMapper.entityToFullDto(cart);
     }
 
     public List<CartItemsDto> getCartItemsForUser() {

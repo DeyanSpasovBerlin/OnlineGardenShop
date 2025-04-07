@@ -71,7 +71,7 @@ public class JwtProvider {
         final LocalDateTime now = LocalDateTime.now();
         //!!! Here we change how long accessToken is valid!!!
         //!!! When change for test purpos 5->30 CHANGE BACK 30->5!!!!
-        final Instant accessExpirationInstant = now.plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant();
+        final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
                 .subject(user.getEmail())
