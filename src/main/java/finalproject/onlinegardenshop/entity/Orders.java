@@ -43,11 +43,11 @@ public class Orders {
     @Enumerated(EnumType.STRING)
     private DeliveryMethod deliveryMethod;
 
-    @CreationTimestamp
+//    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+//    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)//cascade = CascadeType.ALL
