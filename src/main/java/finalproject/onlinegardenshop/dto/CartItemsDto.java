@@ -19,4 +19,7 @@ public class CartItemsDto {
 
     private Integer quantity;
 
+    private String productsName;   // to show in addToCart product name and price
+    private Double productsPrice;  // to show in addToCart product name and price
+
 }

@@ -75,7 +75,12 @@ public class SecurityConfig {
                                         "/api/v1/auth/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
-                                        "/users/register" // Добавено за да позволи достъп на всички users
+                                        "/users/register",// Добавено за да позволи достъп на всички users
+                                        "/products/all",// Добавено за да позволи достъп на всички users
+                                        "/products/deal-of-the-day",// Добавено за да позволи достъп на всички users
+                                        "/products/sort",// Добавено за да позволи достъп на всички users
+                                        "/products/{id}",
+                                        "/test-data/generate-orders"// Добавено за да позволи достъп на всички users
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 ).addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();

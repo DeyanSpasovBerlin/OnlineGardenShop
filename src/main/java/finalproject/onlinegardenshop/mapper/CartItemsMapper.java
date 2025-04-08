@@ -4,13 +4,14 @@ import finalproject.onlinegardenshop.dto.CartItemsDto;
 import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.CartItems;
 import finalproject.onlinegardenshop.entity.Products;
+import finalproject.onlinegardenshop.service.OrdersMapperInjector;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = OrdersMapperInjector.class)
 public interface CartItemsMapper {
 
 // Convert DTO → Entity (cartId and productsId to Cart and Products objects)
@@ -21,6 +22,8 @@ CartItems dtoToEntity(CartItemsDto cartDto);
     // Convert Entity → DTO (Extract only IDs from cart and products)
     @Mapping(target = "cartId", source = "cart.id")
     @Mapping(target = "productsId", source = "products.id")
+    @Mapping(target = "productsName", source = "products.id", qualifiedByName = "productNameFromId")
+    @Mapping(target = "productsPrice", source = "products.price")
     CartItemsDto entityToDto(CartItems entity);
 
     List<CartItemsDto> entityListToDto(List<CartItems> entities);

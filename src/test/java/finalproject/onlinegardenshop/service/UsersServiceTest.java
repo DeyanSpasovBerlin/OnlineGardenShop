@@ -198,7 +198,7 @@ class UsersServiceTest {
         when(usersRepository.findById(1)).thenReturn(Optional.of(user));
         when(cartRepository.findByUsersId(1)).thenReturn(Optional.of(cart));
         when(ordersRepository.findByUsersId(1)).thenReturn(List.of(order));
-        usersService.deleteUser(1);
+        usersService.deleteUserByAdmin(1);
         verify(cartItemsRepository, times(1)).deleteByCartId(cart.getId());
         verify(cartRepository, times(1)).delete(cart);
         verify(ordersRepository, times(1)).save(any(Orders.class));
@@ -210,7 +210,7 @@ class UsersServiceTest {
         when(usersRepository.findById(1)).thenReturn(Optional.empty());
         OnlineGardenShopResourceNotFoundException exception = assertThrows(
                 OnlineGardenShopResourceNotFoundException.class,
-                () -> usersService.deleteUser(1)
+                () -> usersService.deleteUserByAdmin(1)
         );
         assertEquals("Manager with id = 1 not found in database!", exception.getMessage());
         verify(cartItemsRepository, never()).deleteByCartId(anyInt());
