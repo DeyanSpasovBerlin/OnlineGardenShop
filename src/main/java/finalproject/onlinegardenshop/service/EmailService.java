@@ -25,7 +25,6 @@ public class EmailService {
         message.setTo(toEmail);
         message.setSubject("Order Confirmation");
         message.setText("Your order #" + order.getId() + " has been successfully paid!");
-//        mailSender.send(message);
         try {
             mailSender.send(message);
         } catch (MailException e) {

@@ -34,7 +34,6 @@ public class OrdersDto {
     @Pattern(regexp ="^\\+49\\s?[1-9][0-9]{1,4}([\\s-]?[0-9]{2,12})*$" ,message = "{validation.orders.contactPhone}")//"^\\+49\\s?[1-9][0-9]{1,4}[-\\s]?[0-9]{3,12}$"
     private String contactPhone;
 
-    //overide set wit aim to cut spaces after phone number
     public void setContactPhone(String contactPhone) {
         if (contactPhone != null) {
             this.contactPhone = contactPhone.replaceAll("[\\s-]", "");
@@ -47,20 +46,19 @@ public class OrdersDto {
     @Enumerated(EnumType.STRING)
     private DeliveryMethod deliveryMethod;
 
-    // Add createdAt field to DTO to map the created timestamp
     private LocalDateTime createdAt;
 
-    private String firstName;//***********
+    private String firstName;
 
-    private String lastName;//************
+    private String lastName;
 
-    private Double totalPrice;//final sum to pay
+    private Double totalPrice;
 
-    private boolean emailSent;//this show if email is sent to user
+    private boolean emailSent;
 
     private Integer usersId;
 
-    private List<CreateOrderRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order записать и создать orderItems
+    private List<OrderCreateRequestSaveOrderItemsDto> items;
 
 
 }

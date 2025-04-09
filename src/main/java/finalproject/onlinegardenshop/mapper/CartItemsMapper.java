@@ -14,12 +14,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = OrdersMapperInjector.class)
 public interface CartItemsMapper {
 
-// Convert DTO → Entity (cartId and productsId to Cart and Products objects)
-@Mapping(target = "cart", source = "cartId", qualifiedByName = "cartFromId")
-@Mapping(target = "products", source = "productsId", qualifiedByName = "productsFromId")
-CartItems dtoToEntity(CartItemsDto cartDto);
+    @Mapping(target = "cart", source = "cartId", qualifiedByName = "cartFromId")
+    @Mapping(target = "products", source = "productsId", qualifiedByName = "productsFromId")
+    CartItems dtoToEntity(CartItemsDto cartDto);
 
-    // Convert Entity → DTO (Extract only IDs from cart and products)
     @Mapping(target = "cartId", source = "cart.id")
     @Mapping(target = "productsId", source = "products.id")
     @Mapping(target = "productsName", source = "products.id", qualifiedByName = "productNameFromId")
@@ -28,7 +26,6 @@ CartItems dtoToEntity(CartItemsDto cartDto);
 
     List<CartItemsDto> entityListToDto(List<CartItems> entities);
 
-    // Helper methods to convert IDs to entities
     @Named("cartFromId")
     default Cart cartFromId(Integer id) {
         if (id == null) {

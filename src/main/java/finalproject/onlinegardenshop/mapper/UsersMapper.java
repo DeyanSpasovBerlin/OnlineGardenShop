@@ -17,7 +17,4 @@ public interface UsersMapper {
 
     List<UsersDto> entityListToDto(List<Users> entities);
 
-    //для совпадений обозначения
-//    @Mapping(target = "password", constant = "***")
-//    UsersDto toDto(Users user);
 }

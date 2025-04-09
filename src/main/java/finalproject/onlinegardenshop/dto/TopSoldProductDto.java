@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopSoldProductDto {//this show JSON 10 sold prod
+public class TopSoldProductDto {
     private String productName;
     private Long totalSold;
 }

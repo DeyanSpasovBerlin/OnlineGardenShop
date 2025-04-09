@@ -18,13 +18,10 @@ public class EmailTestRunner implements CommandLineRunner {
         this.emailService = emailService;
     }
 
-    //when run app, this method start automaticalz and send test email to onlineGardenShop@gmail.com
-    //to controm method public void sendPaymentConfirmationEmails() in public class ScheduledTask
     @Override
     public void run(String... args) {
         try {
             emailService.sendOrderConfirmation("onlinegardenshop.2025.berlin@gmail.com", new Orders());
-            //onlinegardenshop.2025.berlin@gmail.com
             log.info("Test email sent successfully to onlinegardenshop.2025.berlin@gmail.com");
         } catch (Exception e) {
             log.error("Failed to send test email", e);

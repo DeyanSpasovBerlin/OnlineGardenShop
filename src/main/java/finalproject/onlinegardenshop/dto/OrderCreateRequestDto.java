@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateOrderRequestDto {
+public class OrderCreateRequestDto {
 
     @NotNull(message = "{validation.CreateOrderRequest.items.notNull}")
     @Size(min = 1, message = "{validation.CreateOrderRequest.items.size}")
@@ -24,9 +24,6 @@ public class CreateOrderRequestDto {
     @NotNull(message = "{validation.CreateOrderRequest.deliveryAddress.notNull}")
     @Size(min = 5, max = 150, message = "{validation.CreateOrderRequest.deliveryAddress.size}")
     private String deliveryAddress;
-
-//    @NotNull(message = "{validation.CreateOrderRequest.deliveryMethod.notNull}")
-//    private DeliveryMethod deliveryMethod;  // Changed to Enum for validation
 
     @NotNull(message = "{validation.CreateOrderRequest.deliveryMethod.notNull}")
     @ValidEnum(enumClass = DeliveryMethod.class, message = "{validation.CreateOrderRequest.deliveryMethod.invalid}")

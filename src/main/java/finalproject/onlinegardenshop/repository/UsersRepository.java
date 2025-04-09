@@ -24,12 +24,6 @@ public interface UsersRepository extends JpaRepository<Users,Integer> {
     @Modifying
     int updateStatus(Long id, UserRole status);
 
-    // REST API from tex docs:
-    // 1 •	Регистрация пользователя repository
     Optional<Users> findByEmail(String email);
-
-    // для совпадения обозвначений
-//    Optional<Users> findUsersByEmail(String email);
-
 
 }
