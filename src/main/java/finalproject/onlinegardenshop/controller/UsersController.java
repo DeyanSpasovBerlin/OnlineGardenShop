@@ -89,78 +89,28 @@ public class UsersController {
         return userService.findFirstLetterFromFirstNameAndFirstLetterFromLastName(firstName,lastName);
     }
 
-    // REST API from tex docs:
-    //    1 •	Регистрация пользователя  ->controller
-    //accessible without login
     @PostMapping("/register")
     @Operation(summary = "Creates a new user in the app,available without login")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody UsersDto usersDto) {// здесь ? означает, что можно вернуть
-        //UsersDto, ErrorResponse, null. Таким оброзом не надо изпользоват if
+    public ResponseEntity<?> registerUser(@Valid @RequestBody UsersDto usersDto) {
         UsersDto createdUser = userService.registerUser(usersDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-    /*
-    Postman:
-    post -> http://localhost:8080/users/register
-            {
-              "firstName": "John",
-              "lastName": "Doe",
-              "email": "john.doe@example.com",
-              "phone": "+48 101 1234567",
-              "password": "securePass_123"
-            }  -> 201 Created
-            {
-              "firstName": "John",
-              "lastName": "Doe",
-              "phone": "1234567890",
-              "password": "securePass123"
-            } -> "email": "Email is required"  400 Bad Request
-     */
 
-    //3. update Users  200 OK, 400 Bad Request, 404 Not Found
     @PutMapping("/{id}")
     @Operation(summary = "Introduces desired changes to the data of the user selected by id for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<?> updatedUsersByAdmin(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto usersUpdateDto) {
-//        //use UsersUpdateDto becouse only FirstName,LastName and Phone is alloyed to change
-//        UsersUpdateDto newUser = new UsersUpdateDto();
-//        newUser.setId(id);
-//        newUser.setFirstName((String) user.getFirstName());
-//        newUser.setLastName((String) user.getLastName());
-//        newUser.setPhone((String) user.getPhone());
-//        Set<ConstraintViolation<UsersUpdateDto>> violations = validator.validate(user);
-//        if (!violations.isEmpty()) {
-//            StringBuilder errorMessages = new StringBuilder();
-//            for (ConstraintViolation<UsersUpdateDto> violation : violations) {
-//                errorMessages.append(violation.getMessage()).append(" ");
-//            }
-//            throw new OnlineGardenShopBadRequestException(errorMessages.toString().trim());
-//        }
-        //здесь меняем UsersUpdateDto -> UsersDto потому что в Service
-        // возвращаеться UsersDto, потому что mapper работает только с UsersDto
-        UsersDto updatedUser = userService.updatedUsersByAdmin(id, usersUpdateDto);//
+        UsersDto updatedUser = userService.updatedUsersByAdmin(id, usersUpdateDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
-         /*
-    corect query in Postman:
-    put: http://localhost:8080/users/{id}
-    {
-    "lastName": "string",
-    "firstName": "string",
-    "phone": "string"
-      */
-    //***********************************
+
          @PutMapping()
          @Operation(summary = "Introduces desired changes to the data of the user who is authorized")
          public ResponseEntity<?> updatedUsersByUser( @Valid @RequestBody UsersUpdateDto usersUpdateDto) {
-             UsersDto updatedUser = userService.updatedUsersByUser(usersUpdateDto);//
+             UsersDto updatedUser = userService.updatedUsersByUser(usersUpdateDto);
              return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
          }
 
-    //*********************************
-
-    // REST API from tex docs:
-    //4 •	Удаление учетной записи
     @DeleteMapping("{id}")
     @Operation(summary = "Deletes a certain user selected by id for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -168,10 +118,6 @@ public class UsersController {
         userService.deleteUserByAdmin(id);
         return ResponseEntity.accepted().build();
     }
-             /*
-    corect query in Postman:
-    delete: http://localhost:8080/users/{id}
-      */
 
     @DeleteMapping()
     @Operation(summary = "Deletes a certain user by himself, when is authorized")
@@ -181,33 +127,3 @@ public class UsersController {
     }
 
 }
-/*
-    all query for testing Users:
-    http://localhost:8080/users/all
-    http://localhost:8080/users/9
-    POST http://localhost:8080/users/register
-        {
-            "lastName": "LastFinalProbe",
-            "firstName": "FirstFinalProbe",
-            "email": "FirstFinalProbe@example.com",
-            "phone": "909876543218",
-            "password": "FirstFinalProbeSecure_1"
-    }
-    POST http://localhost:8080/users/login
-        {
-            "email": "FirstFinalProbe@example.com",
-            "password": "FirstFinalProbeSecure_1"
-    }
-    DELETE http://localhost:8080/users/17
- */
-/*
-{
-        "id": 2,
-        "lastName": "Smith",
-        "firstName": "Bob",
-        "email": "bob@example.com",
-        "phone": "2345678901",
-        "password": "securePass1",
-        "role": "CLIENT"
-    },
- */
