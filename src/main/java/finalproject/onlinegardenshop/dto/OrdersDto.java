@@ -60,7 +60,7 @@ public class OrdersDto {
 
     private Integer usersId;
 
-    private List<CreateOrderRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order записать и создать orderItems
+    private List<OrderCreateRequestSaveOrderItemsDto> items;//ето позволяет когда создаю order записать и создать orderItems
 
 
 }

@@ -1,28 +1,24 @@
 package finalproject.onlinegardenshop.controller;
 
-import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
+import finalproject.onlinegardenshop.dto.OrderCreateRequestDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
-import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.service.OrdersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -158,7 +154,7 @@ public class OrdersController {
     @PostMapping
     @Operation(summary = "Creates an order for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<OrdersDto> createOrder(@Valid @RequestBody CreateOrderRequestDto request) {
+    public ResponseEntity<OrdersDto> createOrder(@Valid @RequestBody OrderCreateRequestDto request) {
         OrdersDto createdOrder = ordersService.createOrder(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }

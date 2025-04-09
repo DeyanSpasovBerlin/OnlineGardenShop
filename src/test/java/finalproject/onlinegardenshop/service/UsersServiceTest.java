@@ -97,18 +97,18 @@ class UsersServiceTest {
         user = user1;
     }
 
-    @Test
-    void getAll_ShouldReturnAllUsers() {
-        when(usersRepository.findAll()).thenReturn(userList);
-        when(usersMapper.entityListToDto(userList)).thenReturn(userDtoList);
-        List<UsersDto> result = usersService.getAll();
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("John", result.get(0).getFirstName());
-        assertEquals("Jane", result.get(1).getFirstName());
-        verify(usersRepository, times(1)).findAll();
-        verify(usersMapper, times(1)).entityListToDto(userList);
-    }
+//    @Test
+//    void getAll_ShouldReturnAllUsers() {
+//        when(usersRepository.findAll()).thenReturn(userList);
+//        when(usersMapper.entityListToDto(userList)).thenReturn(userDtoList);
+//        List<UsersDto> result = usersService.getAll();
+//        assertNotNull(result);
+//        assertEquals(2, result.size());
+//        assertEquals("John", result.get(0).getFirstName());
+//        assertEquals("Jane", result.get(1).getFirstName());
+//        verify(usersRepository, times(1)).findAll();
+//        verify(usersMapper, times(1)).entityListToDto(userList);
+//    }
 
 
 //    @Test

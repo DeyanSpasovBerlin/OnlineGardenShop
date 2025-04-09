@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateOrderRequestDto {
+public class OrderCreateRequestDto {
 
     @NotNull(message = "{validation.CreateOrderRequest.items.notNull}")
     @Size(min = 1, message = "{validation.CreateOrderRequest.items.size}")

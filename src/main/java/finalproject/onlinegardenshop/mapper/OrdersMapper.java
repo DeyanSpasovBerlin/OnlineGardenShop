@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.mapper;
 
-import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
-import finalproject.onlinegardenshop.dto.CreateOrderRequestSaveOrderItemsDto;
+import finalproject.onlinegardenshop.dto.OrderCreateRequestDto;
+import finalproject.onlinegardenshop.dto.OrderCreateRequestSaveOrderItemsDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.entity.OrderItems;
 import finalproject.onlinegardenshop.entity.Orders;
@@ -30,8 +30,7 @@ public interface OrdersMapper {
 
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "productName", source = "product.id", qualifiedByName = "productNameFromId")
-
-    CreateOrderRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
+    OrderCreateRequestSaveOrderItemsDto orderItemToDto(OrderItems orderItem);
 
     List<OrdersDto> entityListToDto(List<Orders> entities);
 
@@ -41,11 +40,11 @@ public interface OrdersMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "contactPhone", ignore = true)
     @Mapping(target = "users", source = "usersId", qualifiedByName = "usersFromId")
-    Orders dtoPostToEntity(CreateOrderRequestDto dto);
+    Orders dtoPostToEntity(OrderCreateRequestDto dto);
 
     @Mapping(target = "items", ignore = true)
     @Mapping(target = "usersId", source = "users.id")
-    CreateOrderRequestDto entityToDtopost(Orders entity);
+    OrderCreateRequestDto entityToDtopost(Orders entity);
 
     @Named("usersFromId")
     default Users usersFromId(Integer id){

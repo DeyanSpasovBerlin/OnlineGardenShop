@@ -1,7 +1,7 @@
 package finalproject.onlinegardenshop.service;
 
 
-import finalproject.onlinegardenshop.dto.CreateOrderRequestDto;
+import finalproject.onlinegardenshop.dto.OrderCreateRequestDto;
 import finalproject.onlinegardenshop.dto.OrdersDto;
 import finalproject.onlinegardenshop.entity.*;
 import finalproject.onlinegardenshop.entity.enums.DeliveryMethod;
@@ -11,7 +11,6 @@ import finalproject.onlinegardenshop.mapper.OrdersMapper;
 import finalproject.onlinegardenshop.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -83,7 +82,7 @@ public Page<OrdersDto> getAllOrders(Pageable pageable, String sortBy, String dir
     }
 
     @Transactional
-    public OrdersDto createOrder(CreateOrderRequestDto request) {
+    public OrdersDto createOrder(OrderCreateRequestDto request) {
         Orders order = new Orders();
         order.setDeliveryAddress(request.getDeliveryAddress());
         DeliveryMethod deliveryMethod = DeliveryMethod.valueOf(request.getDeliveryMethod().toUpperCase());
