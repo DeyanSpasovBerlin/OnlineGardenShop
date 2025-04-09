@@ -5,7 +5,6 @@ import finalproject.onlinegardenshop.dto.RevenueReportDto;
 import finalproject.onlinegardenshop.dto.TopCanceledProductDto;
 import finalproject.onlinegardenshop.dto.TopSoldProductDto;
 import finalproject.onlinegardenshop.mapper.OrdersMapper;
-//import finalproject.onlinegardenshop.mapper.ReportsMapper;
 import finalproject.onlinegardenshop.repository.OrderItemsRepository;
 import finalproject.onlinegardenshop.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,7 +20,6 @@ public class ReportsService {
     private final OrdersRepository ordersRepository;
     private final OrderItemsRepository orderItemsRepository;
     private final OrdersMapper ordersMapper;
-//    private  final ReportsMapper reportsMapper;
 
     @Autowired
     public ReportsService(OrdersRepository ordersRepository, OrderItemsRepository orderItemsRepository, OrdersMapper ordersMapper) {

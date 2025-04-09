@@ -31,7 +31,7 @@ public class Orders {
     private Users users;
 
     @Column(name = "deleted_user_id", nullable = true)
-    private Integer deletedUserId; // Store the deleted user's ID; used in deleteUser controller
+    private Integer deletedUserId;
 
     private String deliveryAddress;
 
@@ -50,11 +50,10 @@ public class Orders {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)//cascade = CascadeType.ALL
-    // ->сохраняю одновременно Orders and OrderItems; orphanRemoval = true  если уберу какой нибудь товар, то он delete in DB
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItems> orderItems = new ArrayList<>();
 
-    private Double totalPrice;//final sum to pay
+    private Double totalPrice;
 
     @Column(name = "email_sent", nullable = false)
     private boolean emailSent = false;

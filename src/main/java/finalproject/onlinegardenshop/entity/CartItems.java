@@ -20,12 +20,11 @@ private Integer id;
 
     private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Many items can belong to one cart
-    @JoinColumn(name = "cart_id", nullable = false) // Foreign Key
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Many items can refer to one product
-    // ✅(cascade = CascadeType.ALL) // Ensures child entities are deleted но ето автоматическое del может создать пproblems
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "products_id", nullable = false) // Foreign Key
     private Products products;
 }

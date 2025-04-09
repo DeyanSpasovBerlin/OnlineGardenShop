@@ -18,9 +18,9 @@ public class CartFullDto {
 
     private Integer usersId;
 
-    private String firstName;//add to show users name when add product to cart
+    private String firstName;
 
-    private String lastName;//add to show users name when add product to cart
+    private String lastName;
 
     private List<CartItemsDto> cartItems;
 }

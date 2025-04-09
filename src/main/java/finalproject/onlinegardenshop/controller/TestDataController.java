@@ -20,7 +20,7 @@ public class TestDataController {
     @PostMapping("/generate-orders")
     public ResponseEntity<String> generateOrders() {
         testDataGenerator.generateOrders();
-        return ResponseEntity.ok("Тестовите поръчки са създадени успешно.");
+        return ResponseEntity.ok("Test Orders are created sucsessfully.");
     }
 
 }

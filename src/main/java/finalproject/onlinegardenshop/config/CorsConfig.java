@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080", "https://studious-waffle-jj49wwv4xjq9cpjx9-8080.app.github.dev") // Задай всички разрешени източници
+                        .allowedOrigins("https://studious-waffle-jj49wwv4xjq9cpjx9-8080.app.github.dev", "http://localhost:8080")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }

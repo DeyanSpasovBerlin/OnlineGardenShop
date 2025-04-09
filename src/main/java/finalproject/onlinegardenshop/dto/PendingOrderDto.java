@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PendingOrderDto {// show JSON for waiting prod
+public class PendingOrderDto {
     private Integer orderId;
     private String productName;
     private LocalDateTime orderDate;
