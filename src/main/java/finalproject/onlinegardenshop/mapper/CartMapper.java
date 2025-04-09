@@ -15,10 +15,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = CartItemsMapper.class)
 public interface CartMapper {
 
-    @Mapping(target = "users", ignore = true)//"user" . old
+    @Mapping(target = "users", ignore = true)
     Cart dtoToEntity(CartDto cartDto);
 
-    @Mapping(target = "usersId", source = "users.id")//target = "userId", source = "user.id" . old
+    @Mapping(target = "usersId", source = "users.id")
     CartDto entityToDto(Cart entity);
 
     List<CartDto> entityListToDto(List<Cart> entities);
@@ -29,15 +29,14 @@ public interface CartMapper {
     Cart dtoFullToEntity(CartFullDto cartDto);
 
     @Mapping(target = "usersId", source = "users.id")
-    @Mapping(target = "firstName", source = "users.firstName")  // show firstName in Orders
-    @Mapping(target = "lastName", source = "users.lastName")    // show lastName in Orders
+    @Mapping(target = "firstName", source = "users.firstName")
+    @Mapping(target = "lastName", source = "users.lastName")
     @Mapping(target = "cartItems", source = "cartItems")
     CartFullDto entityToFullDto(Cart entity);
 
-    //to show in addToCart product name and price
-    @Mapping(target = "productsName", source = "products.name") // Map product name
-    @Mapping(target = "productsPrice", source = "products.price") // Map product price
-    CartItemsDto entityToDto(CartItems cartsItem);  // Add this method to map product info
+    @Mapping(target = "productsName", source = "products.name")
+    @Mapping(target = "productsPrice", source = "products.price")
+    CartItemsDto entityToDto(CartItems cartsItem);
 
     @Named("usersFromId")
     default Users usersFromId(Integer id){
@@ -48,6 +47,5 @@ public interface CartMapper {
         users.setId(id);
         return users;
     }
-
 
 }
