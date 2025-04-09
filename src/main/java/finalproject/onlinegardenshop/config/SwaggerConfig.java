@@ -19,10 +19,10 @@ import org.springframework.context.annotation.Bean;
         bearerFormat = "JWT",
         scheme = "bearer"
 )
-public class SwaggerConfig {//this alloy swagger to work in cloud
+public class SwaggerConfig {
 
     @Value("${swagger.api.url}")
-    private String apiUrl;  // Вземи URL от application.properties
+    private String apiUrl;
 
     @Bean
     public OpenAPI customOpenAPI() {
