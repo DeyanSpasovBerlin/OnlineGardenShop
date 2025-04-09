@@ -2,7 +2,6 @@ package finalproject.onlinegardenshop.repository;
 
 import finalproject.onlinegardenshop.dto.PendingOrderDto;
 import finalproject.onlinegardenshop.dto.RevenueReportDto;
-import finalproject.onlinegardenshop.entity.Cart;
 import finalproject.onlinegardenshop.entity.Orders;
 import finalproject.onlinegardenshop.entity.enums.OrdersStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders,Integer> {
@@ -25,16 +23,12 @@ public interface OrdersRepository extends JpaRepository<Orders,Integer> {
     @Modifying
     int updateStatus(Integer id, OrdersStatus status);
 
-    // Find orders for a specific deleted user
     List<Orders> findByDeletedUserId(Integer deletedUserId);
 
-    // Find all orders that belong to deleted users
     List<Orders> findAllByDeletedUserIdIsNotNull();
 
-    //Find all Orders which sendMail=false
     List<Orders> findByStatusAndEmailSentFalse(OrdersStatus status);
 
-    //we need this in PendingOrder  Неплатени поръчки повече от N дни
     @Query("SELECT new finalproject.onlinegardenshop.dto.PendingOrderDto(o.id, oi.product.name, o.createdAt) " +
             "FROM Orders o JOIN o.orderItems oi " +
             "WHERE o.status = 'PENDING_PAYMENT' AND o.createdAt < :thresholdDate")
@@ -55,7 +49,6 @@ public interface OrdersRepository extends JpaRepository<Orders,Integer> {
             "ORDER BY period", nativeQuery = true)
     List<Object[]> getRevenueReport(@Param("n") int n, @Param("intervalType") String intervalType);
 
-    // Преобразуваме резултатите в DTO
     default List<RevenueReportDto> getRevenueReportDto(int n, String intervalType) {
         List<Object[]> results = getRevenueReport(n, intervalType);
         List<RevenueReportDto> reportDtos = new ArrayList<>();
