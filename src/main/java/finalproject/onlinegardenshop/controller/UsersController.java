@@ -30,7 +30,7 @@ import java.util.*;
 @Tag(name = "Users Controller", description = "REST API for managing users in the app")
 public class UsersController {
     private final UsersService userService;
-    private final Validator validator;//this is need in updatedUsersController
+    private final Validator validator;
     private final UsersRepository usersRepository;
 
     @Autowired
@@ -39,25 +39,6 @@ public class UsersController {
         this.validator = validator;
         this.usersRepository = usersRepository;
     }
-
-//    @Operation(summary = "Returns a list of all app users")
-//    @GetMapping("/all")
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-//        public List<UsersDto> getAllUserrs() {
-//        return userService.getAll();
-//    }
-    //*********************************
-//        @GetMapping("/sorted")
-//        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-//        public Page<UsersDto> getSortedUsers(
-//                @RequestParam(defaultValue = "0") int page,
-//                @RequestParam(defaultValue = "10") int size,
-//                @RequestParam(defaultValue = "id") String sortBy,
-//                @RequestParam(defaultValue = "asc") String direction
-//        ) {
-//            return userService.getSortedUsers(page, size, sortBy, direction);
-//        }
-        //http://localhost:8080/users/sorted?sortBy=firstName&direction=desc&page=0&size=1
 
         @GetMapping("/sorted")
         @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -69,34 +50,6 @@ public class UsersController {
         ) {
             return userService.getAllUsersSorted(pageable, sortBy, direction);
         }
-        // http://localhost:8080/users/sorted?sortBy=lastName&direction=asc
-        //  http://localhost:8080/users/sorted?sortBy=firstName,lastName&direction=desc,asc
-    //  http://localhost:8080/users/sorted?sortBy=id,firstName,lastName&direction=asc,desc,asc&page=0&size=5
-    /*
-          {
-          "page": 0,
-          "size": 2,
-          "sort": ["id", "firstName","lastName"],
-          "sortBy": "id",
-          "direction": "desc"
-        }
-         {
-          "page": 0,
-          "size": 3,
-          "sort": ["lastName", "firstName", "id"],
-          "sortBy": "lastName",
-          "direction": "asc"
-        }
-        {
-          "page": 1,
-          "size": 4,
-          "sort": ["id", "lastName"],
-          "sortBy": "id",
-          "direction": "asc"
-        }
-     */
-
-    //**************************************
 
     @GetMapping("{id}")
     @Operation(summary = "Returns a user by id for ADMIN purpose")
