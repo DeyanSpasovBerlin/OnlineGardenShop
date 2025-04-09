@@ -28,21 +28,21 @@ public class CartItemsController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Returns a list of cart items")
+    @Operation(summary = "Returns a list of cart items for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<CartItemsDto> getAllCartItems(){
         return cartItemsService.getAll();
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Returns cart items by id")
+    @Operation(summary = "Returns cart items by id for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<CartItemsDto> getUsersById(@PathVariable Integer id) {
         return Optional.ofNullable(cartItemsService.getCartItemsById(id));
     }
 
     @PostMapping
-    @Operation(summary = "Adds items to a cart")
+    @Operation(summary = "Adds items to a cart for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<String> addToCart(@RequestHeader("usersId") Integer userId,
                                             @Valid @RequestBody CartItemsDto request) {

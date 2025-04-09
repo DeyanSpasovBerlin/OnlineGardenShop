@@ -10,6 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -36,12 +40,63 @@ public class UsersController {
         this.usersRepository = usersRepository;
     }
 
-    @Operation(summary = "Returns a list of all app users")
-    @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-        public List<UsersDto> getAllUserrs() {
-        return userService.getAll();
-    }
+//    @Operation(summary = "Returns a list of all app users")
+//    @GetMapping("/all")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+//        public List<UsersDto> getAllUserrs() {
+//        return userService.getAll();
+//    }
+    //*********************************
+//        @GetMapping("/sorted")
+//        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+//        public Page<UsersDto> getSortedUsers(
+//                @RequestParam(defaultValue = "0") int page,
+//                @RequestParam(defaultValue = "10") int size,
+//                @RequestParam(defaultValue = "id") String sortBy,
+//                @RequestParam(defaultValue = "asc") String direction
+//        ) {
+//            return userService.getSortedUsers(page, size, sortBy, direction);
+//        }
+        //http://localhost:8080/users/sorted?sortBy=firstName&direction=desc&page=0&size=1
+
+        @GetMapping("/sorted")
+        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+        @Operation(summary = "Returns a list of all users sorted by 3 criteria  for use from ADMIN")
+        public Page<UsersDto> getAllUsersSorted(
+                @PageableDefault(size = 10) Pageable pageable,
+                @RequestParam(required = false) String sortBy,
+                @RequestParam(required = false) String direction
+        ) {
+            return userService.getAllUsersSorted(pageable, sortBy, direction);
+        }
+        // http://localhost:8080/users/sorted?sortBy=lastName&direction=asc
+        //  http://localhost:8080/users/sorted?sortBy=firstName,lastName&direction=desc,asc
+    //  http://localhost:8080/users/sorted?sortBy=id,firstName,lastName&direction=asc,desc,asc&page=0&size=5
+    /*
+          {
+          "page": 0,
+          "size": 2,
+          "sort": ["id", "firstName","lastName"],
+          "sortBy": "id",
+          "direction": "desc"
+        }
+         {
+          "page": 0,
+          "size": 3,
+          "sort": ["lastName", "firstName", "id"],
+          "sortBy": "lastName",
+          "direction": "asc"
+        }
+        {
+          "page": 1,
+          "size": 4,
+          "sort": ["id", "lastName"],
+          "sortBy": "id",
+          "direction": "asc"
+        }
+     */
+
+    //**************************************
 
     @GetMapping("{id}")
     @Operation(summary = "Returns a user by id for ADMIN purpose")
@@ -60,21 +115,22 @@ public class UsersController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/search")
-    @Operation(summary = "Returns a list of users based on the specified first name")
+    @Operation(summary = "Returns a list of users based on the specified first name for use from ADMIN")
     public List<UsersDto> findByFirstName(@RequestParam String firstName, @RequestParam String lastName){
         return userService.findByFirstNameAndLastName(firstName,lastName);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/searchByFirstAndLastName")
-    @Operation(summary = "Returns a list of users based on the specified first and last name")
+    @Operation(summary = "Returns a list of users based on the specified first and last name for use from ADMIN")
     public List<UsersDto> findByFirstNameAndLastName(@RequestParam String firstName, @RequestParam String lastName){
         return userService.findByFirstNameAndLastName(firstName,lastName);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/searchByFirstLetterFromFirstNameAndFirstLetterFromLastName")
-    @Operation(summary = "Returns a list of users based on the specified first letter of the first name and first letter of the last name")
+    @Operation(summary = "Returns a list of users based on the specified first " +
+            "letter of the first name and first letter of the last name for use from ADMIN")
     public List<UsersDto> findFirstLetterFromFirstNameAndFirstLetterFromLastName(
             @RequestParam String firstName, @RequestParam String lastName){
         return userService.findFirstLetterFromFirstNameAndFirstLetterFromLastName(firstName,lastName);
@@ -82,9 +138,9 @@ public class UsersController {
 
     // REST API from tex docs:
     //    1 •	Регистрация пользователя  ->controller
-
+    //accessible without login
     @PostMapping("/register")
-    @Operation(summary = "Creates a new user in the app")
+    @Operation(summary = "Creates a new user in the app,available without login")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UsersDto usersDto) {// здесь ? означает, что можно вернуть
         //UsersDto, ErrorResponse, null. Таким оброзом не надо изпользоват if
         UsersDto createdUser = userService.registerUser(usersDto);
@@ -110,7 +166,7 @@ public class UsersController {
 
     //3. update Users  200 OK, 400 Bad Request, 404 Not Found
     @PutMapping("/{id}")
-    @Operation(summary = "Introduces desired changes to the data of the user selected by id")
+    @Operation(summary = "Introduces desired changes to the data of the user selected by id for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<?> updatedUsersByAdmin(@PathVariable("id") Integer id, @Valid @RequestBody UsersUpdateDto usersUpdateDto) {
 //        //use UsersUpdateDto becouse only FirstName,LastName and Phone is alloyed to change
@@ -153,7 +209,7 @@ public class UsersController {
     // REST API from tex docs:
     //4 •	Удаление учетной записи
     @DeleteMapping("{id}")
-    @Operation(summary = "Deletes a certain user selected by id from ADMIN")
+    @Operation(summary = "Deletes a certain user selected by id for emergency use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteUserByAdmin(@PathVariable Integer id){
         userService.deleteUserByAdmin(id);
@@ -165,7 +221,7 @@ public class UsersController {
       */
 
     @DeleteMapping()
-    @Operation(summary = "Deletes a certain user by himself")
+    @Operation(summary = "Deletes a certain user by himself, when is authorized")
     public ResponseEntity<Void> deleteUserByUser(){
         userService.deleteUserByUser();
         return ResponseEntity.accepted().build();

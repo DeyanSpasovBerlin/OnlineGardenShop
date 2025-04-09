@@ -18,6 +18,10 @@ import jakarta.validation.Valid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,13 +67,47 @@ public class UsersService {
 
 
 
-    public List<UsersDto> getAll(){
-        List<Users> users = repository.findAll();
-        logger.debug("Users retrieved from db");
-        logger.debug("user ids: {}", () -> users.stream().map(Users::getId).toList());
-        return mapper.entityListToDto(users);
-    }
+//    public List<UsersDto> getAll(){
+//        List<Users> users = repository.findAll();
+//        logger.debug("Users retrieved from db");
+//        logger.debug("user ids: {}", () -> users.stream().map(Users::getId).toList());
+//        return mapper.entityListToDto(users);
+//    }
+    //***************************************
+//        public Page<UsersDto> getSortedUsers(int page, int size, String sortBy, String direction) {
+//            Sort.Direction dir = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+//            Pageable pageable = PageRequest.of(page, size, Sort.by(dir, sortBy));
+//
+//            Page<Users> usersPage = repository.findAll(pageable);
+//            return usersPage.map(mapper::entityToDto);
+//        }
 
+    public Page<UsersDto> getAllUsersSorted(Pageable pageable, String sortBy, String direction) {
+        Sort sort = pageable.getSort();
+
+        if (sortBy != null && direction != null) {
+            String[] sortFields = sortBy.split(",");
+            String[] directions = direction.split(",");
+
+            List<Sort.Order> orders = new ArrayList<>();
+            for (int i = 0; i < sortFields.length; i++) {
+                String field = sortFields[i].trim();
+                Sort.Direction dir = Sort.Direction.ASC; // по подразбиране
+
+                if (i < directions.length && directions[i].equalsIgnoreCase("desc")) {
+                    dir = Sort.Direction.DESC;
+                }
+                orders.add(new Sort.Order(dir, field));
+            }
+
+            sort = Sort.by(orders);
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        }
+
+        Page<Users> usersPage = repository.findAll(pageable);
+        return usersPage.map(mapper::entityToDto);
+    }
+    //*********************************************************
     public UsersDto getUsersByIdForAdmin(Integer id) {
         Optional<Users> optional = repository.findById(id);
         if (optional.isPresent()) {

@@ -13,12 +13,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,12 +55,45 @@ public class OrdersService {
         this.cartItemsRepository = cartItemsRepository;
     }
 
-    public List<OrdersDto> getAll(){
-        List<Orders> orders = ordersRepository.findAll();
-        logger.debug("Orders retrieved from db");
-        logger.debug("Orders ids: {}", () -> orders.stream().map(Orders::getId).toList());
-        return ordersMapper.entityListToDto(orders);
+//    public List<OrdersDto> getAll(){
+//        List<Orders> orders = ordersRepository.findAll();
+//        logger.debug("Orders retrieved from db");
+//        logger.debug("Orders ids: {}", () -> orders.stream().map(Orders::getId).toList());
+//        return ordersMapper.entityListToDto(orders);
+//    }
+    //********************
+//    public Page<OrdersDto> getAll(Pageable pageable){
+//        Page<Orders> ordersPage = ordersRepository.findAll(pageable);
+//        return ordersPage.map(ordersMapper::entityToDto);
+//    }
+    //****************************
+public Page<OrdersDto> getAllOrders(Pageable pageable, String sortBy, String direction) {
+    // Проверка дали има параметри за сортиране
+    if (sortBy != null && direction != null) {
+        String[] sortByFields = sortBy.split(",");
+        String[] directions = direction.split(",");
+
+        // Проверка дали броят на полетата за сортиране съвпада с броя на посоките
+        if (sortByFields.length != directions.length) {
+            throw new IllegalArgumentException("Number of sortBy fields must match number of direction fields");
+        }
+
+        // Създаваме списък с Sort.Order
+        List<Sort.Order> orders = new ArrayList<>();
+        for (int i = 0; i < sortByFields.length; i++) {
+            Sort.Direction dir = directions[i].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            orders.add(Sort.Order.by(sortByFields[i]).with(dir));
+        }
+
+        // Създаваме нов Pageable обект с новото сортиране
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(orders));
     }
+
+    // Извикваме репозиторията и връщаме резултатите, като ги мапираме на DTO
+    Page<Orders> ordersPage = ordersRepository.findAll(pageable);
+    return ordersPage.map(ordersMapper::entityToDto);
+}
+    //*****************************
 
     public OrdersDto getOrderssById(Integer id) {
         Optional<Orders> optional = ordersRepository.findById(id);
@@ -68,6 +106,7 @@ public class OrdersService {
 
     // REST API from tex docs:
     //    1 •	•	Оформление заказа  ->   service
+    //Creates an order for emergency use from ADMIN
     @Transactional
     public OrdersDto createOrder(CreateOrderRequestDto request) {
         Orders order = new Orders();

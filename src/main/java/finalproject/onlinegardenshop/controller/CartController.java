@@ -30,28 +30,28 @@ public class CartController {
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Returns a list of all carts available in the app")
+    @Operation(summary = "Returns a list of all carts available in the app for use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<CartDto> gerAllCarts() {
         return cartService.getAll();
     }
 
     @GetMapping("/full")
-    @Operation(summary = "Returns a list of full carts with cart items and users data")
+    @Operation(summary = "Returns a list of full carts with cart items and users data for use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<CartFullDto> getFullCart() {
         return cartService.getAllCartWithItemsAndUsers();
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Returns a cart by its id")
+    @Operation(summary = "Returns a cart by its id for use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<CartDto> getCartById(@PathVariable Integer id) {
         return Optional.ofNullable(cartService.getCartById(id));
     }
 
     @PostMapping
-    @Operation(summary = "Adds product(s) to a user's cart")
+    @Operation(summary = "Adds product(s) to a user's cart, from authorized user")
     public ResponseEntity<String> addToCart(//@RequestHeader("userId") Integer userId,//if no Security leer add header
                                             @Valid @RequestBody AddToCartRequestDto request) {
         cartService.addToCart(request);//if we use header add second arg: userId,
@@ -85,7 +85,7 @@ public class CartController {
      */
 
     @GetMapping("/fullId")
-    @Operation(summary = "Returns a full cart of a user selected by cart id")
+    @Operation(summary = "Returns a full cart of a user selected by cart id for use from ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<CartFullDto> getFullCartById(@RequestHeader("cartId") Integer cartId) {
         return Optional.ofNullable(cartService.getFullCartById(cartId));
