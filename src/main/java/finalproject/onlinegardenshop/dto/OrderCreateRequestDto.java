@@ -25,9 +25,6 @@ public class OrderCreateRequestDto {
     @Size(min = 5, max = 150, message = "{validation.CreateOrderRequest.deliveryAddress.size}")
     private String deliveryAddress;
 
-//    @NotNull(message = "{validation.CreateOrderRequest.deliveryMethod.notNull}")
-//    private DeliveryMethod deliveryMethod;  // Changed to Enum for validation
-
     @NotNull(message = "{validation.CreateOrderRequest.deliveryMethod.notNull}")
     @ValidEnum(enumClass = DeliveryMethod.class, message = "{validation.CreateOrderRequest.deliveryMethod.invalid}")
     private String deliveryMethod;
