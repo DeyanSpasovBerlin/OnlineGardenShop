@@ -11,9 +11,7 @@ import finalproject.onlinegardenshop.repository.OrderItemsRepository;
 import finalproject.onlinegardenshop.repository.OrdersRepository;
 import finalproject.onlinegardenshop.repository.ProductsRepository;
 import finalproject.onlinegardenshop.repository.UsersRepository;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -64,22 +62,16 @@ public class TestDataGenerator {//implements CommandLineRunner -
             LocalDateTime randomDate = getRandomDateWithinLast180Days();
             order.setCreatedAt(randomDate);
             order.setUpdatedAt(randomDate);
-//            order.setCreatedAt(LocalDateTime.now());
-//            order.setUpdatedAt(LocalDateTime.now());
-
             double totalPrice = 0.0;
-
             int itemsCount = random.nextInt(3) + 1;
             for (int j = 0; j < itemsCount; j++) {
                 Products product = products.get(random.nextInt(products.size()));
                 int quantity = random.nextInt(3) + 1;
-
                 OrderItems item = new OrderItems();
                 item.setProduct(product);
                 item.setQuantity(quantity);
                 item.setPriceAtPurchase(product.getPrice());
                 item.setOrder(order); // важно!
-
                 totalPrice += quantity * product.getPrice();
                 order.getOrderItems().add(item);
             }
