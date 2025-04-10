@@ -12,6 +12,9 @@ import finalproject.onlinegardenshop.specification.ProductsSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -61,9 +64,13 @@ public class ProductsService {
             .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product with id " + id + " not found"));
     }
 
-    public List<ProductsDto> getFilteredProductsDynamic(Map<String, String> filters) {
+    public Page<ProductsDto> getFilteredProductsDynamic(Map<String, String> filters) {
         String sortParam = filters.getOrDefault("sort", "name");
         Sort sort = getSort(sortParam);
+
+        int page = Integer.parseInt(filters.getOrDefault("page", "0"));
+        int size = Integer.parseInt(filters.getOrDefault("size", "10"));
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Specification<Products> spec = Specification.where(null);
 
@@ -71,7 +78,7 @@ public class ProductsService {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            if ("sort".equals(key)) continue;
+            if (List.of("sort", "page", "size").contains(key)) continue;
 
             Specification<Products> currentSpec = ProductsSpecification.fromParam(key, value);
             if (currentSpec != null) {
@@ -79,13 +86,13 @@ public class ProductsService {
             }
         }
 
-        List<Products> products = repository.findAll(spec, sort);
+        Page<Products> pageResult = repository.findAll(spec, pageable);
 
-        if (products.isEmpty()) {
+        if (pageResult.isEmpty()) {
             throw new OnlineGardenShopResourceNotFoundException("No products with the given parameters found");
         }
 
-        return mapper.entityListToDto(products);
+        return pageResult.map(mapper::entityToDto);
     }
 
     public Sort getSort(String sortParam) {

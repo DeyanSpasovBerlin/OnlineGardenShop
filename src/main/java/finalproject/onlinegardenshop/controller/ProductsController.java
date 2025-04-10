@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,7 @@ public class ProductsController {
 
     @GetMapping("/sort")
     @Operation(summary = "Returns a product or a list of products based on certain filtering/sorting parameter(s)")
-    public ResponseEntity<List<ProductsDto>> getFilteredProducts(
-            @RequestParam Map<String, String> filters) {
+    public ResponseEntity<Page<ProductsDto>> getFilteredProducts(@RequestParam Map<String, String> filters) {
         return ResponseEntity.ok(service.getFilteredProductsDynamic(filters));
     }
 
