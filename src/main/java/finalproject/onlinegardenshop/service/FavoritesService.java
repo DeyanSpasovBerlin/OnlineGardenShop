@@ -30,48 +30,40 @@ public class FavoritesService {
         this.userRepository = userRepository;
     }
 
+    // Получение всех избранных товаров текущего пользователя
     public List<FavoritesDto> getAllFavorites() {
         Users currentUser = getAuthenticatedUser();
         return repository.findAllByUser(currentUser).stream()
-                .map(mapper::toDto) // Используем method reference
+                .map(mapper::toDto) // Используем method reference для преобразования в DTO
                 .collect(Collectors.toList());
     }
 
-    public FavoritesDto getFavoriteById(Integer id) {
-        Favorites favorite = repository.findById(id)
-                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Favorite not found with id " + id));
-
-        checkAuthorization(favorite.getUser());
-
-        return mapper.toDto(favorite);
-    }
-
+    // Сохранение избранного товара для текущего пользователя
     public FavoritesDto saveFavorite(FavoritesDto dto) {
         Favorites entity = mapper.toEntity(dto);
-        entity.setUser(getAuthenticatedUser());
+
+        // Получаем текущего аутентифицированного пользователя
+        Users currentUser = getAuthenticatedUser();
+        entity.setUser(currentUser); // Устанавливаем текущего пользователя для избранного товара
+
         return mapper.toDto(repository.save(entity));
     }
 
+    // Удаление избранного товара
     public void deleteFavorite(Integer id) {
+        Users currentUser = getAuthenticatedUser();
         Favorites favorite = repository.findById(id)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Favorite not found with id " + id));
-
-        checkAuthorization(favorite.getUser());
-
-        repository.delete(favorite);
+        if(favorite.getUser().equals(currentUser)) {
+            repository.delete(favorite);
+        }
     }
 
+    // Получение аутентифицированного пользователя из контекста
     private Users getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        String email = (String) authentication.getPrincipal();
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("User not found with email: " + email));
-    }
-
-    private void checkAuthorization(Users owner) {
-        Users currentUser = getAuthenticatedUser();
-        if (!owner.equals(currentUser)) {
-            throw new SecurityException("You are not authorized to access this resource");
-        }
     }
 }

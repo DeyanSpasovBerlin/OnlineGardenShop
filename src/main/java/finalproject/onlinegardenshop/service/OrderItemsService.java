@@ -17,15 +17,17 @@ import java.util.stream.Collectors;
 public class OrderItemsService {
     private final OrderItemsRepository repository;
     private final OrderItemsMapper mapper;
+    private final OrderItemsRepository orderItemsRepository;
 
-    public OrderItemsService(OrderItemsRepository repository, @Qualifier("orderItemsMapperImpl") OrderItemsMapper mapper) {
+    public OrderItemsService(OrderItemsRepository repository, @Qualifier("orderItemsMapperImpl") OrderItemsMapper mapper, OrderItemsRepository orderItemsRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.orderItemsRepository = orderItemsRepository;
     }
 
     public List<OrderItemsDto> getOrderItemsForOrder(Integer orderId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        String email = (String) authentication.getPrincipal();
 
         List<OrderItems> items = repository.findByOrderId(orderId).stream()
                 .filter(item -> item.getOrder().getUser().getEmail().equals(email))
@@ -39,8 +41,21 @@ public class OrderItemsService {
     }
 
     public OrderItemsDto getOrderItemById(Integer id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = (String) authentication.getPrincipal();
         OrderItems orderItem = repository.findById(id)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("OrderItem not found with id " + id));
+        if (!orderItem.getOrder().getUser().getEmail().equals(email)){
+            throw new OnlineGardenShopResourceNotFoundException("No order items found for order " + id + " or access denied");
+        }
         return mapper.toDto(orderItem);
     }
+
+    public List<OrderItemsDto> getAllOrderItems() {
+        List<OrderItems> orderItems = repository.findAll();
+        return orderItems.stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
 }

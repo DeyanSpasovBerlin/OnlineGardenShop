@@ -21,6 +21,7 @@ public class FavoritesController {
         this.service = service;
     }
 
+    // Получение всех избранных товаров текущего пользователя
     @GetMapping("/all")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Returns a list of favorite products of a user")
@@ -28,6 +29,7 @@ public class FavoritesController {
         return ResponseEntity.ok(service.getAllFavorites());
     }
 
+    // Добавление товара в избранное
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Adds a product to favorites of a user")
@@ -35,6 +37,7 @@ public class FavoritesController {
         return ResponseEntity.ok(service.saveFavorite(dto));
     }
 
+    // Удаление товара из избранного
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Deletes a favorite product by its id")
