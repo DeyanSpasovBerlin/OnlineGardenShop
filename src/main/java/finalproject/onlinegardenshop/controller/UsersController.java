@@ -40,16 +40,17 @@ public class UsersController {
         this.usersRepository = usersRepository;
     }
 
-        @GetMapping("/sorted")
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-        @Operation(summary = "Returns a list of all users sorted by 3 criteria  for use from ADMIN")
-        public Page<UsersDto> getAllUsersSorted(
-                @PageableDefault(size = 10) Pageable pageable,
-                @RequestParam(required = false) String sortBy,
-                @RequestParam(required = false) String direction
-        ) {
-            return userService.getAllUsersSorted(pageable, sortBy, direction);
-        }
+    @Operation(summary = "Returns sorted and paginated list of users for use from ADMIN")
+    @GetMapping("/sorted")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Page<UsersDto>> getAllUsersSortedPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        return ResponseEntity.ok(userService.getAllUsersSortedAndPaginated(page, size, sortField, sortDirection));
+    }
 
     @GetMapping("{id}")
     @Operation(summary = "Returns a user by id for ADMIN purpose")

@@ -63,24 +63,11 @@ public class UsersService {
         this.encoder = encoder;
     }
 
-    public Page<UsersDto> getAllUsersSorted(Pageable pageable, String sortBy, String direction) {
-        Sort sort = pageable.getSort();
-        if (sortBy != null && direction != null) {
-            String[] sortFields = sortBy.split(",");
-            String[] directions = direction.split(",");
-            List<Sort.Order> orders = new ArrayList<>();
-            for (int i = 0; i < sortFields.length; i++) {
-                String field = sortFields[i].trim();
-                Sort.Direction dir = Sort.Direction.ASC;
-                if (i < directions.length && directions[i].equalsIgnoreCase("desc")) {
-                    dir = Sort.Direction.DESC;
-                }
-                orders.add(new Sort.Order(dir, field));
-            }
-            sort = Sort.by(orders);
-            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-        }
+    public Page<UsersDto> getAllUsersSortedAndPaginated(int page, int size, String sortField, String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
         Page<Users> usersPage = repository.findAll(pageable);
+
         return usersPage.map(mapper::entityToDto);
     }
 
