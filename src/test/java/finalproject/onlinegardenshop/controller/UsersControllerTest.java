@@ -1,12 +1,15 @@
 package finalproject.onlinegardenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import finalproject.onlinegardenshop.config.SecurityConfig;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.repository.UsersRepository;
+import finalproject.onlinegardenshop.security.JwtProvider;
 import finalproject.onlinegardenshop.service.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,10 +33,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UsersController.class)
+@Import(SecurityConfig.class)
 class UsersControllerTest {
 
     @MockitoBean
     private UsersService service;
+
+    @MockitoBean
+    private JwtProvider jwtProvider;
 
     @MockitoBean
     private UsersRepository repository;
