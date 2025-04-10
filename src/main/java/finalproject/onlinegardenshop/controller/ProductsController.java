@@ -30,7 +30,6 @@ public class ProductsController {
         this.service = service;
     }
 
-
     @GetMapping("/all")
     @Operation(summary="Returns a list of all available products")
     public ResponseEntity<List<ProductsDto>> getAll() {
