@@ -8,14 +8,17 @@ import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestExcepti
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.ProductsMapper;
 import finalproject.onlinegardenshop.repository.*;
+import finalproject.onlinegardenshop.specification.ProductsSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional(readOnly = true)
@@ -58,36 +61,42 @@ public class ProductsService {
             .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product with id " + id + " not found"));
     }
 
-    public List<ProductsDto> getFilteredProducts(String category, Double minPrice, Double maxPrice, Boolean discount, Sort sort) {
-        List<Products> products;
+    public List<ProductsDto> getFilteredProductsDynamic(Map<String, String> filters) {
+        String sortParam = filters.getOrDefault("sort", "name");
+        Sort sort = getSort(sortParam);
 
-        if (category != null && minPrice != null && maxPrice != null && discount != null) {
-            products = discount
-                    ? repository.findByCategory_NameAndPriceBetweenAndDiscountPriceGreaterThan(category, minPrice, maxPrice, 0.0, sort)
-                    : repository.findByCategory_NameAndPriceBetweenAndDiscountPriceIsNull(category, minPrice, maxPrice, sort);
-        } else if (category != null && discount != null) {
-            products = discount
-                    ? repository.findByCategory_NameAndDiscountPriceGreaterThan(category, 0.0, sort)
-                    : repository.findByCategory_NameAndDiscountPriceIsNull(category, sort);
-        } else if (category != null && minPrice != null && maxPrice != null) {
-            products = repository.findByCategory_NameAndPriceBetween(category, minPrice, maxPrice, sort);
-        } else if (category != null) {
-            products = repository.findByCategory_Name(category, sort);
-        } else if (minPrice != null && maxPrice != null) {
-            products = repository.findByPriceBetween(minPrice, maxPrice, sort);
-        } else if (discount != null) {
-            products = discount
-                    ? repository.findByDiscountPriceGreaterThan(0.0, sort)
-                    : repository.findByDiscountPriceIsNull(sort);
-        } else {
-            products = repository.findAll(sort);
+        Specification<Products> spec = Specification.where(null);
+
+        for (Map.Entry<String, String> entry : filters.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            if ("sort".equals(key)) continue;
+
+            Specification<Products> currentSpec = ProductsSpecification.fromParam(key, value);
+            if (currentSpec != null) {
+                spec = spec.and(currentSpec);
+            }
         }
+
+        List<Products> products = repository.findAll(spec, sort);
 
         if (products.isEmpty()) {
             throw new OnlineGardenShopResourceNotFoundException("No products with the given parameters found");
         }
 
         return mapper.entityListToDto(products);
+    }
+
+    public Sort getSort(String sortParam) {
+        return switch (sortParam) {
+            case "priceAsc" -> Sort.by(Sort.Order.asc("price"));
+            case "priceDesc" -> Sort.by(Sort.Order.desc("price"));
+            case "dateAsc" -> Sort.by(Sort.Order.asc("createdAt"));
+            case "dateDesc" -> Sort.by(Sort.Order.desc("createdAt"));
+            case "nameDesc" -> Sort.by(Sort.Order.desc("name"));
+            default -> Sort.by(Sort.Order.asc("name"));
+        };
     }
 
     public ProductsDto getDealOfTheDay() {

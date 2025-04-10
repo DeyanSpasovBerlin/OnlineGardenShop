@@ -14,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -45,22 +45,8 @@ public class ProductsController {
     @GetMapping("/sort")
     @Operation(summary = "Returns a product or a list of products based on certain filtering/sorting parameter(s)")
     public ResponseEntity<List<ProductsDto>> getFilteredProducts(
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) Boolean discount,
-            @RequestParam(required = false, defaultValue = "name") String sort) {
-
-        Sort sorting = switch (sort) {
-            case "priceAsc" -> Sort.by(Sort.Order.asc("price"));
-            case "priceDesc" -> Sort.by(Sort.Order.desc("price"));
-            case "dateAsc" -> Sort.by(Sort.Order.asc("createdAt"));
-            case "dateDesc" -> Sort.by(Sort.Order.desc("createdAt"));
-            case "nameDesc" -> Sort.by(Sort.Order.desc("name"));
-            default -> Sort.by(Sort.Order.asc("name"));
-        };
-
-        return ResponseEntity.ok(service.getFilteredProducts(category, minPrice, maxPrice, discount, sorting));
+            @RequestParam Map<String, String> filters) {
+        return ResponseEntity.ok(service.getFilteredProductsDynamic(filters));
     }
 
     @GetMapping("deal-of-the-day")
