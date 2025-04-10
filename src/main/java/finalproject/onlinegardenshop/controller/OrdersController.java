@@ -35,16 +35,19 @@ public class OrdersController {
         this.ordersService = ordersService;
     }
 
-        @GetMapping("/all")
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-        @Operation(summary = "Returns a list of all orders for use from ADMIN")
-        public Page<OrdersDto> getAllOrders(
-                @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                @RequestParam(required = false) String sortBy,
-                @RequestParam(required = false) String direction
-        ) {
-            return ordersService.getAllOrders(pageable, sortBy, direction);
-        }
+    @GetMapping("/sorted")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @Operation(summary = "Returns filtered, paginated and sorted orders")
+    public ResponseEntity<Page<OrdersDto>> getFilteredSortedOrders(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "0") double minTotalPrice,
+            @RequestParam(defaultValue = "100000") double maxTotalPrice
+    ) {
+        Page<OrdersDto> orders = ordersService.getFilteredAndSortedOrders(page, size, sortBy, minTotalPrice, maxTotalPrice);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
 
     @GetMapping("{id}")
     @Operation(summary = "Returns an order by its id for use from ADMIN")
