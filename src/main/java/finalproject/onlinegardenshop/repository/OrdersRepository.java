@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,4 +62,5 @@ public interface OrdersRepository extends JpaRepository<Orders,Integer> {
         return reportDtos;
     }
 
+    Page<Orders> findByTotalPriceBetween(double minTotalPrice, double maxTotalPrice, Pageable pageable);
 }

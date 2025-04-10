@@ -1,14 +1,18 @@
 package finalproject.onlinegardenshop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import finalproject.onlinegardenshop.config.SecurityConfig;
 import finalproject.onlinegardenshop.entity.enums.UserRole;
 import finalproject.onlinegardenshop.repository.UsersRepository;
+import finalproject.onlinegardenshop.security.JwtProvider;
 import finalproject.onlinegardenshop.service.UsersService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -26,70 +30,71 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UsersController.class)
+@Import(SecurityConfig.class)
 class UsersControllerTest {
-
     @MockitoBean
     private UsersService service;
-
+    @MockitoBean
+    private JwtProvider jwtProvider;
     @MockitoBean
     private UsersRepository repository;
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-//    @Test
-//    void getAllUserrs() throws Exception{
-//        // Arrange: Create mock UsersDto list
-//        UsersDto user1 = new UsersDto(
-//                1,
-//                "Doe",
-//                "John",
-//                "john.doe@example.com",
-//                "+49123456789",
-//                "SecurePass1!",
-//                UserRole.CLIENT
-//        );
-//        UsersDto user2 = new UsersDto(
-//                2,
-//                "Doe",
-//                "Jane",
-//                "jane.doe@example.com",
-//                "+49123456788",
-//                "AnotherPass1!",
-//                UserRole.ADMIN
-//        );
-//        List<UsersDto> usersList = List.of(user1, user2);
-//
-//        // Mock service call
-//        when(service.getAllUsersSorted()).thenReturn((Page<UsersDto>) usersList);
+        @Test
+        @WithMockUser(roles = "ADMIN")
+        void testGetAllUsersSortedPaginated_ShouldReturnUsersPage() throws Exception {
+            UsersDto user1 = new UsersDto();
+            user1.setId(1);
+            user1.setFirstName("Alice");
+            user1.setLastName("Smith");
+            user1.setEmail("alice@example.com");
+            UsersDto user2 = new UsersDto();
+            user2.setId(2);
+            user2.setFirstName("Bob");
+            user2.setLastName("Brown");
+            user2.setEmail("bob@example.com");
+            List<UsersDto> users = List.of(user1, user2);
+            Page<UsersDto> userPage = new org.springframework.data.domain.PageImpl<>(users);
+            when(service.getAllUsersSortedAndPaginated(anyInt(), anyInt(), anyString(), anyString()))
+                    .thenReturn(userPage);
+            mockMvc.perform(get("/users/sorted")
+                            .param("page", "0")
+                            .param("size", "2")
+                            .param("sortField", "firstName")
+                            .param("sortDirection", "asc")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.content[0].firstName", is("Alice")))
+                    .andExpect(jsonPath("$.content[1].firstName", is("Bob")))
+                    .andExpect(jsonPath("$.totalElements", is(2)));
+            verify(service, times(1))
+                    .getAllUsersSortedAndPaginated(0, 2, "firstName", "asc");
+        }
 
-        // Act & Assert
-//        mockMvc.perform(get("/users/all"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType("application/json"))
-//                .andExpect(jsonPath("$.length()", is(2))) // Check list size
-//                .andExpect(jsonPath("$[0].id", is(1))) // Verify first user
-//                .andExpect(jsonPath("$[0].firstName", is("John")))
-//                .andExpect(jsonPath("$[0].lastName", is("Doe")))
-//                .andExpect(jsonPath("$[0].email", is("john.doe@example.com")))
-//                .andExpect(jsonPath("$[1].id", is(2))) // Verify second user
-//                .andExpect(jsonPath("$[1].firstName", is("Jane")))
-//                .andExpect(jsonPath("$[1].lastName", is("Doe")))
-//                .andExpect(jsonPath("$[1].email", is("jane.doe@example.com")));
-//    }
+        @Test
+        @WithMockUser(roles = "CLIENT")
+        void testGetAllUsersSortedPaginated_ForbiddenForNonAdmin() throws Exception {
+            mockMvc.perform(get("/users/sorted")
+                            .param("page", "0")
+                            .param("size", "2")
+                            .param("sortField", "firstName")
+                            .param("sortDirection", "asc"))
+                    .andExpect(status().isForbidden());
 
-    @Test
-    void  registerUser() throws Exception {
+            verify(service, never()).getAllUsersSortedAndPaginated(anyInt(), anyInt(), anyString(), anyString());
+        }
 
-        UsersDto usersDto = new UsersDto(
-                null, // id is null here
+        @Test
+       @WithMockUser(username = "Test user", roles = {"ADMIN"})
+        void  registerUser() throws Exception {
+            UsersDto usersDto = new UsersDto(
+                null,
                 "Doe",
                 "John",
                 "john.doe@example.com",
@@ -97,11 +102,8 @@ class UsersControllerTest {
                 "SecurePassword123!",
                 UserRole.CLIENT
         );
-
-        // Mock the service to return a UsersDto with an id (simulating DB behavior)
-        // Simulate the response having an ID assigned dynamically
         UsersDto createdUserDto = new UsersDto(
-                1, // Mocked id assignment (it can be any number, depending on your test scenario)
+                1,
                 "Doe",
                 "John",
                 "john.doe@example.com",
@@ -109,42 +111,28 @@ class UsersControllerTest {
                 "SecurePassword123!",
                 UserRole.CLIENT
         );
-
-        // Capture the UsersDto passed to the service and return the one with the id
         when(service.registerUser(any(UsersDto.class))).thenAnswer(invocation -> {
             UsersDto capturedUserDto = invocation.getArgument(0);
-            // Assign an id to the captured user, simulating a DB save
-            capturedUserDto.setId(1); // Set the dynamic ID you want
+            capturedUserDto.setId(1);
             return capturedUserDto;
         });
-
-        // Perform a POST request to the /users/register endpoint
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usersDto)))
-                // Verify that the response status is 201 (Created)
                 .andExpect(status().isCreated())
-                // Verify that the response body contains the registered user's email
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"))
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                // Verify that the id field is returned in the response
                 .andExpect(jsonPath("$.id").value(1)); // Dynamically assigned id
     }
 
     @Test
+    @WithMockUser(username = "Test user", roles = {"ADMIN"})
     void deleteUser() throws Exception {
-        // Given
         Long userId = 1L;
-
-        // Mock service behavior
         doNothing().when(service).deleteUserByAdmin(Math.toIntExact(userId));
-
-        // When & Then
         mockMvc.perform(delete("/users/{id}", userId))
                 .andExpect(status().isAccepted());
-
-        // Verify that the service method was called
         verify(service, times(1)).deleteUserByAdmin(Math.toIntExact(userId));
 
     }

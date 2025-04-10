@@ -54,23 +54,11 @@ public class OrdersService {
         this.cartItemsRepository = cartItemsRepository;
     }
 
-public Page<OrdersDto> getAllOrders(Pageable pageable, String sortBy, String direction) {
-    if (sortBy != null && direction != null) {
-        String[] sortByFields = sortBy.split(",");
-        String[] directions = direction.split(",");
-        if (sortByFields.length != directions.length) {
-            throw new IllegalArgumentException("Number of sortBy fields must match number of direction fields");
+        public Page<OrdersDto> getFilteredAndSortedOrders(int page, int size, String sortBy, double minTotalPrice, double maxTotalPrice) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+            Page<Orders> filteredOrders = ordersRepository.findByTotalPriceBetween(minTotalPrice, maxTotalPrice, pageable);
+            return filteredOrders.map(ordersMapper::entityToDto);
         }
-        List<Sort.Order> orders = new ArrayList<>();
-        for (int i = 0; i < sortByFields.length; i++) {
-            Sort.Direction dir = directions[i].equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            orders.add(Sort.Order.by(sortByFields[i]).with(dir));
-        }
-        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(orders));
-    }
-    Page<Orders> ordersPage = ordersRepository.findAll(pageable);
-    return ordersPage.map(ordersMapper::entityToDto);
-}
 
     public OrdersDto getOrderssById(Integer id) {
         Optional<Orders> optional = ordersRepository.findById(id);

@@ -2,20 +2,14 @@ package finalproject.onlinegardenshop.controller;
 
 import finalproject.onlinegardenshop.dto.UsersDto;
 import finalproject.onlinegardenshop.dto.UsersUpdateDto;
-import finalproject.onlinegardenshop.exception.OnlineGardenShopBadRequestException;
 import finalproject.onlinegardenshop.repository.UsersRepository;
 import finalproject.onlinegardenshop.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,16 +34,17 @@ public class UsersController {
         this.usersRepository = usersRepository;
     }
 
-        @GetMapping("/sorted")
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-        @Operation(summary = "Returns a list of all users sorted by 3 criteria  for use from ADMIN")
-        public Page<UsersDto> getAllUsersSorted(
-                @PageableDefault(size = 10) Pageable pageable,
-                @RequestParam(required = false) String sortBy,
-                @RequestParam(required = false) String direction
-        ) {
-            return userService.getAllUsersSorted(pageable, sortBy, direction);
-        }
+    @Operation(summary = "Returns sorted and paginated list of users for use from ADMIN")
+    @GetMapping("/sorted")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Page<UsersDto>> getAllUsersSortedPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+
+        return ResponseEntity.ok(userService.getAllUsersSortedAndPaginated(page, size, sortField, sortDirection));
+    }
 
     @GetMapping("{id}")
     @Operation(summary = "Returns a user by id for ADMIN purpose")
