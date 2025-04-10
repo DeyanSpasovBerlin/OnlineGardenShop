@@ -58,7 +58,6 @@ public class OrdersController {
 
     @GetMapping()
     @Operation(summary = "Returns last order from autorised user")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public Optional<OrdersDto> getLastOrdersByUser() {
         return Optional.ofNullable(ordersService.getLastOrdersByUser());
     }
