@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -92,10 +93,10 @@ class UsersControllerTest {
 //                .andExpect(jsonPath("$[1].email", is("jane.doe@example.com")));
 //    }
 
-    @Test
-    void  registerUser() throws Exception {
-
-        UsersDto usersDto = new UsersDto(
+        @Test
+       @WithMockUser(username = "Test user", roles = {"ADMIN"})
+        void  registerUser() throws Exception {
+            UsersDto usersDto = new UsersDto(
                 null, // id is null here
                 "Doe",
                 "John",
