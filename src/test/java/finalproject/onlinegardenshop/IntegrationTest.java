@@ -15,9 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,7 +46,7 @@ public class IntegrationTest {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void registerAndDeleteUser() throws Exception {
         UsersDto usersDto = new UsersDto(
-                null, // id is null here
+                null,
                 "Doe",
                 "John",
                 "john.doe@example.com",
@@ -57,27 +54,21 @@ public class IntegrationTest {
                 "SecurePassword123!",
                 UserRole.CLIENT
         );
-
-        // Perform a POST request to the /users/register endpoint
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(usersDto)))
-                // Verify that the response status is 201 (Created)
                 .andExpect(status().isCreated())
-                // Verify that the response body contains the registered user's email
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"))
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                // Verify that the id field is returned in the response
-                .andExpect(jsonPath("$.id").isNotEmpty()); // Any valid ID should be returned
-
-        // Fetch the created user from the DB to get its ID
+                .andExpect(jsonPath("$.id").isNotEmpty());
         var createdUser = repository.findByEmail("john.doe@example.com").orElseThrow();
         Long userId = Long.valueOf(createdUser.getId());
-
-        // Perform DELETE request
+        assert repository.existsById(userId.intValue()) : "User should exist after registration";
         mockMvc.perform(delete("/users/{id}", userId))
                 .andExpect(status().isAccepted());
+        boolean userStillExists = repository.findById(userId.intValue()).isPresent();
+        assert !userStillExists : "User should be deleted";
 
     }
 }
