@@ -37,16 +37,13 @@ public class EmailService {
             helper.setTo(toEmail);
             helper.setSubject("Order Confirmation");
             helper.setText("Your order #" + order.getId() + " has been successfully paid!");
-
             if (order.getUsers() != null) {
                 helper.setText("Customer: " + order.getUsers().getFirstName() + " " + order.getUsers().getLastName());
             } else {
                 helper.setText("Customer: No user data");
             }
-
             ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfContent, "application/pdf");
             helper.addAttachment("order_" + order.getId() + ".pdf", dataSource);
-
             mailSender.send(message);
         } catch (MailException | jakarta.mail.MessagingException e) {
             throw new OnlineGardenShopBadRequestException("Failed to send email: " + e.getMessage());
@@ -58,46 +55,45 @@ public class EmailService {
             Document document = new Document();
             PdfWriter.getInstance(document, baos);
             document.open();
-
-            Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, BaseColor.RED);
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, BaseColor.DARK_GRAY);
             Paragraph title = new Paragraph("Order Details", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(Chunk.NEWLINE);
-
-            document.add(new Paragraph("Order ID: " + order.getId()));
-
+            Font regularFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK);
+            document.add(new Paragraph("Order ID: " + order.getId(), regularFont));
             document.add(new Paragraph("Customer: " +
-                    (order.getUsers() != null ? order.getUsers().getFirstName() + " " + order.getUsers().getLastName() : "No user data")));
-
-            document.add(new Paragraph("Delivery Address: " + order.getDeliveryAddress()));
-            document.add(new Paragraph("Contact Phone: " + order.getContactPhone()));
-            document.add(new Paragraph("Status: " + order.getStatus()));
-            document.add(new Paragraph("Delivery Method: " + order.getDeliveryMethod()));
-
-            Font priceFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.BLUE);
-            document.add(new Paragraph("Total Price: €" + order.getTotalPrice(), priceFont));
-
-            Font dateFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.GREEN);
-            document.add(new Paragraph("Created At: " + order.getCreatedAt(), dateFont));
+                    (order.getUsers() != null ? order.getUsers().getFirstName() + " " + order.getUsers().getLastName() : "No user data"), regularFont));
+            document.add(new Paragraph("Delivery Address: " + order.getDeliveryAddress(), regularFont));
+            document.add(new Paragraph("Contact Phone: " + order.getContactPhone(), regularFont));
+            document.add(new Paragraph("Status: " + order.getStatus(), regularFont));
+            document.add(new Paragraph("Delivery Method: " + order.getDeliveryMethod(), regularFont));
+            document.add(new Paragraph("Total Price: €" + order.getTotalPrice(), regularFont));
+            document.add(new Paragraph("Created At: " + order.getCreatedAt(), regularFont));
             document.add(Chunk.NEWLINE);
-
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
-            table.addCell("Product ID");
-            table.addCell("Product Name");
-            table.addCell("Quantity");
-            table.addCell("Price at Purchase");
-
+            table.setSpacingBefore(10); // Padding преди таблицата
+            Font tableHeaderFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+            PdfPCell headerCell = new PdfPCell(new Phrase("Product ID", tableHeaderFont));
+            headerCell.setBackgroundColor(BaseColor.GRAY);
+            table.addCell(headerCell);
+            headerCell = new PdfPCell(new Phrase("Product Name", tableHeaderFont));
+            headerCell.setBackgroundColor(BaseColor.GRAY);
+            table.addCell(headerCell);
+            headerCell = new PdfPCell(new Phrase("Quantity", tableHeaderFont));
+            headerCell.setBackgroundColor(BaseColor.GRAY);
+            table.addCell(headerCell);
+            headerCell = new PdfPCell(new Phrase("Price at Purchase", tableHeaderFont));
+            headerCell.setBackgroundColor(BaseColor.GRAY);
+            table.addCell(headerCell);
+            Font tableCellFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.BLACK);
             for (OrderItems item : order.getOrderItems()) {
-                table.addCell(String.valueOf(item.getProduct().getId()));
-                table.addCell(item.getProduct().getName());
-                table.addCell(String.valueOf(item.getQuantity()));
-
-                PdfPCell priceCell = new PdfPCell(new Phrase(String.valueOf(item.getPriceAtPurchase()), priceFont));
-                table.addCell(priceCell);
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(item.getProduct().getId()), tableCellFont)));
+                table.addCell(new PdfPCell(new Phrase(item.getProduct().getName(), tableCellFont)));
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(item.getQuantity()), tableCellFont)));
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(item.getPriceAtPurchase()), tableCellFont)));
             }
-
             document.add(table);
             document.close();
             return baos.toByteArray();
