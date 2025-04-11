@@ -66,7 +66,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-Access Swagger: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+Access URL: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ---
 
