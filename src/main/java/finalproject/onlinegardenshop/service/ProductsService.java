@@ -20,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -137,6 +138,7 @@ public class ProductsService {
         product.setPrice(dto.getPrice());
         product.setDiscountPrice(dto.getDiscountPrice());
         product.setImageUrl(dto.getImageUrl());
+        product.setUpdatedAt(Instant.now());
 
         if (dto.getCategory() != null) {
             Categories category = categoriesRepository.findByName(dto.getCategory())
