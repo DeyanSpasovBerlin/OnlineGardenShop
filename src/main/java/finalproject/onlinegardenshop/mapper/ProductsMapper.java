@@ -21,6 +21,8 @@ public interface ProductsMapper {
     Products createDtoToEntity(ProductCreateDto dto);
 
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryEntityToName")
+    @Mapping(target = "createdAtInstant", source = "createdAt")
+    @Mapping(target = "updatedAtInstant", source = "updatedAt")
     ProductsDto entityToDto(Products entity);
 
     List<ProductsDto> entityListToDto(List<Products> productsList);
