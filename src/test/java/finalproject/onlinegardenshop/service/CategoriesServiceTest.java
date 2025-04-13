@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,20 @@ public class CategoriesServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("Test Category", result.get(0).getName());
+    }
+
+    @Test
+    void testGetAll_ThrowsException_WhenCategoriesEmpty() {
+        // Мокируем поведение репозитория: возвращаем пустой список
+        when(categoriesRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // Проверка, что выбрасывается нужное исключение с нужным сообщением
+        OnlineGardenShopResourceNotFoundException exception = assertThrows(
+                OnlineGardenShopResourceNotFoundException.class,
+                () -> categoriesService.getAll()
+        );
+
+        assertEquals("Categories not found", exception.getMessage());
     }
 
     @Test

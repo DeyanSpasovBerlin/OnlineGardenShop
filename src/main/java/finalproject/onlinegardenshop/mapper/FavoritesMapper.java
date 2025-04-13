@@ -7,7 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface FavoritesMapper {
+
     @Mapping(source = "product.id", target = "productsId")
+    @Mapping(target = "status", ignore = true)
     FavoritesDto toDto(Favorites favorite);
 
     @Mapping(target = "user", ignore = true)
