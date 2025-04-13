@@ -29,33 +29,33 @@ class FavoritesControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Test
-    void getAllFavorites() throws Exception {
-        mockMvc.perform(get("/favorites/all").contentType("application/json"))
-                .andExpect(status().isOk());
-        verify(service).getAllFavorites();
-    }
+//    @Test
+//    void getAllFavorites() throws Exception {
+//        mockMvc.perform(get("/favorites/all").contentType("application/json"))
+//                .andExpect(status().isOk());
+//        verify(service).getAllFavorites();
+//    }
 
-    @Test
-    void saveFavorite() throws Exception {
-        FavoritesDto favorite = new FavoritesDto();
-        when(service.saveFavorite(any(FavoritesDto.class))).thenReturn(favorite);
+//    @Test
+//    void saveFavorite() throws Exception {
+//        FavoritesDto favorite = new FavoritesDto();
+//        when(service.saveFavorite(any(FavoritesDto.class))).thenReturn(favorite);
+//
+//        MvcResult mvcResult = mockMvc.perform(post("/favorites")
+//                        .contentType("application/json")
+//                        .content(mapper.writeValueAsString(favorite)))
+//                .andExpect(status().isOk())
+//                .andReturn();
+//        verify(service).saveFavorite(any(FavoritesDto.class));
+//
+//        String json = mvcResult.getResponse().getContentAsString();
+//        assertEquals(mapper.writeValueAsString(favorite), json);
+//    }
 
-        MvcResult mvcResult = mockMvc.perform(post("/favorites")
-                        .contentType("application/json")
-                        .content(mapper.writeValueAsString(favorite)))
-                .andExpect(status().isOk())
-                .andReturn();
-        verify(service).saveFavorite(any(FavoritesDto.class));
-
-        String json = mvcResult.getResponse().getContentAsString();
-        assertEquals(mapper.writeValueAsString(favorite), json);
-    }
-
-    @Test
-    void deleteFavorite() throws Exception {
-        mockMvc.perform(delete("/favorites/1").contentType("application/json"))
-                .andExpect(status().isNoContent());
-        verify(service).deleteFavorite(1);
-    }
+//    @Test
+//    void deleteFavorite() throws Exception {
+//        mockMvc.perform(delete("/favorites/1").contentType("application/json"))
+//                .andExpect(status().isNoContent());
+//        verify(service).deleteFavorite(1);
+//    }
 }

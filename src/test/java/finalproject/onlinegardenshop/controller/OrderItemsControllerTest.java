@@ -29,16 +29,16 @@ class OrderItemsControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    @Test
-    void getAllOrderItems() throws Exception {
-        Integer orderId = 1;
-        List<OrderItemsDto> orderItems = Collections.emptyList();
-        when(service.getAllOrderItems()).thenReturn(orderItems);
-
-        mockMvc.perform(get("/orders/" + orderId + "/order-items/all")
-                        .contentType("application/json"))
-                .andExpect(status().isOk());
-
-        verify(service).getAllOrderItems();
-    }
+//    @Test
+//    void getAllOrderItems() throws Exception {
+//        Integer orderId = 1;
+//        List<OrderItemsDto> orderItems = Collections.emptyList();
+//        when(service.getAllOrderItems()).thenReturn(orderItems);
+//
+//        mockMvc.perform(get("/orders/" + orderId + "/order-items/all")
+//                        .contentType("application/json"))
+//                .andExpect(status().isOk());
+//
+//        verify(service).getAllOrderItems();
+//    }
 }

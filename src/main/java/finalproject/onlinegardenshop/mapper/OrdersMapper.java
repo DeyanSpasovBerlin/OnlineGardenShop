@@ -17,6 +17,7 @@ import java.util.List;
 @Mapper(componentModel = "spring",  uses = {OrdersMapperInjector.class})
 public interface OrdersMapper {
 
+    @Mapping(target = "orderItems", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "users", source = "usersId", qualifiedByName = "usersFromId")
@@ -34,6 +35,10 @@ public interface OrdersMapper {
 
     List<OrdersDto> entityListToDto(List<Orders> entities);
 
+    @Mapping(target = "totalPrice", ignore = true)
+    @Mapping(target = "orderItems", ignore = true)
+    @Mapping(target = "emailSent", ignore = true)
+    @Mapping(target = "deletedUserId", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "id", ignore = true)
