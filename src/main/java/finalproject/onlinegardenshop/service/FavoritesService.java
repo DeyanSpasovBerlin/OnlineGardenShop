@@ -5,72 +5,84 @@ import finalproject.onlinegardenshop.entity.Favorites;
 import finalproject.onlinegardenshop.entity.Products;
 import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
-import finalproject.onlinegardenshop.repository.FavoritesRepository;
 import finalproject.onlinegardenshop.mapper.FavoritesMapper;
+import finalproject.onlinegardenshop.repository.FavoritesRepository;
 import finalproject.onlinegardenshop.repository.ProductsRepository;
 import finalproject.onlinegardenshop.repository.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class FavoritesService {
     private final FavoritesRepository repository;
-    private final ProductsRepository productsRepository; //Добавлено в целях метода удаления продукта в ProductsService
     private final FavoritesMapper mapper;
-    private final UsersRepository usersRepository;
+    private final UsersRepository userRepository;
+    private final ProductsRepository productsRepository;
 
-    @Autowired
-    public FavoritesService(FavoritesRepository repository,
-                            ProductsRepository productsRepository,
-                            FavoritesMapper mapper,
-                            UsersRepository usersRepository) {
+    public FavoritesService(
+            FavoritesRepository repository,
+            @Qualifier("favoritesMapperImpl") FavoritesMapper mapper,
+            UsersRepository userRepository, ProductsRepository productsRepository) {
         this.repository = repository;
-        this.productsRepository = productsRepository;
         this.mapper = mapper;
-        this.usersRepository = usersRepository;
+        this.userRepository = userRepository;
+        this.productsRepository = productsRepository;
     }
-
 
     public List<FavoritesDto> getAllFavorites() {
-        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
+        Users currentUser = getAuthenticatedUser();
+        return repository.findAllByUser(currentUser).stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
-    public FavoritesDto getFavoriteById(Integer id) {
-        return repository.findById(id).map(mapper::toDto).orElse(null);
+//    @Transactional
+//    public FavoritesDto saveFavorite(FavoritesDto dto) {
+//        Favorites entity = mapper.toEntity(dto);
+//
+//        Users currentUser = getAuthenticatedUser();
+//        entity.setUser(currentUser);
+//
+//        Products product = productsRepository.findById(dto.getProductsId())
+//                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product not found with id " + dto.getProductsId()));
+//        entity.setProduct(product);
+//
+//        return mapper.toDto(repository.save(entity));
+//    }
+@Transactional
+public FavoritesDto saveFavorite(FavoritesDto dto) {
+    Users currentUser = getAuthenticatedUser();
+    Products product = productsRepository.findById(dto.getProductsId())
+            .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product not found with id " + dto.getProductsId()));
+
+    if (repository.findByUserAndProduct(currentUser, product).isPresent()) {
+        throw new RuntimeException("This product is already in your favorites");
     }
 
-    //Добавлено в целях удаления продукта в ProductsService
-    public List<FavoritesDto> getFavoritesByUserId() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users authorizedUser = usersRepository.findByEmail((String) auth.getPrincipal()).get();//find user, who is author
-        Integer userId = authorizedUser.getId();
-        List<Favorites> favorites = repository.findByUserId(userId);
-
-        return favorites.stream().map(favorite -> {
-            Products product = favorite.getProduct();
-            boolean isAvailable = productsRepository.existsById(product.getId()); // Проверяем, есть ли товар
-
-            return new FavoritesDto(
-                    favorite.getId(),
-                    product.getId(),
-                    isAvailable ? "available" : "not available" // ✅ Добавляем статус
-            );
-        }).toList();
-    }
-
-
-    public FavoritesDto saveFavorite(FavoritesDto dto) {
-        Favorites entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
-    }
-
+    Favorites entity = mapper.toEntity(dto);
+    entity.setUser(currentUser);
+    entity.setProduct(product);
+    return mapper.toDto(repository.save(entity));
+}
     public void deleteFavorite(Integer id) {
+        Users currentUser = getAuthenticatedUser();
         Favorites favorite = repository.findById(id)
                 .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Favorite not found with id " + id));
-        repository.delete(favorite);
+        if(favorite.getUser().equals(currentUser)) {
+            repository.delete(favorite);
+        }
+    }
+
+    private Users getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = (String) authentication.getPrincipal();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("User not found with email: " + email));
     }
 }
