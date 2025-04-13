@@ -42,19 +42,6 @@ public class FavoritesService {
                 .collect(Collectors.toList());
     }
 
-//    @Transactional
-//    public FavoritesDto saveFavorite(FavoritesDto dto) {
-//        Favorites entity = mapper.toEntity(dto);
-//
-//        Users currentUser = getAuthenticatedUser();
-//        entity.setUser(currentUser);
-//
-//        Products product = productsRepository.findById(dto.getProductsId())
-//                .orElseThrow(() -> new OnlineGardenShopResourceNotFoundException("Product not found with id " + dto.getProductsId()));
-//        entity.setProduct(product);
-//
-//        return mapper.toDto(repository.save(entity));
-//    }
 @Transactional
 public FavoritesDto saveFavorite(FavoritesDto dto) {
     Users currentUser = getAuthenticatedUser();
@@ -70,6 +57,7 @@ public FavoritesDto saveFavorite(FavoritesDto dto) {
     entity.setProduct(product);
     return mapper.toDto(repository.save(entity));
 }
+
     public void deleteFavorite(Integer id) {
         Users currentUser = getAuthenticatedUser();
         Favorites favorite = repository.findById(id)
