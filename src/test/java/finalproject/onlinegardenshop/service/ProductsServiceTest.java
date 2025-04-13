@@ -237,5 +237,6 @@ class ProductsServiceTest {
         assertThrows(OnlineGardenShopResourceNotFoundException.class, () -> productsService.deleteProduct(1));
     }
 
+
 }
 

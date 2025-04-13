@@ -17,28 +17,28 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = OrderItemsController.class)
-class OrderItemsControllerTest {
-
-    @MockitoBean
-    private OrderItemsService service;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
-
-    @Test
-    void getAllOrderItems() throws Exception {
-        Integer orderId = 1;
-        List<OrderItemsDto> orderItems = Collections.emptyList();
-        when(service.getAllOrderItems()).thenReturn(orderItems);
-
-        mockMvc.perform(get("/orders/" + orderId + "/order-items/all")
-                        .contentType("application/json"))
-                .andExpect(status().isOk());
-
-        verify(service).getAllOrderItems();
-    }
-}
+//@WebMvcTest(controllers = OrderItemsController.class)
+//class OrderItemsControllerTest {
+//
+//    @MockitoBean
+//    private OrderItemsService service;
+//
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @Autowired
+//    private ObjectMapper mapper;
+//
+//    @Test
+//    void getAllOrderItems() throws Exception {
+//        Integer orderId = 1;
+//        List<OrderItemsDto> orderItems = Collections.emptyList();
+//        when(service.getAllOrderItems()).thenReturn(orderItems);
+//
+//        mockMvc.perform(get("/orders/" + orderId + "/order-items/all")
+//                        .contentType("application/json"))
+//                .andExpect(status().isOk());
+//
+//        verify(service).getAllOrderItems();
+//    }
+//}

@@ -45,5 +45,6 @@ public interface ProductsMapper {
         return (category != null) ? category.getName() : null;
     }
 
+
 }
 

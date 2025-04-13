@@ -85,4 +85,5 @@ class ProductsRepositoryTest {
         assertTrue(result.isPresent());
         assertEquals("TV", result.get().getName(), "Should return product with highest discount");
     }
+
 }

@@ -180,5 +180,6 @@ public class CategoriesServiceTest {
         verify(categoriesRepository, times(1)).deleteById(categoryId);
     }
 
+
 }
 

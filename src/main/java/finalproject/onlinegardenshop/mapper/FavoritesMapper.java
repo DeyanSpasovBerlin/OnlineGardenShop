@@ -15,5 +15,6 @@ public interface FavoritesMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "product", ignore = true)
     Favorites toEntity(FavoritesDto dto);
+
 }
 

@@ -74,5 +74,6 @@ public class ProductsDto {
     public Double getDiscountPrice() {
         return discountPrice; // Если null, то не будет отображаться в JSON
     }
+
 }
 
