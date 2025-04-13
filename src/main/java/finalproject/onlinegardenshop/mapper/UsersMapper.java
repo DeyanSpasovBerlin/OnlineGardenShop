@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UsersMapper {
 
+    @Mapping(target = "refreshToken", ignore = true)
     Users dtoToEntity(UsersDto dto);
 
     @Mapping(target = "password", constant = "***")
