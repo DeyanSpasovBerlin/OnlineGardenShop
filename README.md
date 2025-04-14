@@ -78,20 +78,7 @@ docker-compose up --build
 
 The app connects to the remote MySQL database automatically.
 
----
 
-#### 🐋 Option 3: Docker (with local DB)
-
-```bash
-docker-compose -f docker-compose.local.yml up --build
-```
-
-✅ To stop and clean:
-```bash
-docker-compose -f docker-compose.local.yml down -v
-```
-
----
 
 ### 👥 Project Authors
 
