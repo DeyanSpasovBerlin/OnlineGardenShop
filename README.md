@@ -95,9 +95,9 @@ docker-compose -f docker-compose.local.yml down -v
 
 ### 👥 Project Authors
 
-| Name             | Role      | Contacts                | Contribution                                  |
-|------------------|-----------|-------------------------|-----------------------------------------------|
-| Deyan Spasov     | Teamlead  | [GitHub/LinkedIn/email] | - Implemented cart, orders, authentication... |
-| Artur            | Developer | [GitHub/LinkedIn/email] | - Implemented cart, orders, authentication... |
-| Dmitrii Shkolnyi | Developer | [GitHub/LinkedIn/email] | - Implemented cart, orders, authentication... |
+| Name             | Role      |
+|------------------|-----------|
+| Deyan Spasov     | Teamlead  |
+| Artur            | Developer |
+| Dmitrii Shkolnyi | Developer |
 
