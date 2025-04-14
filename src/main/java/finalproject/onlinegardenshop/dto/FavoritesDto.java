@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +16,6 @@ public class FavoritesDto {
     private Integer productsId;
 
     private String status;
-
+    @Setter
+    private Integer userId;
 }

@@ -2,105 +2,106 @@ package finalproject.onlinegardenshop.service;
 
 import finalproject.onlinegardenshop.dto.FavoritesDto;
 import finalproject.onlinegardenshop.entity.Favorites;
+import finalproject.onlinegardenshop.entity.Products;
+import finalproject.onlinegardenshop.entity.Users;
 import finalproject.onlinegardenshop.exception.OnlineGardenShopResourceNotFoundException;
 import finalproject.onlinegardenshop.mapper.FavoritesMapper;
 import finalproject.onlinegardenshop.repository.FavoritesRepository;
+import finalproject.onlinegardenshop.repository.ProductsRepository;
+import finalproject.onlinegardenshop.repository.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class FavoritesServiceTest {
 
     @Mock
-    private FavoritesRepository repository;
-
+    private FavoritesRepository favoritesRepository;
     @Mock
-    private FavoritesMapper mapper;
+    private FavoritesMapper favoritesMapper;
+    @Mock
+    private UsersRepository usersRepository;
+    @Mock
+    private ProductsRepository productsRepository;
 
     @InjectMocks
-    private FavoritesService service;
-
-    private Favorites favorite;
-    private FavoritesDto favoriteDto;
+    private FavoritesService favoritesService;
 
     @BeforeEach
     void setUp() {
-        favorite = new Favorites();
-        favorite.setId(1);
+        MockitoAnnotations.openMocks(this);
 
-        favoriteDto = new FavoritesDto();
-        favoriteDto.setId(1);
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn("test@example.com");
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
     }
 
     @Test
-    void getAllFavorites_ShouldReturnList() {
-        when(repository.findAll()).thenReturn(List.of(favorite));
-        when(mapper.toDto(any())).thenReturn(favoriteDto);
+    void getAllFavorites_shouldReturnMappedFavoritesList() {
+        Users user = new Users();
+        List<Favorites> favoritesList = List.of(new Favorites());
+        List<FavoritesDto> dtoList = List.of(new FavoritesDto());
 
-        List<FavoritesDto> result = service.getAllFavorites();
+        when(usersRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+        when(favoritesRepository.findAllByUser(user)).thenReturn(favoritesList);
+        when(favoritesMapper.toDto(any(Favorites.class))).thenReturn(dtoList.get(0));
 
-        assertFalse(result.isEmpty());
+        List<FavoritesDto> result = favoritesService.getAllFavorites();
+
         assertEquals(1, result.size());
-        assertEquals(favoriteDto.getId(), result.getFirst().getId());
+        verify(favoritesRepository).findAllByUser(user);
     }
 
     @Test
-    void getFavoriteById_ShouldReturnFavoriteDto_WhenExists() {
-        when(repository.findById(1)).thenReturn(Optional.of(favorite));
-        when(mapper.toDto(any())).thenReturn(favoriteDto);
+    void saveFavorite_shouldSaveAndReturnDto() {
+        Users user = new Users();
+        Products product = new Products();
+        FavoritesDto dto = new FavoritesDto();
+        dto.setProductsId(42);
+        Favorites entity = new Favorites();
 
-        FavoritesDto result = service.getFavoriteById(1);
+        when(usersRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+        when(favoritesMapper.toEntity(dto)).thenReturn(entity);
+        when(productsRepository.findById(42)).thenReturn(Optional.of(product));
+        when(favoritesRepository.save(entity)).thenReturn(entity);
+        when(favoritesMapper.toDto(entity)).thenReturn(dto);
 
-        assertNotNull(result);
-        assertEquals(favoriteDto.getId(), result.getId());
+        FavoritesDto result = favoritesService.saveFavorite(dto);
+
+        assertEquals(dto, result);
+        verify(favoritesRepository).save(entity);
     }
 
     @Test
-    void getFavoriteById_ShouldReturnNull_WhenNotExists() {
-        when(repository.findById(1)).thenReturn(Optional.empty());
+    void deleteFavorite_shouldDeleteIfOwnedByUser() {
+        Users user = new Users();
+        Favorites favorite = new Favorites();
+        favorite.setUser(user);
 
-        FavoritesDto result = service.getFavoriteById(1);
+        when(usersRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+        when(favoritesRepository.findById(1)).thenReturn(Optional.of(favorite));
 
-        assertNull(result);
+        favoritesService.deleteFavorite(1);
+
+        verify(favoritesRepository).delete(favorite);
     }
 
     @Test
-    void saveFavorite_ShouldReturnSavedFavorite() {
-        when(mapper.toEntity(any())).thenReturn(favorite);
-        when(repository.save(any())).thenReturn(favorite);
-        when(mapper.toDto(any())).thenReturn(favoriteDto);
+    void deleteFavorite_shouldThrowIfFavoriteNotFound() {
+        when(usersRepository.findByEmail("test@example.com")).thenReturn(Optional.of(new Users()));
+        when(favoritesRepository.findById(99)).thenReturn(Optional.empty());
 
-        FavoritesDto result = service.saveFavorite(favoriteDto);
-
-        assertNotNull(result);
-        assertEquals(favoriteDto.getId(), result.getId());
-    }
-
-    @Test
-    void deleteFavorite_ShouldDelete_WhenExists() {
-        when(repository.findById(1)).thenReturn(Optional.of(favorite));
-        doNothing().when(repository).delete(any());
-
-        assertDoesNotThrow(() -> service.deleteFavorite(1));
-        verify(repository, times(1)).delete(favorite);
-    }
-
-    @Test
-    void deleteFavorite_ShouldThrowException_WhenNotExists() {
-        when(repository.findById(1)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(OnlineGardenShopResourceNotFoundException.class, () -> service.deleteFavorite(1));
-
-        assertEquals("Favorite not found with id 1", exception.getMessage());
+        assertThrows(OnlineGardenShopResourceNotFoundException.class,
+                () -> favoritesService.deleteFavorite(99));
     }
 }

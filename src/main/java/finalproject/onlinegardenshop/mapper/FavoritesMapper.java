@@ -9,7 +9,11 @@ import org.mapstruct.Mapping;
 public interface FavoritesMapper {
 
     @Mapping(source = "product.id", target = "productsId")
+
+    @Mapping(source = "user.id", target = "userId")
+
     @Mapping(target = "status", ignore = true)
+
     FavoritesDto toDto(Favorites favorite);
 
     @Mapping(target = "user", ignore = true)
