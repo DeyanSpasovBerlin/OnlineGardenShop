@@ -64,8 +64,8 @@ public class UsersController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/search")
     @Operation(summary = "Returns a list of users based on the specified first name for use from ADMIN")
-    public List<UsersDto> findByFirstName(@RequestParam String firstName, @RequestParam String lastName){
-        return userService.findByFirstNameAndLastName(firstName,lastName);
+    public List<UsersDto> findByFirstName(@RequestParam String firstName){
+        return userService.findByFirstName(firstName);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
