@@ -15,6 +15,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = CartItemsMapper.class)
 public interface CartMapper {
 
+    @Mapping(target = "lastUpdated", ignore = true)
+    @Mapping(target = "cartItems", ignore = true)
     @Mapping(target = "users", ignore = true)
     Cart dtoToEntity(CartDto cartDto);
 
@@ -25,6 +27,7 @@ public interface CartMapper {
 
     List<CartFullDto> entityFullListToDto(List<Cart> entities);
 
+    @Mapping(target = "lastUpdated", ignore = true)
     @Mapping(target = "users", source = "usersId", qualifiedByName = "usersFromId")
     Cart dtoFullToEntity(CartFullDto cartDto);
 
@@ -34,6 +37,8 @@ public interface CartMapper {
     @Mapping(target = "cartItems", source = "cartItems")
     CartFullDto entityToFullDto(Cart entity);
 
+    @Mapping(target = "productsId", ignore = true)
+    @Mapping(target = "cartId", ignore = true)
     @Mapping(target = "productsName", source = "products.name")
     @Mapping(target = "productsPrice", source = "products.price")
     CartItemsDto entityToDto(CartItems cartsItem);

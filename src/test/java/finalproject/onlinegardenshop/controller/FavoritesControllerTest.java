@@ -35,7 +35,7 @@ class FavoritesControllerTest {
 //                .andExpect(status().isOk());
 //        verify(service).getAllFavorites();
 //    }
-//
+
 //    @Test
 //    void saveFavorite() throws Exception {
 //        FavoritesDto favorite = new FavoritesDto();
@@ -51,7 +51,7 @@ class FavoritesControllerTest {
 //        String json = mvcResult.getResponse().getContentAsString();
 //        assertEquals(mapper.writeValueAsString(favorite), json);
 //    }
-//
+
 //    @Test
 //    void deleteFavorite() throws Exception {
 //        mockMvc.perform(delete("/favorites/1").contentType("application/json"))

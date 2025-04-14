@@ -36,11 +36,13 @@ public class EmailService {
             helper.setFrom("noreply@gmail.com");
             helper.setTo(toEmail);
             helper.setSubject("Order Confirmation");
-            helper.setText("Your order #" + order.getId() + " has been successfully paid!");
             if (order.getUsers() != null) {
-                helper.setText("Customer: " + order.getUsers().getFirstName() + " " + order.getUsers().getLastName());
+                String emailText = "Customer: " + order.getUsers().getFirstName() + " " + order.getUsers().getLastName()
+                        + "<br/>Your order #" + order.getId() + " has been successfully paid!";
+                helper.setText(emailText, true);
             } else {
-                helper.setText("Customer: No user data");
+                String emailText = "Customer: No user data";
+                helper.setText(emailText);
             }
             ByteArrayDataSource dataSource = new ByteArrayDataSource(pdfContent, "application/pdf");
             helper.addAttachment("order_" + order.getId() + ".pdf", dataSource);

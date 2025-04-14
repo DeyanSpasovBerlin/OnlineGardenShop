@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(properties = "spring.profiles.active=dev")
 class OnlineGardenShopApplicationTests {
-
     @Test
     void contextLoads() {
     }
