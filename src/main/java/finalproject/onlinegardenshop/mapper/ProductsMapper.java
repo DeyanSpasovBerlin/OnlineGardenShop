@@ -17,6 +17,9 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = CategoriesMapper.class)
 public interface ProductsMapper {
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "category", source = "category", qualifiedByName = "categoryNameToEntity")
     Products createDtoToEntity(ProductCreateDto dto);
 
@@ -41,6 +44,7 @@ public interface ProductsMapper {
     default String categoryEntityToName(Categories category) {
         return (category != null) ? category.getName() : null;
     }
+
 
 }
 

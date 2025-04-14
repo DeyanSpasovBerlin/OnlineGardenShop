@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +23,7 @@ public class ProductsDto {
 
     private Integer id;
 
-    @NotNull(message = "{validation.products.name}")
+    @NotBlank(message = "{validation.products.name}")
     @Pattern(regexp = "^[A-Za-zÜÄÖüäö'\\-., ]{1,255}$", message = "{validation.products.name}")
     private String name;
 
@@ -33,9 +31,11 @@ public class ProductsDto {
 
     private String description;
 
+    @Positive(message = "Price must be positive")
     @Digits(integer = 5, fraction = 2)
     private Double price;
 
+    @Positive(message = "Price must be positive")
     @Digits(integer = 5, fraction = 2)
     private Double discountPrice;
 
@@ -74,5 +74,6 @@ public class ProductsDto {
     public Double getDiscountPrice() {
         return discountPrice; // Если null, то не будет отображаться в JSON
     }
+
 }
 
